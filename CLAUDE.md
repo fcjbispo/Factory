@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Factory is a framework for managing AI-assisted software projects. It provides documentation templates, agent profiles, and a lifecycle script (`factory-init.sh`) that structures how projects are created, documented, and operated. This repository contains **only the framework itself** — no application code.
+Factory is a framework for managing AI-assisted software projects. It provides documentation templates, agent profiles, and a lifecycle script (`factory-init.sh`) that structures how projects are created, documented, and operated. This repository contains **only the framework itself** — no application code, no test suite, no linter.
+
+The canonical reference is `FACTORY-GUIDE.md` (version 1.1.0).
 
 ## Architecture
 
@@ -13,12 +15,32 @@ Two-root separation: documentation/configuration lives in `~/Dev/Factory/<projec
 ```
 Factory/
 ├── factory-init.sh          ← single entry point (all commands)
-├── FACTORY-GUIDE.md         ← canonical reference (version 1.1.0)
+├── FACTORY-GUIDE.md         ← canonical reference
 ├── docs/
 │   ├── agents/              ← 7 AI agent profiles (installed globally)
 │   └── templates/           ← documentation templates (copied to each project)
 │       ├── INDEX.md         ← mandatory first read for all agents
 │       └── GUIDE.md         ← documentation conventions
+```
+
+### .factory config format
+
+Each project under `Factory/<name>/` has a `.factory` file (key=value) with: `name`, `src_path` (absolute path to source code), `created` (date), `mode` (`full` or `coexist`).
+
+### Zikkaron hooks
+
+`.claude/settings.json` configures 5 hooks for persistent memory across sessions:
+- **PreCompact**: drains context to Zikkaron before compaction
+- **SessionStart**: injects project context on new sessions; restores after compaction
+- **PostToolUse**: captures every tool action into action log
+- **UserPromptSubmit**: auto-recalls relevant memories on each user turn
+
+## Validating factory-init.sh
+
+No test suite exists. Validate with shellcheck:
+
+```bash
+shellcheck factory-init.sh
 ```
 
 ## Running factory-init.sh
@@ -40,9 +62,9 @@ Environment variables: `FACTORY_ROOT` (repo root), `FACTORY_PROJECTS_DIR` (defau
 
 ## Agent profiles
 
-7 agents in `docs/agents/`, installed globally via `./factory-init.sh agents`:
+7 agents in `docs/agents/`, installed globally via `./factory-init.sh agents`. All profiles use `model: inherit` (inherit from the parent Claude Code session).
 
-| Agent | Model | Role |
+| Agent | Recommended model | Role |
 |---|---|---|
 | arquiteto-senior | Opus | Architecture, ADRs, API contracts, system design |
 | fullstack-developer | Sonnet | Feature implementation, bug fixes, commits |
@@ -55,6 +77,8 @@ Environment variables: `FACTORY_ROOT` (repo root), `FACTORY_PROJECTS_DIR` (defau
 ## Documentation templates
 
 `docs/templates/` contains the canonical templates copied to every project on `new` or `adopt`. Each section has an `INDEX.md` (registry) and `_template.md` (scaffold). Sections: `adr/`, `api/`, `architecture/`, `database/`, `design/`, `operations/`, `security/`, `testing/`, `decisions/`, `context/`.
+
+Note: `context/` (`active.md` + `progress.md`) is created at project init time but doesn't exist in the templates — `factory-init.sh` creates the directory and files.
 
 Key rules:
 - No document created without using the section's `_template.md`
