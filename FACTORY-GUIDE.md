@@ -1,6 +1,6 @@
 # FACTORY-GUIDE.md
 
-**Version:** _1.1.0_
+**Version:** _1.2.0_
 
 > Guia central do framework Factory.
 > Leitura obrigatória para qualquer agente ou humano antes de iniciar, migrar ou operar um projeto sob este framework.
@@ -15,27 +15,77 @@ A Factory gerencia **documentação e configuração**. O código-fonte vive sep
 
 ---
 
+## Paradigma DDD + SDD
+
+A partir da versão 1.2.0, a Factory adota a integração entre **Domain-Driven Design (DDD)** e **Spec-Driven Development (SDD)** como paradigma central de modelagem e contratualização.
+
+### O que cada um faz
+
+**DDD é estratégico e tático** — define o quê e o porquê:
+- Quais são os bounded contexts do sistema?
+- Qual é a linguagem ubíqua de cada contexto?
+- Quais são os agregados, entidades e value objects?
+- Quais são os domain events e como os contextos se comunicam?
+
+**SDD é operacional** — formaliza como isso se torna contrato executável:
+- Como os conceitos do domínio viram contratos de API?
+- Quais campos são obrigatórios? Quais são as invariantes?
+- Como os contextos se comunicam via spec?
+- O que constitui um breaking change?
+
+### Regra de ouro
+
+> Os nomes da spec devem ser **idênticos** à linguagem ubíqua do DDD.
+> Se o domínio chama de `Pedido`, a spec não pode chamar de `Order` ou `Compra`.
+
+### Sem DDD no SDD (o que evitar)
+
+Spec usa nomes técnicos genéricos (`item`, `record`, `data`). Ninguém sabe o que representa. Contextos se misturam na mesma API. Invariantes de domínio são perdidas ou ficam apenas no código.
+
+### Com DDD guiando o SDD (o objetivo)
+
+Spec usa linguagem do negócio (`Pedido`, `Estoque`, `Pagamento`). Cada bounded context tem sua própria spec. Contratos refletem invariantes do domínio. A spec é legível por especialistas de negócio.
+
+### Mapeamento DDD → SDD
+
+| Conceito DDD | Elemento da Spec |
+|---|---|
+| Agregado raiz | Tipo principal + mutations (`createX`, `updateX`) |
+| Entidade | Tipo com `id: ID!` |
+| Value Object | `input type` (sem ID, imutável) |
+| Invariante de domínio | Campo `!` (non-null) ou `minItems` |
+| Estado do agregado | `enum` |
+| Domain Event | Subscription GraphQL ou canal AsyncAPI |
+| Bounded Context | Spec separada (arquivo próprio em `api/`) |
+| Anti-Corruption Layer | Spec de tradução explícita entre contextos |
+
+### Cada contexto = uma spec separada
+
+Não há um schema gigante. Cada bounded context expõe sua própria API com seus próprios tipos e contratos. O arquivo `docs/domain/context-map.md` registra como os contextos se relacionam e quais specs correspondem a cada um.
+
+---
+
 ## Estrutura da Factory
 
 ```
 ~/Dev/
-├── Factory/                        ← repositório da Factory
-│   ├── FACTORY-GUIDE.md            ← este documento
-│   ├── factory-init.sh             ← ponto único de entrada para operações
-│   ├── docs/
-│   │   ├── agents/                 ← perfis dos agentes de IA
-│   │   └── templates/              ← templates de documentação reutilizáveis
-│   └── [nome-do-projeto]/          ← um diretório por projeto
-│       ├── .factory                ← config: registra src_path e metadados
-│       ├── docs/                   ← documentação (derivada dos templates)
-│       └── docs-legado/            ← documentação pré-Factory (modo full)
+├── Factory/ ← repositório da Factory
+│ ├── FACTORY-GUIDE.md ← este documento
+│ ├── factory-init.sh ← ponto único de entrada para operações
+│ ├── docs/
+│ │ ├── agents/ ← perfis dos agentes de IA
+│ │ └── templates/ ← templates de documentação reutilizáveis
+│ └── [nome-do-projeto]/ ← um diretório por projeto
+│ ├── .factory ← config: registra src_path e metadados
+│ ├── docs/ ← documentação (derivada dos templates)
+│ └── docs-legado/ ← documentação pré-Factory (modo full)
 │
 └── Projects/
-    └── [nome-do-projeto]/          ← código-fonte do projeto
-        ├── .claude/
-        │   └── commands/
-        │       └── factory-init.md ← atalho para carregar contexto na sessão
-        └── CLAUDE.md               ← identidade do projeto e ponteiros para Factory
+ └── [nome-do-projeto]/ ← código-fonte do projeto
+ ├── .claude/
+ │ └── commands/
+ │ └── factory-init.md ← atalho para carregar contexto na sessão
+ └── CLAUDE.md ← identidade do projeto e ponteiros para Factory
 ```
 
 ---
@@ -52,7 +102,7 @@ A Factory gerencia **documentação e configuração**. O código-fonte vive sep
 
 | Arquivo | Agente | Papel principal |
 |---|---|---|
-| `arquiteto-senior.md` | Arquiteto Sênior | Decisões de arquitetura, ADRs, contratos de API, design de sistema |
+| `arquiteto-senior.md` | Arquiteto Sênior | Decisões de arquitetura, ADRs, contratos de API, modelagem DDD, design de sistema |
 | `fullstack-developer.md` | Full-Stack Developer | Implementação de features, testes unitários, commits |
 | `db-architect.md` | DB Architect | Modelagem de dados, migrations, otimização de queries |
 | `code-reviewer.md` | Code Reviewer | Revisão obrigatória de PRs, qualidade, padrões, segurança no código |
@@ -93,6 +143,31 @@ A Factory gerencia **documentação e configuração**. O código-fonte vive sep
 
 ---
 
+#### `templates/domain/` ← **novo em v1.2.0**
+
+**Propósito**: modelagem do domínio pelo paradigma DDD. Define os bounded contexts, a linguagem ubíqua, os agregados, entidades, value objects e domain events. É a **fonte de verdade para os nomes e contratos** de todas as specs em `api/`.
+
+**Responsável**: Arquiteto Sênior lidera com especialistas de domínio (PO e stakeholders de negócio). Nenhum nome na spec pode divergir deste glossário.
+
+**Regra crítica**: toda spec em `api/` deve ser derivada de um bounded context documentado em `domain/`. Specs não rastreáveis a um contexto de domínio não são aceitas.
+
+| Arquivo | Descrição |
+|---|---|
+| `INDEX.md` | Registro tabular de todos os bounded contexts com status e spec correspondente |
+| `context-map.md` | Mapa de como os contextos se relacionam (conformista, ACL, publicador/consumidor) |
+| `_template-bounded-context.md` | Template para documentar um bounded context: agregados, entidades, value objects, invariantes e domain events |
+| `_template-ubiquitous-language.md` | Template para o glossário da linguagem ubíqua de cada contexto |
+
+**Nomenclatura de contextos**: `[nome-do-contexto]-context.md` — ex: `pedidos-context.md`, `estoque-context.md`
+**Nomenclatura de glossários**: `[nome-do-contexto]-language.md` — ex: `pedidos-language.md`
+
+**Quando criar**:
+- Ao iniciar um projeto novo: antes de qualquer spec em `api/`
+- Ao adotar um projeto existente: como parte da avaliação inicial
+- Ao identificar um novo bounded context emergindo no código
+
+---
+
 #### `templates/adr/`
 
 **Propósito**: registra decisões arquiteturais significativas e irreversíveis. Um ADR aceito nunca é editado — é substituído por um novo.
@@ -106,7 +181,7 @@ A Factory gerencia **documentação e configuração**. O código-fonte vive sep
 
 **Nomenclatura**: `NNNN-titulo-em-kebab-case.md` — ex: `0001-escolha-do-banco-de-dados.md`
 
-**Quando criar um ADR**: escolha de tecnologia, definição de padrão arquitetural, mudança que afeta múltiplos módulos, qualquer decisão debatida com alternativas consideradas.
+**Quando criar um ADR**: escolha de tecnologia, definição de padrão arquitetural, mudança que afeta múltiplos módulos, qualquer decisão debatida com alternativas consideradas. Inclui decisões de delimitação de bounded contexts.
 
 ---
 
@@ -118,11 +193,13 @@ A Factory gerencia **documentação e configuração**. O código-fonte vive sep
 
 | Arquivo | Descrição |
 |---|---|
-| `INDEX.md` | Registro de todos os contratos ativos com tipo, versão e status |
+| `INDEX.md` | Registro de todos os contratos ativos com tipo, versão, bounded context de origem e status |
 
-**Formatos aceitos**: OpenAPI 3.x (`.yaml`) para REST, SDL (`.graphql`) para GraphQL, Markdown estruturado para eventos e mensagens.
+**Formatos aceitos**: OpenAPI 3.x (`.yaml`) para REST, SDL (`.graphql`) para GraphQL, AsyncAPI (`.yaml`) para eventos e mensagens.
 
 **Regra crítica**: nenhum endpoint ou evento é implementado sem contrato aprovado nesta pasta.
+
+**Regra DDD**: cada spec deve referenciar o bounded context de origem no seu frontmatter (`domain_context: nome-do-contexto`). Nomes de tipos, campos e operações devem seguir o glossário do contexto correspondente em `domain/`.
 
 ---
 
@@ -277,7 +354,7 @@ cd ~/Dev/Factory
 
 O script cria automaticamente:
 - `~/Dev/Projects/<nome>/` com `CLAUDE.md`
-- `Factory/<nome>/docs/` a partir dos templates
+- `Factory/<nome>/docs/` a partir dos templates (inclui `domain/`)
 - `Factory/<nome>/docs/context/` para contexto de sessão
 - `Factory/<nome>/.factory` com `src_path` registrado
 - `.claude/commands/factory-init.md` no projeto
@@ -296,18 +373,28 @@ Dentro da sessão:
 /factory-init
 ```
 
-Em seguida:
+Em seguida, a sequência obrigatória DDD → SDD → implementação:
 
 ```
 @arquiteto-senior Leia docs/INDEX.md e docs/GUIDE.md.
-Crie docs/architecture/overview.md descrevendo a arquitetura
-inicial e o primeiro ADR com as decisões tecnológicas do projeto.
+Execute Event Storming com o contexto disponível:
+1. Identifique os bounded contexts do sistema
+2. Crie docs/domain/context-map.md com o mapa de contextos
+3. Para cada contexto, crie docs/domain/[nome]-context.md e docs/domain/[nome]-language.md
+4. Crie docs/architecture/overview.md descrevendo a arquitetura inicial
+5. Registre o primeiro ADR com as decisões tecnológicas
 
-@qa-tester Leia docs/architecture/overview.md e crie
-docs/testing/test-strategy.md usando SBD como paradigma.
+@arquiteto-senior Com os bounded contexts definidos em domain/,
+crie os contratos de API correspondentes em docs/api/,
+garantindo que todos os nomes seguem a linguagem ubíqua de cada contexto.
 
-@security-analyst Leia docs/architecture/overview.md e crie
-docs/security/policies.md com as políticas de segurança iniciais.
+@qa-tester Leia docs/architecture/overview.md e docs/domain/context-map.md.
+Crie docs/testing/test-strategy.md usando SBD como paradigma,
+considerando os bounded contexts e domain events identificados.
+
+@security-analyst Leia docs/architecture/overview.md e docs/domain/ .
+Crie docs/security/policies.md com as políticas de segurança iniciais,
+considerando os dados sensíveis de cada bounded context.
 ```
 
 ---
@@ -323,9 +410,11 @@ Inicie uma sessão na raiz do projeto existente e execute:
 ```
 @arquiteto-senior Faça uma avaliação deste projeto:
 1. Mapeie a estrutura de código (módulos, camadas, padrões identificados)
-2. Liste toda documentação existente e avalie sua qualidade
-3. Identifique decisões técnicas que deveriam virar ADRs
-4. Aponte gaps de documentação críticos
+2. Identifique bounded contexts emergentes no código existente
+3. Liste toda documentação existente e avalie sua qualidade
+4. Identifique decisões técnicas que deveriam virar ADRs
+5. Aponte a linguagem ubíqua implícita no código (nomes de classes, tabelas, rotas)
+6. Aponte gaps de documentação críticos
 Produza um relatório para que o PO decida o modo de integração.
 ```
 
@@ -342,7 +431,7 @@ cd ~/Dev/Factory
 
 O script executa automaticamente:
 - Copia `docs/` existente para `Factory/<nome>/docs-legado/`
-- Cria `Factory/<nome>/docs/` a partir dos templates
+- Cria `Factory/<nome>/docs/` a partir dos templates (inclui `domain/`)
 - Cria `Factory/<nome>/docs/context/`
 - Cria `CLAUDE.md` no projeto com ponteiros para Factory e legado
 - Cria `.claude/commands/factory-init.md` no projeto
@@ -362,13 +451,14 @@ execute prompt factory-adoption
 ```
 
 O prompt `factory-adoption` (salvo em `~/Dev/Contexts/Prompts/factory-adoption.md`)
-conduz os agentes pela varredura completa e população da estrutura Factory.
+conduz os agentes pela varredura completa e população da estrutura Factory,
+incluindo a descoberta e documentação dos bounded contexts em `domain/`.
 
 ### Arquivar o legado após validação com o PO
 
 ```bash
 tar -czf ~/Dev/Factory/<nome>/docs-legado.tar.gz \
-  ~/Dev/Factory/<nome>/docs-legado/
+ ~/Dev/Factory/<nome>/docs-legado/
 rm -rf ~/Dev/Factory/<nome>/docs-legado/
 ```
 
@@ -391,6 +481,7 @@ o `CLAUDE.md` com as regras de precedência entre as duas fontes.
 | Situação | Ação |
 |---|---|
 | Criar documentação nova | Sempre em `Factory/<nome>/docs/` |
+| Criar specs de API | Sempre derivadas de `domain/` (linguagem ubíqua obrigatória) |
 | Consultar documentação | Leia ambas — Factory prevalece em conflito |
 | Atualizar doc existente | Migre de `docs/` para Factory primeiro |
 
@@ -398,6 +489,7 @@ o `CLAUDE.md` com as regras de precedência entre as duas fontes.
 
 - Mais de 80% da documentação ativa em `Factory/docs/`
 - Nenhum arquivo em `docs/` consultado nos últimos 60 dias
+- `domain/` com todos os bounded contexts documentados
 - PO aprova a migração final
 
 Para encerrar:
@@ -435,18 +527,18 @@ automaticamente ao iniciar qualquer sessão em projeto Factory:
 
 ```json
 {
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'PROJECT=$(basename \"$PWD\"); DOCS=\"$HOME/Dev/Factory/$PROJECT/docs\"; if [ -d \"$DOCS\" ]; then echo \"{\\\"additionalContext\\\": \\\"/add-dir $DOCS\\\"\"}\" ; fi'"
-          }
-        ]
-      }
-    ]
-  }
+ "hooks": {
+ "SessionStart": [
+ {
+ "hooks": [
+ {
+ "type": "command",
+ "command": "bash -c 'PROJECT=$(basename \"$PWD\"); DOCS=\"$HOME/Dev/Factory/$PROJECT/docs\"; if [ -d \"$DOCS\" ]; then echo \"{\\\"additionalContext\\\": \\\"/add-dir $DOCS\\\"}\" ; fi'"
+ }
+ ]
+ }
+ ]
+ }
 }
 ```
 
@@ -468,7 +560,7 @@ cd ~/Dev/Factory
 | Comando | O que faz |
 |---|---|
 | `./factory-init.sh agents` | Instala agentes em `~/.claude/agents/` |
-| `./factory-init.sh new <nome>` | Cria projeto novo (código + docs + comando) |
+| `./factory-init.sh new <nome>` | Cria projeto novo (código + docs + domain/ + comando) |
 | `./factory-init.sh adopt <nome> --mode=full` | Integra projeto existente — migração completa |
 | `./factory-init.sh adopt <nome> --mode=coexist` | Integra projeto existente — convivência |
 | `./factory-init.sh add-command <nome>` | Adiciona `/factory-init` a projeto existente |
@@ -484,6 +576,10 @@ cd ~/Dev/Factory
 |---|---|---|---|---|
 | `INDEX.md` (raiz) | arquiteto-senior | arquiteto-senior | — | todos os agentes |
 | `GUIDE.md` | arquiteto-senior | arquiteto-senior | PO | todos os agentes (1ª sessão) |
+| `domain/INDEX.md` | arquiteto-senior | arquiteto-senior | PO | todos os agentes |
+| `domain/context-map.md` | arquiteto-senior | arquiteto-senior | PO | todos os agentes |
+| `domain/[ctx]-context.md` | arquiteto-senior | arquiteto-senior | PO | arquiteto-senior, fullstack-developer |
+| `domain/[ctx]-language.md` | arquiteto-senior | arquiteto-senior + PO | PO | todos os agentes |
 | `context/active.md` | qualquer agente | todos os agentes | — | todos os agentes (início de sessão) |
 | `context/progress.md` | qualquer agente | todos os agentes | — | todos os agentes (início de sessão) |
 | `adr/` | arquiteto-senior | arquiteto-senior | PO (alto impacto) | arquiteto-senior, code-reviewer |
@@ -509,12 +605,15 @@ cd ~/Dev/Factory
 5. **Um projeto por diretório.** Nunca compartilhe código entre projetos Factory.
 6. **`docs/` de projeto deriva de `Factory/docs/templates/`.** Nunca edite os templates diretamente em um projeto — edite em `Factory/docs/templates/` e propague com `factory-init.sh`.
 7. **Todo ciclo de vida de projeto passa pelo `factory-init.sh`.** Nunca crie estruturas manualmente.
+8. **Specs derivam de domínio.** Nenhum contrato em `api/` é criado sem bounded context correspondente em `domain/`. Nomes divergentes da linguagem ubíqua são bugs de documentação.
+9. **Linguagem ubíqua é contrato.** O glossário em `domain/[ctx]-language.md` é a fonte de verdade para nomenclatura. Qualquer divergência entre o glossário e o código ou a spec deve ser resolvida — sempre em favor do glossário.
 
 ---
 
 ## Histórico de mudanças
 
-| Data | Mudança | Por |
-|---|---|---|
-| YYYY-MM-DD | Versão inicial | arquiteto-senior |
-| YYYY-MM-DD | Refatoração: comandos manuais substituídos por factory-init.sh; separação código/docs; seção de sessão de trabalho; hook global; context/ adicionado | arquiteto-senior |
+| Data | Versão | Mudança | Por |
+|---|---|---|---|
+| YYYY-MM-DD | 1.0.0 | Versão inicial | arquiteto-senior |
+| YYYY-MM-DD | 1.1.0 | Refatoração: comandos manuais substituídos por factory-init.sh; separação código/docs; seção de sessão de trabalho; hook global; context/ adicionado | arquiteto-senior |
+| YYYY-MM-DD | 1.2.0 | Integração DDD+SDD: nova seção `domain/` nos templates; paradigma DDD→SDD documentado; mapeamento conceitos DDD para elementos de spec; regras 8 e 9 adicionadas; responsabilidades de domain/ na tabela; sequência de primeira sessão atualizada para incluir Event Storming e descoberta de bounded contexts | arquiteto-senior |

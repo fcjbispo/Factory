@@ -2,7 +2,7 @@
 type: index
 scope: global
 updated: YYYY-MM-DD
-version: 1.0.0
+version: 1.2.0
 ---
 
 # Índice Mestre de Documentação
@@ -28,13 +28,13 @@ Use esta tabela para saber exatamente o que ler ao iniciar uma tarefa.
 
 | Você é | Leia obrigatoriamente | Consulte conforme necessidade |
 |---|---|---|
-| **Arquiteto Sênior** | `architecture/overview.md`, `adr/INDEX.md` | `api/INDEX.md`, `security/INDEX.md` |
-| **Full-Stack Developer** | `architecture/overview.md`, `api/INDEX.md`, `design/INDEX.md` | `database/schema.md`, `security/policies.md` |
-| **DB Architect** | `database/INDEX.md`, `architecture/overview.md` | `adr/INDEX.md`, `security/policies.md` |
-| **Code Reviewer** | `architecture/overview.md`, `adr/INDEX.md` | `api/INDEX.md`, `security/policies.md` |
-| **QA Tester** | `testing/test-strategy.md`, `design/INDEX.md` | `api/INDEX.md`, `database/schema.md` |
+| **Arquiteto Sênior** | `domain/INDEX.md`, `domain/context-map.md`, `architecture/overview.md`, `adr/INDEX.md` | `api/INDEX.md`, `security/INDEX.md` |
+| **Full-Stack Developer** | `domain/INDEX.md`, `architecture/overview.md`, `api/INDEX.md`, `design/INDEX.md` | `domain/[ctx]-language.md`, `database/schema.md`, `security/policies.md` |
+| **DB Architect** | `domain/INDEX.md`, `database/INDEX.md`, `architecture/overview.md` | `adr/INDEX.md`, `security/policies.md` |
+| **Code Reviewer** | `domain/INDEX.md`, `architecture/overview.md`, `adr/INDEX.md` | `api/INDEX.md`, `security/policies.md` |
+| **QA Tester** | `domain/INDEX.md`, `testing/test-strategy.md`, `design/INDEX.md` | `api/INDEX.md`, `database/schema.md` |
 | **DevOps/SRE** | `operations/runbook.md`, `architecture/overview.md` | `security/policies.md`, `database/INDEX.md` |
-| **Security Analyst** | `security/INDEX.md`, `architecture/overview.md` | `adr/INDEX.md`, `api/INDEX.md` |
+| **Security Analyst** | `domain/INDEX.md`, `security/INDEX.md`, `architecture/overview.md` | `adr/INDEX.md`, `api/INDEX.md` |
 
 ---
 
@@ -42,18 +42,19 @@ Use esta tabela para saber exatamente o que ler ao iniciar uma tarefa.
 
 ```
 docs/
-├── INDEX.md                        ← você está aqui
-├── GUIDE.md                        ← como usar esta estrutura
+├── INDEX.md ← você está aqui
+├── GUIDE.md ← como usar esta estrutura
 │
-├── adr/                            ← decisões arquiteturais irreversíveis
-├── api/                            ← contratos de API (OpenAPI, GraphQL, eventos)
-├── architecture/                   ← visão do sistema, componentes, diagramas
-├── database/                       ← modelo de dados, schema, changelog
-├── design/                         ← especificações de features
-├── operations/                     ← runbooks, deploys, postmortems
-├── security/                       ← políticas, threat models, vulnerabilidades
-├── testing/                        ← estratégia de testes, cobertura, qualidade
-└── decisions/                      ← decisões de produto e negócio
+├── domain/ ← modelagem DDD: bounded contexts, linguagem ubíqua, domain events
+├── adr/ ← decisões arquiteturais irreversíveis
+├── api/ ← contratos de API (OpenAPI, GraphQL, AsyncAPI)
+├── architecture/ ← visão do sistema, componentes, diagramas
+├── database/ ← modelo de dados, schema, changelog
+├── design/ ← especificações de features
+├── operations/ ← runbooks, deploys, postmortems
+├── security/ ← políticas, threat models, vulnerabilidades
+├── testing/ ← estratégia de testes, cobertura, qualidade
+└── decisions/ ← decisões de produto e negócio
 ```
 
 ---
@@ -62,6 +63,7 @@ docs/
 
 | Seção | Status | Responsável | Última atualização |
 |---|---|---|---|
+| `domain/` | `ativo` | arquiteto-senior | YYYY-MM-DD |
 | `adr/` | `ativo` | arquiteto-senior | YYYY-MM-DD |
 | `api/` | `ativo` | arquiteto-senior | YYYY-MM-DD |
 | `architecture/` | `ativo` | arquiteto-senior | YYYY-MM-DD |
@@ -74,11 +76,22 @@ docs/
 
 ---
 
+## Bounded contexts registrados
+
+> Listagem rápida para navegação. Detalhes completos em `domain/INDEX.md`.
+
+| Contexto | Status | Spec correspondente |
+|---|---|---|
+| [nome-do-contexto] | `ativo` | `api/[nome]-api.yaml` |
+
+---
+
 ## Convenções globais
 
 - **Status de documentos**: `rascunho` → `em-revisão` → `ativo` → `depreciado` | `substituído-por: [arquivo]`
 - **Nomenclatura**: `kebab-case` para arquivos. Prefixo de data `YYYY-MM-DD-` para documentos cronológicos (postmortems, decisões).
 - **Frontmatter**: todo documento começa com bloco YAML de metadados (veja `GUIDE.md`).
+- **Linguagem ubíqua**: todos os nomes em `api/` derivam do glossário em `domain/[ctx]-language.md`. Divergências são bugs.
 - **Atualizações**: ao atualizar qualquer documento, atualize também o campo `updated` do frontmatter e registre o que mudou na seção `## Histórico de mudanças` do próprio documento.
 - **Templates**: todo segmento tem um `_template.md`. Nunca crie documentos sem usar o template da seção.
 - **Links**: use sempre caminhos relativos a partir da raiz de `docs/`.
