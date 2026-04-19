@@ -14,6 +14,8 @@
 #   ./factory-init.sh work    <nome>                imprime o comando de sessão
 #   ./factory-init.sh list                          lista projetos registrados
 #   ./factory-init.sh shell-setup                   gera função shell para .bashrc/.zshrc
+#   ./factory-init.sh update [--version=X.Y.Z] [--dry-run]  atualiza arquivos do framework
+#   ./factory-init.sh sync   <nome> [--dry-run]  propaga mudanças de templates para projeto
 #   ./factory-init.sh help
 #
 # Execute sempre a partir de FACTORY_ROOT/.
@@ -24,6 +26,7 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 # Configuração
 # ---------------------------------------------------------------------------
+FACTORY_VERSION="1.2.0"
 FACTORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECTS_DIR="${FACTORY_PROJECTS_DIR:-$HOME/Dev/Projects}"
 TEMPLATES_DIR="$FACTORY_ROOT/docs/templates"
@@ -43,6 +46,49 @@ divider() { printf "\n%s\n\n" "────────────────�
 
 require_templates() {
   [ -d "$TEMPLATES_DIR" ] || error "Templates não encontrados em $TEMPLATES_DIR"
+}
+
+_version_cmp() {
+  local v1="$1" v2="$2"
+  local IFS='.'
+  local a1=($v1) a2=($v2)
+  for i in 0 1 2; do
+    local n1="${a1[i]:-0}" n2="${a2[i]:-0}"
+    ((n1 > n2)) && return 1
+    ((n1 < n2)) && return 2
+  done
+  return 0
+}
+
+_is_framework_file() {
+  local f="$1"
+  case "$f" in
+    factory-init.sh|FACTORY-GUIDE.md|CLAUDE.md|.gitignore) return 0 ;;
+    docs/agents/*.md) return 0 ;;
+    docs/templates/*) return 0 ;;
+  esac
+  return 1
+}
+
+_fetch_latest_release() {
+  local api_url="https://api.github.com/repos/fcjbispo/MyFactory/releases/latest"
+  local response
+  local -a curl_args=(-fsSL)
+  [ -n "${GITHUB_TOKEN:-}" ] && curl_args+=(-H "Authorization: token $GITHUB_TOKEN")
+  response=$(curl "${curl_args[@]}" "$api_url" 2>/dev/null) || \
+    error "Falha ao buscar informações de release. Verifique sua conexão."
+  REMOTE_TAG=$(echo "$response" | grep '"tag_name"' | head -1 | sed 's/.*"tag_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+  REMOTE_TARBALL_URL=$(echo "$response" | grep '"browser_download_url"' | grep 'factory-.*\.tar\.gz' | head -1 | sed 's/.*"browser_download_url"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+  [ -n "$REMOTE_TAG" ] || error "Não foi possível determinar a versão mais recente"
+  [ -n "$REMOTE_TARBALL_URL" ] || error "Tarball não encontrado no release $REMOTE_TAG"
+}
+
+_fetch_specific_release() {
+  local target_ver="$1"
+  REMOTE_TAG="v${target_ver}"
+  REMOTE_TARBALL_URL="https://github.com/fcjbispo/MyFactory/releases/download/${REMOTE_TAG}/factory-${target_ver}.tar.gz"
+  curl -fsSI "$REMOTE_TARBALL_URL" >/dev/null 2>&1 || \
+    error "Release ${REMOTE_TAG} não encontrado em github.com/fcjbispo/MyFactory"
 }
 
 config_get() {
@@ -378,6 +424,238 @@ SHELL_BLOCK
 }
 
 # ---------------------------------------------------------------------------
+# Atualiza arquivos do framework a partir de GitHub Release
+# ---------------------------------------------------------------------------
+cmd_update() {
+  local target_version="" dry_run=false
+
+  for arg in "$@"; do
+    case $arg in
+      --version=*) target_version="${arg#--version=}" ;;
+      --dry-run)    dry_run=true ;;
+    esac
+  done
+
+  command -v curl >/dev/null 2>&1 || error "curl é necessário para atualização"
+  command -v tar  >/dev/null 2>&1 || error "tar é necessário para atualização"
+
+  info "Versão instalada: $FACTORY_VERSION"
+
+  if [ -n "$target_version" ]; then
+    _fetch_specific_release "$target_version"
+  else
+    _fetch_latest_release
+  fi
+
+  local remote_ver="${REMOTE_TAG#v}"
+
+  if _version_cmp "$FACTORY_VERSION" "$remote_ver"; then
+    success "Factory v$FACTORY_VERSION já está atualizado."
+    exit 0
+  fi
+
+  local is_downgrade=false
+  if _version_cmp "$FACTORY_VERSION" "$remote_ver"; then :; else
+    local cmp_result=$?
+    [ "$cmp_result" -eq 1 ] && is_downgrade=true
+  fi
+
+  if $is_downgrade; then
+    warn "Versão solicitada ($remote_ver) é anterior à instalada ($FACTORY_VERSION)"
+    echo -n "  Continuar com downgrade? (s/N) "; read -r answer
+    [ "$answer" = "s" ] || [ "$answer" = "S" ] || { info "Downgrade cancelado."; exit 0; }
+  fi
+
+  info "Baixando Factory v$remote_ver..."
+  local tmp_dir
+  tmp_dir=$(mktemp -d)
+  trap 'rm -rf "$tmp_dir"' EXIT
+
+  local tarball_name="factory-${remote_ver}.tar.gz"
+  curl -fsSL "$REMOTE_TARBALL_URL" -o "$tmp_dir/$tarball_name" || \
+    error "Falha ao baixar $REMOTE_TARBALL_URL"
+
+  tar xzf "$tmp_dir/$tarball_name" -C "$tmp_dir" --no-same-owner --no-same-permissions || \
+    error "Falha ao extrair tarball"
+
+  local extract_dir="$tmp_dir/factory-${remote_ver}"
+  [ -d "$extract_dir" ] || error "Estrutura inesperada no tarball"
+
+  while IFS= read -r fpath; do
+    local real_path
+    real_path=$(realpath "$fpath")
+    [[ "$real_path" == "$tmp_dir/"* ]] || \
+      { rm -rf "$tmp_dir"; error "Path traversal detectado em tarball — abortando."; }
+  done < <(cd "$extract_dir" && find . -type l -o -type f)
+
+  info "Comparando arquivos..."
+  local modified=0 new_files=0 unchanged=0
+
+  while IFS= read -r relpath; do
+    [ -z "$relpath" ] && continue
+    _is_framework_file "$relpath" || continue
+
+    if [ -f "$FACTORY_ROOT/$relpath" ]; then
+      if diff -q "$FACTORY_ROOT/$relpath" "$extract_dir/$relpath" >/dev/null 2>&1; then
+        echo "  INALTERADO  $relpath"
+        ((unchanged++)) || true
+      else
+        echo "  MODIFICADO  $relpath"
+        ((modified++)) || true
+      fi
+    else
+      echo "  NOVO        $relpath"
+      ((new_files++)) || true
+    fi
+  done < <(cd "$extract_dir" && find . -type f | sed 's|^\./||' | sort)
+
+  echo ""
+  info "$modified modificados, $new_files novos, $unchanged inalterados"
+
+  if $dry_run; then
+    info "Modo dry-run — nenhuma alteração aplicada."
+    exit 0
+  fi
+
+  echo ""
+  echo -n "  Aplicar atualização v$FACTORY_VERSION → v$remote_ver? (s/N) "; read -r answer
+  [ "$answer" = "s" ] || [ "$answer" = "S" ] || { info "Atualização cancelada."; exit 0; }
+
+  local applied=0 failed=0
+  while IFS= read -r relpath; do
+    [ -z "$relpath" ] && continue
+    _is_framework_file "$relpath" || continue
+
+    if [ -f "$FACTORY_ROOT/$relpath" ]; then
+      if ! diff -q "$FACTORY_ROOT/$relpath" "$extract_dir/$relpath" >/dev/null 2>&1; then
+        cp "$extract_dir/$relpath" "$FACTORY_ROOT/$relpath" && \
+          { success "Atualizado: $relpath"; ((applied++)) || true; } || \
+          { warn "Falha ao atualizar: $relpath"; ((failed++)) || true; }
+      fi
+    else
+      mkdir -p "$(dirname "$FACTORY_ROOT/$relpath")"
+      cp "$extract_dir/$relpath" "$FACTORY_ROOT/$relpath" && \
+        { success "Novo: $relpath"; ((applied++)) || true; } || \
+        { warn "Falha ao criar: $relpath"; ((failed++)) || true; }
+    fi
+  done < <(cd "$extract_dir" && find . -type f | sed 's|^\./||' | sort)
+
+  echo ""
+  success "$applied arquivos atualizados para v$remote_ver."
+  [ "$failed" -gt 0 ] && warn "$failed arquivos falharam — execute novamente."
+
+  if [ "$modified" -gt 0 ] || [ "$new_files" -gt 0 ]; then
+    info "factory-init.sh foi atualizado. Execute novamente para usar a versão $remote_ver."
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# Propaga mudanças de templates canônicos para projeto específico
+# ---------------------------------------------------------------------------
+cmd_sync() {
+  local project_name="" dry_run=false
+
+  for arg in "$@"; do
+    case $arg in
+      --dry-run) dry_run=true ;;
+      *)         [ -z "$project_name" ] && project_name="$arg" ;;
+    esac
+  done
+
+  [ -n "$project_name" ] || error "Informe o nome: factory-init.sh sync <nome> [--dry-run]"
+
+  local factory_dir="$FACTORY_ROOT/$project_name"
+  local project_docs="$factory_dir/docs"
+
+  [ -f "$factory_dir/$CONFIG_FILE" ] || \
+    error "Projeto '$project_name' não encontrado. Execute 'factory-init.sh list'."
+  [ -d "$project_docs" ] || \
+    error "Projeto '$project_name' não tem diretório docs/."
+
+  local project_name_real project_created
+  project_name_real=$(config_get "$factory_dir" "name" 2>/dev/null || echo "$project_name")
+  project_created=$(config_get "$factory_dir" "created" 2>/dev/null || date +%Y-%m-%d)
+
+  require_templates
+
+  info "Comparando templates com Factory/$project_name/docs/..."
+
+  local modified=0 new_files=0 unchanged=0 project_specific=0
+
+  # List template files
+  while IFS= read -r relpath; do
+    [ -z "$relpath" ] && continue
+
+    if [ -f "$project_docs/$relpath" ]; then
+      if diff -q "$TEMPLATES_DIR/$relpath" "$project_docs/$relpath" >/dev/null 2>&1; then
+        echo "  INALTERADO  $relpath"
+        ((unchanged++)) || true
+      else
+        echo "  MODIFICADO  $relpath"
+        ((modified++)) || true
+      fi
+    else
+      echo "  NOVO        $relpath"
+      ((new_files++)) || true
+    fi
+  done < <(cd "$TEMPLATES_DIR" && find . -type f | sed 's|^\./||' | sort)
+
+  # List project-specific files (not in templates)
+  while IFS= read -r relpath; do
+    [ -z "$relpath" ] && continue
+    if [ ! -f "$TEMPLATES_DIR/$relpath" ]; then
+      echo "  ESPECÍFICO  $relpath  (não será tocado)"
+      ((project_specific++)) || true
+    fi
+  done < <(cd "$project_docs" && find . -type f | sed 's|^\./||' | sort)
+
+  echo ""
+  info "$modified modificados, $new_files novos, $unchanged inalterados, $project_specific específicos do projeto"
+
+  if $dry_run; then
+    info "Modo dry-run — nenhuma alteração aplicada."
+    exit 0
+  fi
+
+  echo ""
+  echo -n "  Aplicar alterações ao projeto '$project_name'? (s/N) "; read -r answer
+  [ "$answer" = "s" ] || [ "$answer" = "S" ] || { info "Sincronização cancelada."; exit 0; }
+
+  local applied=0
+
+  while IFS= read -r relpath; do
+    [ -z "$relpath" ] && continue
+
+    if [ -f "$project_docs/$relpath" ]; then
+      if ! diff -q "$TEMPLATES_DIR/$relpath" "$project_docs/$relpath" >/dev/null 2>&1; then
+        cp "$TEMPLATES_DIR/$relpath" "$project_docs/$relpath"
+        # Re-apply project-specific substitutions on INDEX.md
+        if [ "$(basename "$relpath")" = "INDEX.md" ]; then
+          local escaped_name escaped_date
+          escaped_name=$(printf '%s\n' "$project_name_real" | sed 's/[&/\]/\\&/g')
+          escaped_date=$(printf '%s\n' "$project_created" | sed 's/[&/\]/\\&/g')
+          sed -i "s/\[NOME DO PROJETO\]/$escaped_name/g" "$project_docs/$relpath" 2>/dev/null || \
+            sed -i '' "s/\[NOME DO PROJETO\]/$escaped_name/g" "$project_docs/$relpath"
+          sed -i "s/YYYY-MM-DD/$escaped_date/g" "$project_docs/$relpath" 2>/dev/null || \
+            sed -i '' "s/YYYY-MM-DD/$escaped_date/g" "$project_docs/$relpath"
+        fi
+        success "Atualizado: $relpath"
+        ((applied++)) || true
+      fi
+    else
+      mkdir -p "$(dirname "$project_docs/$relpath")"
+      cp "$TEMPLATES_DIR/$relpath" "$project_docs/$relpath"
+      success "Novo: $relpath"
+      ((applied++)) || true
+    fi
+  done < <(cd "$TEMPLATES_DIR" && find . -type f | sed 's|^\./||' | sort)
+
+  echo ""
+  success "Sincronização concluída: $applied arquivos atualizados no projeto '$project_name'."
+  [ "$new_files" -gt 0 ] && info "Novos templates podem requerer atualização em docs/INDEX.md do projeto."
+}
+
+# ---------------------------------------------------------------------------
 # Próximos passos (helper interno)
 # ---------------------------------------------------------------------------
 _print_next_steps() {
@@ -434,11 +712,14 @@ cmd_help() {
   echo "    work    <nome>                 Mostra como iniciar sessão no projeto"
   echo "    list                           Lista projetos registrados"
   echo "    shell-setup                    Gera bloco de função shell"
+  echo "    update [--version=X.Y.Z] [--dry-run]  Atualiza arquivos do framework"
+  echo "    sync   <nome> [--dry-run]     Propaga mudanças de templates para projeto"
   echo "    help                           Esta mensagem"
   echo ""
   echo "  Variáveis de ambiente:"
   echo "    FACTORY_ROOT          Raiz da Factory (padrão: diretório do script)"
   echo "    FACTORY_PROJECTS_DIR  Onde ficam os projetos (padrão: ~/Dev/Projects)"
+  echo "    GITHUB_TOKEN          Token para API do GitHub (evita rate limit)"
   echo ""
 }
 
@@ -453,5 +734,7 @@ case "${1:-help}" in
   work)        cmd_work "${2:-}" ;;
   list)        cmd_list ;;
   shell-setup) cmd_shell_setup ;;
+  update)      cmd_update "${@:2}" ;;
+  sync)        cmd_sync "${2:-}" "${@:3}" ;;
   help|*)      cmd_help ;;
 esac
