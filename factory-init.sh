@@ -24,6 +24,7 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 # Configuração
 # ---------------------------------------------------------------------------
+FACTORY_VERSION="1.0.0"
 FACTORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECTS_DIR="${FACTORY_PROJECTS_DIR:-$HOME/Dev/Projects}"
 TEMPLATES_DIR="$FACTORY_ROOT/docs/templates"
