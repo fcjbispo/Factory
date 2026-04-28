@@ -3,7 +3,26 @@ TARBALL          := factory-$(FACTORY_VERSION).tar.gz
 STAGE_DIR        := /tmp/factory-$(FACTORY_VERSION)
 GITHUB_REPO      := fcjbispo/MyFactory
 
-.PHONY: tarball version version-sync lint check clean tag
+.PHONY: help tarball version version-sync lint check clean tag release
+
+help:
+	@echo "Factory Framework v$(FACTORY_VERSION)"
+	@echo ""
+	@echo "Alvos disponíveis:"
+	@echo "  help          — Mostra esta ajuda"
+	@echo "  version       — Mostra versão atual"
+	@echo "  tarball       — Gera tarball da versão atual"
+	@echo "  version-sync  — Sincroniza versão nos docs"
+	@echo "  lint          — Valida factory-init.sh"
+	@echo "  check         — Alias para lint"
+	@echo "  clean         — Remove tarballs gerados"
+	@echo "  tag           — Cria git tag da versão"
+	@echo "  release       — Gera tarball + tag (tudo)"
+	@echo ""
+	@echo "Exemplos:"
+	@echo "  make version      # Mostra: $(FACTORY_VERSION)"
+	@echo "  make tarball      # Gera: $(TARBALL)"
+	@echo "  make release      # Gera tarball + tag"
 
 version:
 	@echo "$(FACTORY_VERSION)"
@@ -26,8 +45,8 @@ tarball: lint
 	@echo "Created $(TARBALL)"
 
 version-sync:
-	@sed -i 's/^\*\*Version:\*\* _.*_/\*\*Version:\*\* _$(FACTORY_VERSION)_/' FACTORY-GUIDE.md 2>/dev/null || \
-	  sed -i '' 's/^\*\*Version:\*\* _.*_/\*\*Version:\*\* _$(FACTORY_VERSION)_/' FACTORY-GUIDE.md
+	@sed -i 's/^\*\*Version:\*\* _.*/\*\*Version:\*\* _$(FACTORY_VERSION)_/' FACTORY-GUIDE.md 2>/dev/null || \
+	  sed -i '' 's/^\*\*Version:\*\* _.*/\*\*Version:\*\* _$(FACTORY_VERSION)_/' FACTORY-GUIDE.md
 	@sed -i 's/^version: .*/version: $(FACTORY_VERSION)/' docs/templates/INDEX.md 2>/dev/null || \
 	  sed -i '' 's/^version: .*/version: $(FACTORY_VERSION)/' docs/templates/INDEX.md
 	@echo "Synced version $(FACTORY_VERSION) into FACTORY-GUIDE.md and docs/templates/INDEX.md"
@@ -42,3 +61,15 @@ tag:
 	fi
 	@git tag -a "v$(FACTORY_VERSION)" -m "Release v$(FACTORY_VERSION)"
 	@echo "Created tag v$(FACTORY_VERSION). Push with: git push origin v$(FACTORY_VERSION)"
+
+release: version-sync tarball tag
+	@echo ""
+	@echo "✅ Release v$(FACTORY_VERSION) completo!"
+	@echo ""
+	@echo "Artefatos:"
+	@echo "  - $(TARBALL)"
+	@echo "  - Tag: v$(FACTORY_VERSION)"
+	@echo ""
+	@echo "Próximos passos:"
+	@echo "  git push origin v$(FACTORY_VERSION)"
+	@echo "  git push origin $(shell git branch --show-current)"
