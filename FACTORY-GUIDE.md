@@ -648,6 +648,7 @@ cd ~/Dev/Factory
 
 | Data | Versão | Mudança | Por |
 |---|---|---|---|
-| YYYY-MM-DD | 1.0.0 | Versão inicial | arquiteto-senior |
-| YYYY-MM-DD | 1.1.0 | Refatoração: comandos manuais substituídos por factory-init.sh; separação código/docs; seção de sessão de trabalho; hook global; context/ adicionado | arquiteto-senior |
-| YYYY-MM-DD | 1.2.0 | Integração DDD+SDD: nova seção `domain/` nos templates; paradigma DDD→SDD documentado; mapeamento conceitos DDD para elementos de spec; regras 8 e 9 adicionadas; responsabilidades de domain/ na tabela; sequência de primeira sessão atualizada para incluir Event Storming e descoberta de bounded contexts | arquiteto-senior |
+| 2026-04-15 | 1.0.0 | Versão inicial | arquiteto-senior |
+| 2026-04-19 | 1.1.0 | Refatoração: comandos manuais substituídos por factory-init.sh; separação código/docs; seção de sessão de trabalho; hook global; context/ adicionado | arquiteto-senior |
+| 2026-04-19 | 1.2.0 | Integração DDD+SDD: nova seção `domain/` nos templates; paradigma DDD→SDD documentado; mapeamento conceitos DDD para elementos de spec; regras 8 e 9 adicionadas; responsabilidades de domain/ na tabela; sequência de primeira sessão atualizada para incluir Event Storming e descoberta de bounded contexts | arquiteto-senior |
+| 2026-04-28 | 1.3.0 | Gestão de produção: nova seção `backlog/` nos templates; template para bugs, melhorias, débito técnico, documentação, segurança, performance, dependências e dados; regras de priorização MoSCoW + RICE; fluxo de estados e responsabilidades; Makefile com helper e alvo release; shellcheck passando sem erros | arquiteto-senior |
