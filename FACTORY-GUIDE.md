@@ -238,6 +238,40 @@ Não há um schema gigante. Cada bounded context expõe sua própria API com seu
 
 ---
 
+#### `templates/backlog/` — NOVO na v1.3.0
+
+**Propósito**: gestão de produção contínua — bugs, melhorias, débito técnico, documentação, segurança, performance, dependências e dados.
+
+**Responsável**: PO faz triage e priorização. Arquiteto avalia impacto técnico. Agentes executam conforme papel.
+
+| Arquivo/Pasta | Descrição |
+|---|---|
+| `INDEX.md` | Visão geral do backlog e regras de fluxo |
+| `backlog-rules.md` | Regras de priorização (MoSCoW + RICE), estados, responsabilidades |
+| `_template.md` | Template padronizado para qualquer item de backlog |
+| `issues/` | Bugs e problemas reportados |
+| `improvements/` | Melhorias e features técnicas |
+| `tech-debt/` | Débito técnico e refactoring |
+| `documentation/` | Gestão de documentação desatualizada ou faltante |
+| `security/` | Vulnerabilidades, patches e atualizações de segurança |
+| `performance/` | Bottlenecks, tuning e escalabilidade |
+| `dependencies/` | Updates de dependências, EOL e vulnerabilidades |
+| `data/` | Migrations, backup e políticas de retenção |
+
+**Nomenclatura**: `YYYY-MM-DD-titulo-curto.md`
+
+**Estados**: `aberto` → `em-analise` → `priorizado` → `em-progresso` → `resolvido` | `rejeitado` | `suspenso`
+
+**Prioridade**: `P1` (crítico) | `P2` (alto) | `P3` (médio) | `P4` (baixo)
+
+**Regras gerais**:
+1. Todo item deve ter critérios de aceitação claros
+2. Review trimestral obrigatório para tech-debt
+3. Postmortem obrigatório para issues de severidade crítica
+4. Prazos: segurança crítica=24h, alto=7 dias, médio=30 dias, baixo=90 dias
+
+---
+
 #### `templates/design/`
 
 **Propósito**: especificações de features escritas **antes** da implementação. Define o contrato entre PO, Arquiteto e agentes de implementação.
