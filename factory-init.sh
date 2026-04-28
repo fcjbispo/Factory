@@ -32,7 +32,9 @@ PROJECTS_DIR="${FACTORY_PROJECTS_DIR:-$HOME/Dev/Projects}"
 TEMPLATES_DIR="$FACTORY_ROOT/docs/templates"
 AGENTS_DIR="$FACTORY_ROOT/docs/agents"
 GLOBAL_AGENTS_DIR="$HOME/.claude/agents"
+# shellcheck disable=SC2034
 GLOBAL_COMMANDS_DIR="$HOME/.claude/commands"
+# GLOBAL_COMMANDS_DIR: reserved for future global Claude Code commands (unused in v1.3.0)
 CONFIG_FILE=".factory"
 
 # ---------------------------------------------------------------------------
@@ -51,7 +53,7 @@ require_templates() {
 _version_cmp() {
   local v1="$1" v2="$2"
   local IFS='.'
-  local a1=($v1) a2=($v2)
+  local a1=("$v1") a2=("$v2")
   for i in 0 1 2; do
     local n1="${a1[i]:-0}" n2="${a2[i]:-0}"
     ((n1 > n2)) && return 1
@@ -528,15 +530,23 @@ cmd_update() {
 
     if [ -f "$FACTORY_ROOT/$relpath" ]; then
       if ! diff -q "$FACTORY_ROOT/$relpath" "$extract_dir/$relpath" >/dev/null 2>&1; then
-        cp "$extract_dir/$relpath" "$FACTORY_ROOT/$relpath" && \
-          { success "Atualizado: $relpath"; ((applied++)) || true; } || \
-          { warn "Falha ao atualizar: $relpath"; ((failed++)) || true; }
+        if cp "$extract_dir/$relpath" "$FACTORY_ROOT/$relpath"; then
+          success "Atualizado: $relpath"
+          ((applied++)) || true
+        else
+          warn "Falha ao atualizar: $relpath"
+          ((failed++)) || true
+        fi
       fi
     else
       mkdir -p "$(dirname "$FACTORY_ROOT/$relpath")"
-      cp "$extract_dir/$relpath" "$FACTORY_ROOT/$relpath" && \
-        { success "Novo: $relpath"; ((applied++)) || true; } || \
-        { warn "Falha ao criar: $relpath"; ((failed++)) || true; }
+      if cp "$extract_dir/$relpath" "$FACTORY_ROOT/$relpath"; then
+        success "Novo: $relpath"
+        ((applied++)) || true
+      else
+        warn "Falha ao criar: $relpath"
+        ((failed++)) || true
+      fi
     fi
   done < <(cd "$extract_dir" && find . -type f | sed 's|^\./||' | sort)
 
