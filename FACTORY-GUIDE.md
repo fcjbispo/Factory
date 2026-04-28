@@ -1,6 +1,6 @@
 # FACTORY-GUIDE.md
 
-**Version:** _1.2.0_
+**Version:** _1.3.0_
 
 > Guia central do framework Factory.
 > Leitura obrigatória para qualquer agente ou humano antes de iniciar, migrar ou operar um projeto sob este framework.
