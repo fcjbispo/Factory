@@ -52,8 +52,9 @@ require_templates() {
 
 _version_cmp() {
   local v1="$1" v2="$2"
-  local IFS='.'
-  local a1=("$v1") a2=("$v2")
+  local -a a1 a2
+  IFS='.' read -ra a1 <<< "$v1"
+  IFS='.' read -ra a2 <<< "$v2"
   for i in 0 1 2; do
     local n1="${a1[i]:-0}" n2="${a2[i]:-0}"
     ((n1 > n2)) && return 1
@@ -73,11 +74,23 @@ _is_framework_file() {
 }
 
 _fetch_latest_version() {
-  local raw_url="https://raw.githubusercontent.com/fcjbispo/MyFactory/master/factory-init.sh"
-  local script_content
-  local version
-  script_content=$(curl -fsSL "$raw_url" 2>/dev/null) || \
-    error "Falha ao buscar versão da branch master. Verifique sua conexão."
+  local script_content version raw_url api_url
+  local -a curl_args=(-fsSL)
+
+  # Repositório privado requer autenticação — GitHub token ou gh CLI
+  if [ -n "${GITHUB_TOKEN:-}" ]; then
+    curl_args+=(-H "Authorization: token $GITHUB_TOKEN")
+    raw_url="https://raw.githubusercontent.com/fcjbispo/MyFactory/master/factory-init.sh"
+    script_content=$(curl "${curl_args[@]}" "$raw_url" 2>/dev/null) || \
+      error "Falha ao buscar versão da branch master. Verifique sua conexão ou GITHUB_TOKEN."
+  elif command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    api_url="repos/fcjbispo/MyFactory/contents/factory-init.sh?ref=master"
+    script_content=$(gh api "$api_url" --jq '.content' 2>/dev/null | base64 -d 2>/dev/null) || \
+      error "Falha ao buscar versão da branch master via gh CLI."
+  else
+    error "Repositório privado requer GITHUB_TOKEN ou gh CLI autenticado."
+  fi
+
   version=$(echo "$script_content" | sed -n 's/^FACTORY_VERSION="\([^"]*\)"/\1/p')
   [ -n "$version" ] || error "Não foi possível determinar a versão da branch master"
   REMOTE_TAG="v${version}"
@@ -88,7 +101,13 @@ _fetch_specific_release() {
   local target_ver="$1"
   REMOTE_TAG="v${target_ver}"
   REMOTE_TARBALL_URL="https://github.com/fcjbispo/MyFactory/releases/download/${REMOTE_TAG}/factory-${target_ver}.tar.gz"
-  curl -fsSLI "$REMOTE_TARBALL_URL" >/dev/null 2>&1 || \
+  local -a curl_args=(-fsSLI)
+  if [ -n "${GITHUB_TOKEN:-}" ]; then
+    curl_args+=(-H "Authorization: token $GITHUB_TOKEN")
+  elif command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    curl_args+=(-H "Authorization: token $(gh auth token 2>/dev/null)")
+  fi
+  curl "${curl_args[@]}" "$REMOTE_TARBALL_URL" >/dev/null 2>&1 || \
     error "Release ${REMOTE_TAG} não encontrado em github.com/fcjbispo/MyFactory"
 }
 
@@ -473,8 +492,19 @@ cmd_update() {
   trap 'rm -rf "$tmp_dir"' EXIT
 
   local tarball_name="factory-${remote_ver}.tar.gz"
-  curl -fsSL "$REMOTE_TARBALL_URL" -o "$tmp_dir/$tarball_name" || \
-    error "Falha ao baixar $REMOTE_TARBALL_URL"
+  local -a download_args=(-fsSL)
+  if [ -n "${GITHUB_TOKEN:-}" ]; then
+    download_args+=(-H "Authorization: token $GITHUB_TOKEN")
+    curl "${download_args[@]}" "$REMOTE_TARBALL_URL" -o "$tmp_dir/$tarball_name" || \
+      error "Falha ao baixar $REMOTE_TARBALL_URL"
+  elif command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    curl "${download_args[@]}" -H "Authorization: token $(gh auth token 2>/dev/null)" \
+      "$REMOTE_TARBALL_URL" -o "$tmp_dir/$tarball_name" || \
+      error "Falha ao baixar $REMOTE_TARBALL_URL"
+  else
+    curl "${download_args[@]}" "$REMOTE_TARBALL_URL" -o "$tmp_dir/$tarball_name" || \
+      error "Falha ao baixar $REMOTE_TARBALL_URL"
+  fi
 
   tar xzf "$tmp_dir/$tarball_name" -C "$tmp_dir" --no-same-owner --no-same-permissions || \
     error "Falha ao extrair tarball"
