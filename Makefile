@@ -20,7 +20,7 @@ tarball:
 	@echo "Building $(TARBALL)..."
 	@rm -rf "$(STAGE_DIR)"
 	@mkdir -p "$(STAGE_DIR)/docs/agents" "$(STAGE_DIR)/docs/templates"
-	@cp factory-init.sh FACTORY-GUIDE.md CLAUDE.md .gitignore "$(STAGE_DIR)/"
+	@cp factory-init.sh FACTORY-GUIDE.md .gitignore "$(STAGE_DIR)/"
 	@chmod +x "$(STAGE_DIR)/factory-init.sh"
 	@cp docs/agents/*.md "$(STAGE_DIR)/docs/agents/"
 	@cp -r docs/templates/. "$(STAGE_DIR)/docs/templates/"
