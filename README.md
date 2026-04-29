@@ -57,6 +57,12 @@ cd ~/Dev/Factory
 # Listar projetos registrados
 ./factory-init.sh list
 
+# Atualizar framework da branch master
+./factory-init.sh update [--version=X.Y.Z] [--dry-run]
+
+# Propagar templates para projeto
+./factory-init.sh sync <nome> [--dry-run]
+
 # Mostrar comando para iniciar sessão
 ./factory-init.sh work meu-projeto
 ```
@@ -65,15 +71,15 @@ cd ~/Dev/Factory
 
 7 agentes especializados, instalados globalmente via `./factory-init.sh agents`:
 
-| Agente | Papel |
-|---|---|
-| Arquiteto Sênior | Arquitetura, ADRs, contratos de API, design de sistema |
-| Full-Stack Developer | Implementação de features, correções, commits |
-| DB Architect | Modelagem de dados, migrations, otimização de queries |
-| Code Reviewer | Revisão obrigatória de PRs, qualidade, segurança |
-| QA Tester | Estratégia de testes, automação, critérios de release |
-| DevOps/SRE | CI/CD, infraestrutura, observabilidade, postmortems |
-| Security Analyst | Threat modeling, vulnerabilidades, LGPD/GDPR |
+| Agente               | Papel                                                  |
+| ----------------------| --------------------------------------------------------|
+| Arquiteto Sênior     | Arquitetura, ADRs, contratos de API, design de sistema |
+| Full-Stack Developer | Implementação de features, correções, commits          |
+| DB Architect         | Modelagem de dados, migrations, otimização de queries  |
+| Code Reviewer        | Revisão obrigatória de PRs, qualidade, segurança       |
+| QA Tester            | Estratégia de testes, automação, critérios de release  |
+| DevOps/SRE           | CI/CD, infraestrutura, observabilidade, postmortems    |
+| Security Analyst     | Threat modeling, vulnerabilidades, LGPD/GDPR           |
 
 ## Documentação
 
