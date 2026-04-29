@@ -89,7 +89,7 @@ _fetch_specific_release() {
   local target_ver="$1"
   REMOTE_TAG="v${target_ver}"
   REMOTE_TARBALL_URL="https://github.com/fcjbispo/MyFactory/releases/download/${REMOTE_TAG}/factory-${target_ver}.tar.gz"
-  curl -fsSI "$REMOTE_TARBALL_URL" >/dev/null 2>&1 || \
+  curl -fsSLI "$REMOTE_TARBALL_URL" >/dev/null 2>&1 || \
     error "Release ${REMOTE_TAG} não encontrado em github.com/fcjbispo/MyFactory"
 }
 
@@ -711,7 +711,7 @@ _print_next_steps() {
 # ---------------------------------------------------------------------------
 cmd_help() {
   echo ""
-  echo "  factory-init.sh — gerenciador de projetos Factory"
+  echo "  factory-init.sh v$FACTORY_VERSION — gerenciador de projetos Factory"
   echo ""
   echo "  Comandos:"
   echo "    agents                         Instala agentes em ~/.claude/agents/"
