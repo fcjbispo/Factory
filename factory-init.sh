@@ -72,17 +72,16 @@ _is_framework_file() {
   return 1
 }
 
-_fetch_latest_release() {
-  local api_url="https://api.github.com/repos/fcjbispo/MyFactory/releases/latest"
-  local response
-  local -a curl_args=(-fsSL)
-  [ -n "${GITHUB_TOKEN:-}" ] && curl_args+=(-H "Authorization: token $GITHUB_TOKEN")
-  response=$(curl "${curl_args[@]}" "$api_url" 2>/dev/null) || \
-    error "Falha ao buscar informações de release. Verifique sua conexão."
-  REMOTE_TAG=$(echo "$response" | grep '"tag_name"' | head -1 | sed 's/.*"tag_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
-  REMOTE_TARBALL_URL=$(echo "$response" | grep '"browser_download_url"' | grep 'factory-.*\.tar\.gz' | head -1 | sed 's/.*"browser_download_url"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
-  [ -n "$REMOTE_TAG" ] || error "Não foi possível determinar a versão mais recente"
-  [ -n "$REMOTE_TARBALL_URL" ] || error "Tarball não encontrado no release $REMOTE_TAG"
+_fetch_latest_version() {
+  local raw_url="https://raw.githubusercontent.com/fcjbispo/MyFactory/master/factory-init.sh"
+  local script_content
+  local version
+  script_content=$(curl -fsSL "$raw_url" 2>/dev/null) || \
+    error "Falha ao buscar versão da branch master. Verifique sua conexão."
+  version=$(echo "$script_content" | sed -n 's/^FACTORY_VERSION="\([^"]*\)"/\1/p')
+  [ -n "$version" ] || error "Não foi possível determinar a versão da branch master"
+  REMOTE_TAG="v${version}"
+  REMOTE_TARBALL_URL="https://raw.githubusercontent.com/fcjbispo/MyFactory/master/factory-${version}.tar.gz"
 }
 
 _fetch_specific_release() {
@@ -446,7 +445,7 @@ cmd_update() {
   if [ -n "$target_version" ]; then
     _fetch_specific_release "$target_version"
   else
-    _fetch_latest_release
+    _fetch_latest_version
   fi
 
   local remote_ver="${REMOTE_TAG#v}"
