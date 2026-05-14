@@ -44,7 +44,7 @@ build:
 	@mkdir -p $(DIST_DIR)/$(LANG)
 	@$(MAKE) -C src LANG=$(LANG) VERSION=$(VERSION) OUTDIR=$(PWD)/$(DIST_DIR)/$(LANG)
 	@echo "Packaging factory-$(VERSION).$(LANG).tar.gz..."
-	@cd $(DIST_DIR)/$(LANG) && tar czf ../factory-$(VERSION).$(LANG).tar.gz .
+	@cd $(DIST_DIR)/$(LANG) && tar czf ../factory-$(VERSION).$(LANG).tar.gz . && rm -rf $(PWD)/$(DIST_DIR)/$(LANG)
 	@echo "Done: $(DIST_DIR)/factory-$(VERSION).$(LANG).tar.gz"
 
 .PHONY: all build-all build clean release check version-info help
@@ -86,7 +86,7 @@ $(DIST_DIR)/factory-$(VERSION).%.tar.gz: src/Makefile src/locales/%.env
 	@mkdir -p $(DIST_DIR)/$*
 	@$(MAKE) -C src LANG=$* VERSION=$(VERSION) OUTDIR=$(PWD)/$(DIST_DIR)/$*
 	@echo "Packaging factory-$(VERSION).$*.tar.gz..."
-	@cd $(DIST_DIR)/$* && tar czf ../factory-$(VERSION).$*.tar.gz .
+	@cd $(DIST_DIR)/$* && tar czf ../factory-$(VERSION).$*.tar.gz . && rm -rf $(PWD)/$(DIST_DIR)/$*
 	@echo "Done: $(DIST_DIR)/factory-$(VERSION).$*.tar.gz"
 
 clean:
