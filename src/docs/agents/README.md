@@ -1,6 +1,6 @@
-# Equipe Multi-Agente — Instalação
+# Multi-Agent Team — Installation
 
-## Estrutura
+## Structure
 
 ```
 .claude/
@@ -14,51 +14,51 @@
     └── security-analyst.md
 ```
 
-## Instalação no projeto
+## Installation in the project
 
 ```bash
 mkdir -p .claude/agents
 cp agents/*.md .claude/agents/
 ```
 
-## Instalação global (disponível em todos os projetos)
+## Global installation (available in all projects)
 
 ```bash
 mkdir -p ~/.claude/agents
 cp agents/*.md ~/.claude/agents/
 ```
 
-## Como invocar
+## How to invoke
 
 ```bash
-# Dentro de uma sessão Claude Code:
-@arquiteto-senior revise a estrutura de módulos proposta
-@fullstack-developer implemente o endpoint POST /users conforme o contrato em docs/api/users.yaml
-@db-architect crie a migration para a entidade Order
-@code-reviewer revise o PR com as mudanças em src/services/
-@qa-tester crie os testes de integração para o módulo de autenticação
-@devops-sre configure o pipeline de CI para o novo serviço
-@security-analyst faça o threat model do fluxo de pagamento
+# Within a Claude Code session:
+@arquiteto-senior review the proposed module structure
+@fullstack-developer implement the POST /users endpoint according to the contract in docs/api/users.yaml
+@db-architect create the migration for the Order entity
+@code-reviewer review the PR with changes in src/services/
+@qa-tester create integration tests for the authentication module
+@devops-sre configure CI pipeline for the new service
+@security-analyst do the threat model of the payment flow
 ```
 
-## Fluxo recomendado por fase
+## Recommended flow by phase
 
-| Fase | Agentes envolvidos |
+| Phase | Involved agents |
 |---|---|
-| Início do projeto | Arquiteto Sênior → DB Architect → DevOps → Security |
-| Nova feature | Arquiteto Sênior → DB Architect → Full-Stack → QA → Security → Code Reviewer |
+| Project start | Senior Architect → DB Architect → DevOps → Security |
+| New feature | Senior Architect → DB Architect → Full-Stack → QA → Security → Code Reviewer |
 | Bug fix | Full-Stack → QA → Code Reviewer |
 | Release | QA → Code Reviewer → DevOps → Security |
-| Incidente | DevOps → Security → Arquiteto Sênior |
+| Incident | DevOps → Security → Senior Architect |
 
-## Modelos utilizados
+## Models used
 
-| Agente | Modelo | Motivo |
+| Agent | Model | Reason |
 |---|---|---|
-| Arquiteto Sênior | Opus | Raciocínio arquitetural complexo |
-| Full-Stack Developer | Sonnet | Equilíbrio custo/capacidade para produção de código |
-| DB Architect | Sonnet | Equilíbrio custo/capacidade |
-| Code Reviewer | Opus | Análise profunda e detecção de sutilezas |
-| QA Tester | Sonnet | Equilíbrio custo/capacidade |
-| DevOps/SRE | Sonnet | Equilíbrio custo/capacidade |
-| Security Analyst | Opus | Análise de risco e detecção de vulnerabilidades sutis |
+| Senior Architect | Opus | Complex architectural reasoning |
+| Full-Stack Developer | Sonnet | Cost/capacity balance for code production |
+| DB Architect | Sonnet | Cost/capacity balance |
+| Code Reviewer | Opus | Deep analysis and subtlety detection |
+| QA Tester | Sonnet | Cost/capacity balance |
+| DevOps/SRE | Sonnet | Cost/capacity balance |
+| Security Analyst | Opus | Risk analysis and subtle vulnerability detection |
