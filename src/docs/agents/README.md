@@ -5,7 +5,7 @@
 ```
 .claude/
 └── agents/
-    ├── arquiteto-senior.md
+    ├── senior-architect.md
     ├── fullstack-developer.md
     ├── db-architect.md
     ├── code-reviewer.md
@@ -32,7 +32,7 @@ cp agents/*.md ~/.claude/agents/
 
 ```bash
 # Within a Claude Code session:
-@arquiteto-senior review the proposed module structure
+@senior-architect review the proposed module structure
 @fullstack-developer implement the POST /users endpoint according to the contract in docs/api/users.yaml
 @db-architect create the migration for the Order entity
 @code-reviewer review the PR with changes in src/services/

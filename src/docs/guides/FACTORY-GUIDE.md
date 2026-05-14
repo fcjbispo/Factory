@@ -102,7 +102,7 @@ There is no giant schema. Each bounded context exposes its own API with its own 
 
 | File | Agent | Main Role |
 |---|---|---|
-| `arquiteto-senior.md` | Senior Architect | Architecture decisions, ADRs, API contracts, DDD modeling, system design |
+| `senior-architect.md` | Senior Architect | Architecture decisions, ADRs, API contracts, DDD modeling, system design |
 | `fullstack-developer.md` | Full-Stack Developer | Feature implementation, unit tests, commits |
 | `db-architect.md` | DB Architect | Data modeling, migrations, query optimization |
 | `code-reviewer.md` | Code Reviewer | Mandatory PR review, quality, standards, code security |
@@ -410,7 +410,7 @@ Within the session:
 Then, the mandatory DDD → SDD → implementation sequence:
 
 ```
-@arquiteto-senior Read docs/INDEX.md and docs/GUIDE.md.
+@senior-architect Read docs/INDEX.md and docs/GUIDE.md.
 Execute Event Storming with available context:
 1. Identify the bounded contexts of the system
 2. Create docs/domain/context-map.md with the context map
@@ -418,7 +418,7 @@ Execute Event Storming with available context:
 4. Create docs/architecture/overview.md describing the initial architecture
 5. Register the first ADR with technology decisions
 
-@arquiteto-senior With bounded contexts defined in domain/,
+@senior-architect With bounded contexts defined in domain/,
 create the corresponding API contracts in docs/api/,
 ensuring all names follow the ubiquitous language of each context.
 
@@ -442,7 +442,7 @@ Existing projects can be integrated in two modes: **full migration** or **coexis
 Start a session at the root of the existing project and execute:
 
 ```
-@arquiteto-senior Perform an assessment of this project:
+@senior-architect Perform an assessment of this project:
 1. Map the code structure (modules, layers, identified patterns)
 2. Identify bounded contexts emerging in the existing code
 3. List all existing documentation and assess its quality

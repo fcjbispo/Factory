@@ -44,12 +44,12 @@ $i18n_index_doc_sections_desc
 
 | $i18n_index_section | $i18n_index_purpose | $i18n_index_owner |
 |---|---|---|
-| `domain/` | $i18n_purpose_domain | arquiteto-senior |
-| `adr/` | $i18n_purpose_adr | arquiteto-senior |
-| `api/` | $i18n_purpose_api | arquiteto-senior |
-| `architecture/` | $i18n_purpose_architecture | arquiteto-senior |
+| `domain/` | $i18n_purpose_domain | senior-architect |
+| `adr/` | $i18n_purpose_adr | senior-architect |
+| `api/` | $i18n_purpose_api | senior-architect |
+| `architecture/` | $i18n_purpose_architecture | senior-architect |
 | `database/` | $i18n_purpose_database | db-architect |
-| `design/` | $i18n_purpose_design | arquiteto-senior |
+| `design/` | $i18n_purpose_design | senior-architect |
 | `operations/` | $i18n_purpose_operations | devops-sre |
 | `security/` | $i18n_purpose_security | security-analyst |
 | `testing/` | $i18n_purpose_testing | qa-tester |
