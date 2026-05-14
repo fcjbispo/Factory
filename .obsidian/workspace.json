@@ -1,0 +1,218 @@
+{
+  "main": {
+    "id": "e7d114bb468bdb63",
+    "type": "split",
+    "children": [
+      {
+        "id": "6a31025c8c0b6753",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "38924088155b9522",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Nova aba"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "fc0246d4c2d91c61",
+    "type": "split",
+    "children": [
+      {
+        "id": "14ec33f77494d3bf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5a9760c10acb2fa6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de arquivos"
+            }
+          },
+          {
+            "id": "bdff6c134daa2c3f",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Procurar"
+            }
+          },
+          {
+            "id": "62bceeae58d72deb",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0f1b361471658492",
+    "type": "split",
+    "children": [
+      {
+        "id": "bd7963c8171770d2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "eaeca05d36c01f07",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Links inversos"
+            }
+          },
+          {
+            "id": "e9e623eddfa3838a",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Links de saída"
+            }
+          },
+          {
+            "id": "b341e50b118cc5d0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "d4371c9b442c1005",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas as propriedades"
+            }
+          },
+          {
+            "id": "a0b3aeb4bd575282",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Sumário"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir a troca rápida": false,
+      "graph:Abrir visualização em gráfico": false,
+      "canvas:Criar novo canvas": false,
+      "daily-notes:Abrir a nota de hoje": false,
+      "templates:Inserir modelo": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Criar nova base": false
+    }
+  },
+  "active": "38924088155b9522",
+  "lastOpenFiles": [
+    "dist/factory-1.3.0.pt.tar.gz",
+    "dist/pt/guides/FACTORY-GUIDE.md",
+    "dist/pt/docs/guides/FACTORY-GUIDE.md",
+    "dist/pt/docs/guides",
+    "dist/pt/docs/templates/backlog/issues/INDEX.md",
+    "dist/pt/docs/templates/backlog/issues",
+    "dist/pt/docs/templates/backlog/performance/INDEX.md",
+    "dist/pt/docs/templates/backlog/performance",
+    "dist/pt/docs/templates/backlog/dependencies/INDEX.md",
+    "dist/pt/docs/templates/backlog/dependencies",
+    "dist/pt/docs/templates/backlog/backlog-rules.md",
+    "dist/pt/docs/templates/backlog/_template.md",
+    "dist/pt/docs/templates/backlog/security/INDEX.md",
+    "dist/pt/docs/templates/backlog/security",
+    "dist/pt/docs/templates/backlog/RESEARCH.md",
+    "dist/pt/docs/templates/backlog/data/INDEX.md",
+    "dist/pt/docs/templates/backlog/data",
+    "dist/pt/docs/templates/backlog/documentation/INDEX.md",
+    "dist/pt/docs/templates/backlog/documentation",
+    "dist/pt/docs/templates/backlog/INDEX.md",
+    "dist/pt/docs/templates/backlog/improvements/INDEX.md",
+    "dist/pt/docs/templates/backlog/improvements",
+    "dist/pt/docs/templates/backlog/tech-debt/INDEX.md",
+    "dist/pt/docs/templates/backlog/tech-debt",
+    "dist/pt/docs/templates/backlog",
+    "dist/pt/docs/templates/decisions/_template.md",
+    "dist/pt/docs/templates/decisions/INDEX.md",
+    "dist/pt/docs/templates/domain/_template-ubiquitous-language.md",
+    "dist/pt/docs/templates/domain/context-map.md",
+    "dist/pt/docs/templates/domain/_template-bounded-context.md",
+    "dist/pt/docs/templates/domain/INDEX.md",
+    "dist/pt/docs/templates/testing/test-strategy.md",
+    "dist/pt/docs/templates/adr/_template.md",
+    "dist/pt/docs/templates/adr/INDEX.md",
+    "dist/pt/docs/templates/architecture/overview.md",
+    "dist/pt/docs/templates/design/_template.md"
+  ]
+}
