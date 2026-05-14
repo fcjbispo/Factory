@@ -38,16 +38,41 @@ GLOBAL_COMMANDS_DIR="$HOME/.claude/commands"
 CONFIG_FILE=".factory"
 
 # ---------------------------------------------------------------------------
+# Localization
+# Load locale file if present; fall back to English defaults.
+# ---------------------------------------------------------------------------
+LOCALE_DIR="$FACTORY_ROOT/locales"
+FACTORY_LANG="${FACTORY_LANG:-en}"
+LOCALE_FILE="$LOCALE_DIR/${FACTORY_LANG}.env"
+
+if [ -f "$LOCALE_FILE" ]; then
+  # shellcheck source=/dev/null
+  set -a; . "$LOCALE_FILE"; set +a
+else
+  # English defaults (hardcoded fallback)
+  i18n_label_info="info"
+  i18n_label_ok="ok"
+  i18n_label_warn="warn"
+  i18n_label_error="error"
+  i18n_error_not_found="Templates not found in"
+  i18n_error_config_not_found="Project not found"
+  i18n_error_src_not_found="Source code not found"
+  i18n_error_version="Could not determine version"
+  i18n_error_network="Failed to fetch from network"
+  i18n_error_github="GitHub token or gh CLI required for private repositories"
+fi
+
+# ---------------------------------------------------------------------------
 # Utilitários
 # ---------------------------------------------------------------------------
-info()    { echo "  [info]    $*"; }
-success() { echo "  [ok]      $*"; }
-warn()    { echo "  [aviso]   $*"; }
-error()   { echo "  [erro]    $*" >&2; exit 1; }
-divider() { printf "\n%s\n\n" "──────────────────────────────────────────────"; }
+info()    { echo "  [$i18n_label_info]    $*"; }
+success() { echo "  [$i18n_label_ok]      $*"; }
+warn()    { echo "  [$i18n_label_warn]   $*"; }
+error()   { echo "  [$i18n_label_error]    $*" >&2; exit 1; }
+divider() { printf "\n%s\n\n" "$i18n_divider_char"; }
 
 require_templates() {
-  [ -d "$TEMPLATES_DIR" ] || error "Templates não encontrados em $TEMPLATES_DIR"
+  [ -d "$TEMPLATES_DIR" ] || error "$i18n_error_not_found $TEMPLATES_DIR"
 }
 
 _version_cmp() {
@@ -82,17 +107,17 @@ _fetch_latest_version() {
     curl_args+=(-H "Authorization: token $GITHUB_TOKEN")
     raw_url="https://raw.githubusercontent.com/fcjbispo/MyFactory/master/factory-init.sh"
     script_content=$(curl "${curl_args[@]}" "$raw_url" 2>/dev/null) || \
-      error "Falha ao buscar versão da branch master. Verifique sua conexão ou GITHUB_TOKEN."
+      error "$i18n_error_network. Check your connection or GITHUB_TOKEN."
   elif command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     api_url="repos/fcjbispo/MyFactory/contents/factory-init.sh?ref=master"
     script_content=$(gh api "$api_url" --jq '.content' 2>/dev/null | base64 -d 2>/dev/null) || \
-      error "Falha ao buscar versão da branch master via gh CLI."
+      error "$i18n_error_network via gh CLI."
   else
-    error "Repositório privado requer GITHUB_TOKEN ou gh CLI autenticado."
+    error "$i18n_error_github"
   fi
 
   version=$(echo "$script_content" | sed -n 's/^FACTORY_VERSION="\([^"]*\)"/\1/p')
-  [ -n "$version" ] || error "Não foi possível determinar a versão da branch master"
+  [ -n "$version" ] || error "$i18n_error_version"
   REMOTE_TAG="v${version}"
   REMOTE_TARBALL_URL="https://raw.githubusercontent.com/fcjbispo/MyFactory/master/factory-${version}.tar.gz"
 }
@@ -158,28 +183,28 @@ Confirme que os arquivos foram lidos e informe o estado atual do projeto
 com base no que encontrou.
 EOF
 
-  success "Comando /factory-init criado em $commands_dir/"
+  success "Command /factory-init created in $commands_dir/"
 }
 
 # ---------------------------------------------------------------------------
 # Instala agentes globalmente
 # ---------------------------------------------------------------------------
 cmd_agents() {
-  info "Instalando agentes em $GLOBAL_AGENTS_DIR ..."
+  info "$i18n_info_installing $GLOBAL_AGENTS_DIR ..."
   mkdir -p "$GLOBAL_AGENTS_DIR"
   local count=0
   for agent in "$AGENTS_DIR"/*.md; do
     local filename
     filename=$(basename "$agent")
     [ "$filename" = "README.md" ] && continue
-    [ -f "$GLOBAL_AGENTS_DIR/$filename" ] && warn "Sobrescrevendo: $filename"
+    [ -f "$GLOBAL_AGENTS_DIR/$filename" ] && warn "$i18n_warn_overwriting: $filename"
     cp "$agent" "$GLOBAL_AGENTS_DIR/$filename"
     success "Instalado: $filename"
     ((count++)) || true
   done
   divider
-  success "$count agentes instalados em $GLOBAL_AGENTS_DIR"
-  info "Verifique com: claude agents"
+  success "$count $i18n_success_installed in $GLOBAL_AGENTS_DIR"
+  info "Check with: claude agents"
 }
 
 # ---------------------------------------------------------------------------
@@ -191,7 +216,7 @@ _setup_factory_project() {
 
   mkdir -p "$factory_dir/docs"
   cp -r "$TEMPLATES_DIR/." "$factory_dir/docs/"
-  success "Estrutura docs/ criada em Factory/$project_name/"
+  success "docs/ structure created in Factory/$project_name/"
 
   # Cria pasta docs/context/ que não existe nos templates base
   mkdir -p "$factory_dir/docs/context"
@@ -237,15 +262,15 @@ EOF
 # ---------------------------------------------------------------------------
 cmd_new() {
   local project_name="${1:-}"
-  [ -n "$project_name" ] || error "Informe o nome: factory-init.sh new <nome>"
+  [ -n "$project_name" ] || error "Usage: factory-init.sh new <name>"
 
   local factory_dir="$FACTORY_ROOT/$project_name"
   local src_path="$PROJECTS_DIR/$project_name"
   local today
   today=$(date +%Y-%m-%d)
 
-  [ -d "$factory_dir" ] && error "Já existe em Factory: $factory_dir"
-  [ -d "$src_path"    ] && error "Já existe em Projects: $src_path"
+  [ -d "$factory_dir" ] && error "Already exists in Factory: $factory_dir"
+  [ -d "$src_path"    ] && error "Already exists in Projects: $src_path"
 
   require_templates
 
@@ -275,14 +300,14 @@ cmd_adopt() {
     esac
   done
 
-  [ -n "$project_name" ] || error "Informe o nome: factory-init.sh adopt <nome> [--mode=full|coexist]"
+  [ -n "$project_name" ] || error "Usage: factory-init.sh adopt <name> [--mode=full|coexist]"
 
   local factory_dir="$FACTORY_ROOT/$project_name"
   local src_path="$PROJECTS_DIR/$project_name"
   local today
   today=$(date +%Y-%m-%d)
 
-  [ -d "$src_path" ] || error "Projeto não encontrado em $src_path"
+  [ -d "$src_path" ] || error "$i18n_error_src_not_found: $src_path"
   require_templates
 
   info "Integrando: $project_name  |  modo: $mode"
@@ -336,14 +361,14 @@ EOF
 # ---------------------------------------------------------------------------
 cmd_add_command() {
   local project_name="${1:-}"
-  [ -n "$project_name" ] || error "Informe o nome: factory-init.sh add-command <nome>"
+  [ -n "$project_name" ] || error "Usage: factory-init.sh add-command <name>"
 
   local factory_dir="$FACTORY_ROOT/$project_name"
   local src_path
   src_path=$(config_get "$factory_dir" "src_path") || \
-    error "Projeto '$project_name' não encontrado. Execute 'factory-init.sh list'."
+    error "Project not found. Run 'factory-init.sh list'."
 
-  [ -d "$src_path" ] || error "Código não encontrado: $src_path"
+  [ -d "$src_path" ] || error "$i18n_error_src_not_found: $src_path"
 
   _create_project_command "$project_name" "$src_path"
   divider
@@ -357,14 +382,14 @@ cmd_add_command() {
 # ---------------------------------------------------------------------------
 cmd_work() {
   local project_name="${1:-}"
-  [ -n "$project_name" ] || error "Informe o nome: factory-init.sh work <nome>"
+  [ -n "$project_name" ] || error "Usage: factory-init.sh work <name>"
 
   local factory_dir="$FACTORY_ROOT/$project_name"
   local src_path
   src_path=$(config_get "$factory_dir" "src_path") || \
-    error "Projeto '$project_name' não encontrado. Execute 'factory-init.sh list'."
+    error "Project not found. Run 'factory-init.sh list'."
 
-  [ -d "$src_path" ] || error "Código não encontrado: $src_path"
+  [ -d "$src_path" ] || error "$i18n_error_src_not_found: $src_path"
 
   echo ""
   echo "  Inicie a sessão na pasta do projeto:"
@@ -456,8 +481,8 @@ cmd_update() {
     esac
   done
 
-  command -v curl >/dev/null 2>&1 || error "curl é necessário para atualização"
-  command -v tar  >/dev/null 2>&1 || error "tar é necessário para atualização"
+  command -v curl >/dev/null 2>&1 || error "curl is required for update"
+  command -v tar  >/dev/null 2>&1 || error "tar is required for update"
 
   info "Versão instalada: $FACTORY_VERSION"
 
@@ -496,27 +521,27 @@ cmd_update() {
   if [ -n "${GITHUB_TOKEN:-}" ]; then
     download_args+=(-H "Authorization: token $GITHUB_TOKEN")
     curl "${download_args[@]}" "$REMOTE_TARBALL_URL" -o "$tmp_dir/$tarball_name" || \
-      error "Falha ao baixar $REMOTE_TARBALL_URL"
+      error "Failed to download $REMOTE_TARBALL_URL"
   elif command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     curl "${download_args[@]}" -H "Authorization: token $(gh auth token 2>/dev/null)" \
       "$REMOTE_TARBALL_URL" -o "$tmp_dir/$tarball_name" || \
-      error "Falha ao baixar $REMOTE_TARBALL_URL"
+      error "Failed to download $REMOTE_TARBALL_URL"
   else
     curl "${download_args[@]}" "$REMOTE_TARBALL_URL" -o "$tmp_dir/$tarball_name" || \
-      error "Falha ao baixar $REMOTE_TARBALL_URL"
+      error "Failed to download $REMOTE_TARBALL_URL"
   fi
 
   tar xzf "$tmp_dir/$tarball_name" -C "$tmp_dir" --no-same-owner --no-same-permissions || \
-    error "Falha ao extrair tarball"
+    error "Failed to extract tarball"
 
   local extract_dir="$tmp_dir/factory-${remote_ver}"
-  [ -d "$extract_dir" ] || error "Estrutura inesperada no tarball"
+  [ -d "$extract_dir" ] || error "Unexpected tarball structure"
 
   while IFS= read -r fpath; do
     local real_path
     real_path=$(realpath "$fpath")
     [[ "$real_path" == "$tmp_dir/"* ]] || \
-      { rm -rf "$tmp_dir"; error "Path traversal detectado em tarball — abortando."; }
+      { rm -rf "$tmp_dir"; error "Path traversal detected in tarball — aborting."; }
   done < <(cd "$extract_dir" && find . -type l -o -type f)
 
   info "Comparando arquivos..."
@@ -601,13 +626,13 @@ cmd_sync() {
     esac
   done
 
-  [ -n "$project_name" ] || error "Informe o nome: factory-init.sh sync <nome> [--dry-run]"
+  [ -n "$project_name" ] || error "Usage: factory-init.sh sync <name> [--dry-run]"
 
   local factory_dir="$FACTORY_ROOT/$project_name"
   local project_docs="$factory_dir/docs"
 
   [ -f "$factory_dir/$CONFIG_FILE" ] || \
-    error "Projeto '$project_name' não encontrado. Execute 'factory-init.sh list'."
+    error "Project not found. Run 'factory-init.sh list'."
   [ -d "$project_docs" ] || \
     error "Projeto '$project_name' não tem diretório docs/."
 

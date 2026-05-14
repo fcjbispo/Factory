@@ -1,104 +1,71 @@
 # Factory Framework
 
-> Framework de gestão e execução de projetos de software com agentes de IA.
-> Integra **Domain-Driven Design (DDD)** e **Spec-Driven Development (SDD)** como paradigma central.
+> Framework for managing and executing software projects with AI agents.
+> Integrates **Domain-Driven Design (DDD)** and **Spec-Driven Development (SDD)** as its central paradigm.
 
-A Factory define como projetos são estruturados, documentados, operados e evoluídos — tanto por humanos quanto por agentes de IA. Ela gerencia **documentação e configuração**, mantendo separação clara do código-fonte.
+This repository contains the **source** of the Factory Framework. Localized distribution packages are built from this source.
 
-## Paradigma DDD + SDD
+---
 
-A partir da v1.2.0, a Factory adota a integração entre DDD (estratégico/tático) e SDD (operacional):
-
-- **DDD** define o quê e o porquê — bounded contexts, linguagem ubíqua, agregados, domain events
-- **SDD** formaliza como isso vira contrato executável — APIs, invariantes, breaking changes
-
-Cada bounded context expõe sua própria spec em `docs/api/`. O arquivo `docs/domain/context-map.md` registra como os contextos se relacionam.
-
-## Estrutura
+## Structure
 
 ```
-~/Dev/
-├── Factory/                    ← repositório da Factory
-│   ├── factory-init.sh         ← ponto único de entrada
-│   ├── FACTORY-GUIDE.md        ← guia canônico
-│   └── docs/
-│       ├── agents/             ← 7 perfis de agentes de IA
-│       └── templates/          ← templates de documentação
-└── Projects/
-    └── <projeto>/              ← código-fonte
+Factory/
+├── src/                    ← Source of truth (English base + locales)
+│   ├── factory-init.sh     ← Script source with $i18n_ markers
+│   ├── locales/
+│   │   ├── en.env          ← English strings (base/fallback)
+│   │   └── pt.env          ← Portuguese strings
+│   ├── docs/               ← Document templates with $i18n_ markers
+│   └── ...
+├── dist/                   ← Compiled localized artifacts (committed)
+│   ├── factory-1.3.0.en.tar.gz
+│   └── factory-1.3.0.pt.tar.gz
+└── Makefile                ← Build system
 ```
 
-Documentação e configuração vivem em `~/Dev/Factory/<projeto>/`. Código-fonte vive em `~/Dev/Projects/<projeto>/`. A ponte entre os dois é o `/add-dir` dentro das sessões Claude Code.
+---
 
-## Instalação
+## Building
 
 ```bash
-cd ~/Dev/Factory
+# Build all locales
+make build-all
 
-# Instalar agentes globalmente
-./factory-init.sh agents
+# Build specific locale
+make build LANG=en
 
-# Adicionar função shell ao perfil
-./factory-init.sh shell-setup >> ~/.zshrc && source ~/.zshrc
+# Clean artifacts
+make clean
 ```
 
-## Uso rápido
+---
+
+## Installation
+
+Download the appropriate localized package from `dist/`:
 
 ```bash
-# Criar projeto novo
-./factory-init.sh new meu-projeto
+# English
+tar xzf dist/factory-1.3.0.en.tar.gz
 
-# Integrar projeto existente (migração completa)
-./factory-init.sh adopt meu-projeto --mode=full
-
-# Integrar projeto existente (convivência)
-./factory-init.sh adopt meu-projeto --mode=coexist
-
-# Listar projetos registrados
-./factory-init.sh list
-
-# Atualizar framework da branch master
-./factory-init.sh update [--version=X.Y.Z] [--dry-run]
-
-# Propagar templates para projeto
-./factory-init.sh sync <nome> [--dry-run]
-
-# Mostrar comando para iniciar sessão
-./factory-init.sh work meu-projeto
+# Portuguese
+tar xzf dist/factory-1.3.0.pt.tar.gz
 ```
 
-## Agentes de IA
+Then run `./factory-init.sh help` for usage.
 
-7 agentes especializados, instalados globalmente via `./factory-init.sh agents`:
+---
 
-| Agente               | Papel                                                  |
-| ----------------------| --------------------------------------------------------|
-| Arquiteto Sênior     | Arquitetura, ADRs, contratos de API, design de sistema |
-| Full-Stack Developer | Implementação de features, correções, commits          |
-| DB Architect         | Modelagem de dados, migrations, otimização de queries  |
-| Code Reviewer        | Revisão obrigatória de PRs, qualidade, segurança       |
-| QA Tester            | Estratégia de testes, automação, critérios de release  |
-| DevOps/SRE           | CI/CD, infraestrutura, observabilidade, postmortems    |
-| Security Analyst     | Threat modeling, vulnerabilidades, LGPD/GDPR           |
+## Adding a New Locale
 
-## Documentação
+1. Copy `src/locales/en.env` to `src/locales/XX.env`
+2. Translate all strings
+3. Add `XX` to `LOCALES` in `Makefile`
+4. Run `make build-all`
 
-Cada projeto Factory é documentado com templates canônicos nas seções: ADR, API, arquitetura, backlog (gestão de produção), banco de dados, design, domínio (context-map DDD), operações, segurança, testes, decisões de produto e contexto de sessão.
+---
 
-### Backlog (novo na v1.3.0)
+## License
 
-Gestão de produção contínua com priorização MoSCoW + RICE. Categorias: bugs, melhorias, débito técnico, documentação, segurança, performance, dependências e dados. Estados: `aberto` → `em-análise` → `priorizado` → `em-progresso` → `resolvido`.
-
-## Regras fundamentais
-
-- Nenhum documento é criado sem template — use sempre o `_template.md` da seção
-- Todo documento tem frontmatter YAML obrigatório (`type`, `status`, `owner`, `updated`)
-- ADRs aceitos nunca são editados — são substituídos por um novo
-- `database/changelog.md` é append-only
-- Vulnerabilidades ativas não são armazenadas no repositório
-
-## Leitura adicional
-
-- [FACTORY-GUIDE.md](FACTORY-GUIDE.md) — guia canônico completo
-- [docs/templates/INDEX.md](docs/templates/INDEX.md) — ponto de entrada da documentação
-- [docs/templates/GUIDE.md](docs/templates/GUIDE.md) — convenções de documentação
+MIT — See source files for details.
