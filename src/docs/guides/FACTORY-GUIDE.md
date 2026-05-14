@@ -2,90 +2,90 @@
 
 **Version:** _1.3.0_
 
-> Guia central do framework Factory.
-> Leitura obrigatória para qualquer agente ou humano antes de iniciar, migrar ou operar um projeto sob este framework.
+> Central guide of the Factory framework.
+> Mandatory reading for any agent or human before starting, migrating, or operating a project under this framework.
 
 ---
 
-## O que é a Factory
+## What is Factory
 
-A Factory é o framework de gestão e execução de projetos de software desta organização. Ela define como projetos são estruturados, documentados, operados e evoluídos — tanto por humanos quanto por agentes de IA.
+Factory is the software project management and execution framework of this organization. It defines how projects are structured, documented, operated, and evolved — by both humans and AI agents.
 
-A Factory gerencia **documentação e configuração**. O código-fonte vive separado, em `~/Dev/Projects/`. O script `factory-init.sh` é o ponto único de entrada para todas as operações de ciclo de vida de projetos — nunca crie estruturas manualmente.
+Factory manages **documentation and configuration**. Source code lives separately, in `~/Dev/Projects/`. The `factory-init.sh` script is the single entry point for all project lifecycle operations — never create structures manually.
 
 ---
 
-## Paradigma DDD + SDD
+## DDD + SDD Paradigm
 
-A partir da versão 1.2.0, a Factory adota a integração entre **Domain-Driven Design (DDD)** e **Spec-Driven Development (SDD)** como paradigma central de modelagem e contratualização.
+Starting from version 1.2.0, Factory adopts the integration between **Domain-Driven Design (DDD)** and **Spec-Driven Development (SDD)** as the central paradigm for modeling and contract formalization.
 
-### O que cada um faz
+### What each one does
 
-**DDD é estratégico e tático** — define o quê e o porquê:
-- Quais são os bounded contexts do sistema?
-- Qual é a linguagem ubíqua de cada contexto?
-- Quais são os agregados, entidades e value objects?
-- Quais são os domain events e como os contextos se comunicam?
+**DDD is strategic and tactical** — defines the what and the why:
+- What are the bounded contexts of the system?
+- What is the ubiquitous language of each context?
+- What are the aggregates, entities, and value objects?
+- What are the domain events and how do contexts communicate?
 
-**SDD é operacional** — formaliza como isso se torna contrato executável:
-- Como os conceitos do domínio viram contratos de API?
-- Quais campos são obrigatórios? Quais são as invariantes?
-- Como os contextos se comunicam via spec?
-- O que constitui um breaking change?
+**SDD is operational** — formalizes how this becomes an executable contract:
+- How do domain concepts become API contracts?
+- Which fields are mandatory? What are the invariants?
+- How do contexts communicate via spec?
+- What constitutes a breaking change?
 
-### Regra de ouro
+### Golden rule
 
-> Os nomes da spec devem ser **idênticos** à linguagem ubíqua do DDD.
-> Se o domínio chama de `Pedido`, a spec não pode chamar de `Order` ou `Compra`.
+> Spec names must be **identical** to the DDD ubiquitous language.
+> If the domain calls it `Pedido`, the spec cannot call it `Order` or `Compra`.
 
-### Sem DDD no SDD (o que evitar)
+### Without DDD in SDD (what to avoid)
 
-Spec usa nomes técnicos genéricos (`item`, `record`, `data`). Ninguém sabe o que representa. Contextos se misturam na mesma API. Invariantes de domínio são perdidas ou ficam apenas no código.
+Spec uses generic technical names (`item`, `record`, `data`). Nobody knows what it represents. Contexts mix in the same API. Domain invariants are lost or remain only in code.
 
-### Com DDD guiando o SDD (o objetivo)
+### With DDD guiding SDD (the goal)
 
-Spec usa linguagem do negócio (`Pedido`, `Estoque`, `Pagamento`). Cada bounded context tem sua própria spec. Contratos refletem invariantes do domínio. A spec é legível por especialistas de negócio.
+Spec uses business language (`Pedido`, `Estoque`, `Pagamento`). Each bounded context has its own spec. Contracts reflect domain invariants. The spec is readable by business specialists.
 
-### Mapeamento DDD → SDD
+### DDD → SDD Mapping
 
-| Conceito DDD | Elemento da Spec |
+| DDD Concept | Spec Element |
 |---|---|
-| Agregado raiz | Tipo principal + mutations (`createX`, `updateX`) |
-| Entidade | Tipo com `id: ID!` |
-| Value Object | `input type` (sem ID, imutável) |
-| Invariante de domínio | Campo `!` (non-null) ou `minItems` |
-| Estado do agregado | `enum` |
-| Domain Event | Subscription GraphQL ou canal AsyncAPI |
-| Bounded Context | Spec separada (arquivo próprio em `api/`) |
-| Anti-Corruption Layer | Spec de tradução explícita entre contextos |
+| Root Aggregate | Main type + mutations (`createX`, `updateX`) |
+| Entity | Type with `id: ID!` |
+| Value Object | `input type` (no ID, immutable) |
+| Domain Invariant | Field `!` (non-null) or `minItems` |
+| Aggregate State | `enum` |
+| Domain Event | GraphQL Subscription or AsyncAPI channel |
+| Bounded Context | Separate spec (own file in `api/`) |
+| Anti-Corruption Layer | Explicit translation spec between contexts |
 
-### Cada contexto = uma spec separada
+### Each context = a separate spec
 
-Não há um schema gigante. Cada bounded context expõe sua própria API com seus próprios tipos e contratos. O arquivo `docs/domain/context-map.md` registra como os contextos se relacionam e quais specs correspondem a cada um.
+There is no giant schema. Each bounded context exposes its own API with its own types and contracts. The `docs/domain/context-map.md` file records how contexts relate and which specs correspond to each.
 
 ---
 
-## Estrutura da Factory
+## Factory Structure
 
 ```
 ~/Dev/
-├── Factory/ ← repositório da Factory
-│ ├── FACTORY-GUIDE.md ← este documento
-│ ├── factory-init.sh ← ponto único de entrada para operações
+├── Factory/ ← Factory repository
+│ ├── FACTORY-GUIDE.md ← this document
+│ ├── factory-init.sh ← single entry point for operations
 │ ├── docs/
-│ │ ├── agents/ ← perfis dos agentes de IA
-│ │ └── templates/ ← templates de documentação reutilizáveis
-│ └── [nome-do-projeto]/ ← um diretório por projeto
-│ ├── .factory ← config: registra src_path e metadados
-│ ├── docs/ ← documentação (derivada dos templates)
-│ └── docs-legado/ ← documentação pré-Factory (modo full)
+│ │ ├── agents/ ← AI agent profiles
+│ │ └── templates/ ← reusable documentation templates
+│ └── [project-name]/ ← one directory per project
+│ ├── .factory ← config: records src_path and metadata
+│ ├── docs/ ← documentation (derived from templates)
+│ └── docs-legacy/ ← pre-Factory documentation (full mode)
 │
 └── Projects/
- └── [nome-do-projeto]/ ← código-fonte do projeto
+ └── [project-name]/ ← project source code
  ├── .claude/
  │ └── commands/
- │ └── factory-init.md ← atalho para carregar contexto na sessão
- └── CLAUDE.md ← identidade do projeto e ponteiros para Factory
+ │ └── factory-init.md ← shortcut to load context in session
+ └── CLAUDE.md ← project identity and pointers to Factory
 ```
 
 ---
@@ -98,18 +98,18 @@ Não há um schema gigante. Cada bounded context expõe sua própria API com seu
 
 **Responsável**: PO define o time. Arquiteto Sênior mantém os perfis técnicos.
 
-**Quando usar**: execute `./factory-init.sh agents` para instalar todos os agentes globalmente em `~/.claude/agents/`. Disponíveis em qualquer projeto da máquina sem duplicação.
+**When to use**: execute `./factory-init.sh agents` to install all agents globally in `~/.claude/agents/`. Available in any project on the machine without duplication.
 
-| Arquivo | Agente | Papel principal |
+| File | Agent | Main Role |
 |---|---|---|
-| `arquiteto-senior.md` | Arquiteto Sênior | Decisões de arquitetura, ADRs, contratos de API, modelagem DDD, design de sistema |
-| `fullstack-developer.md` | Full-Stack Developer | Implementação de features, testes unitários, commits |
-| `db-architect.md` | DB Architect | Modelagem de dados, migrations, otimização de queries |
-| `code-reviewer.md` | Code Reviewer | Revisão obrigatória de PRs, qualidade, padrões, segurança no código |
-| `qa-tester.md` | QA Tester | Estratégia de testes, automação, critérios de qualidade para release |
-| `devops-sre.md` | DevOps/SRE | CI/CD, infraestrutura, observabilidade, postmortems |
-| `security-analyst.md` | Security Analyst | Threat modeling, políticas de segurança, auditoria de vulnerabilidades |
-| `README.md` | — | Instruções de instalação e uso dos agentes |
+| `arquiteto-senior.md` | Senior Architect | Architecture decisions, ADRs, API contracts, DDD modeling, system design |
+| `fullstack-developer.md` | Full-Stack Developer | Feature implementation, unit tests, commits |
+| `db-architect.md` | DB Architect | Data modeling, migrations, query optimization |
+| `code-reviewer.md` | Code Reviewer | Mandatory PR review, quality, standards, code security |
+| `qa-tester.md` | QA Tester | Testing strategy, automation, release quality criteria |
+| `devops-sre.md` | DevOps/SRE | CI/CD, infrastructure, observability, postmortems |
+| `security-analyst.md` | Security Analyst | Threat modeling, security policies, vulnerability auditing |
+| `README.md` | — | Agent installation and usage instructions |
 
 ---
 
