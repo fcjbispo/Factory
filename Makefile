@@ -28,9 +28,26 @@ endif
 LOCALES := en pt
 DIST_DIR := dist
 
-.PHONY: all build-all build clean release check version-info
+# Build specific locale (e.g., make build LANG=pt)
+build:
+	@if [ -z "$(LANG)" ]; then \
+		echo "ERROR: LANG is required. Usage: make build LANG=en"; \
+		echo "       Supported: $(LOCALES)"; \
+		exit 1; \
+	fi
+	@if ! echo "$(LOCALES)" | grep -qw "$(LANG)"; then \
+		echo "ERROR: '$(LANG)' is not a supported locale."; \
+		echo "       Supported: $(LOCALES)"; \
+		exit 1; \
+	fi
+	@echo "Building Factory $(VERSION) for locale: $(LANG)..."
+	@mkdir -p $(DIST_DIR)/$(LANG)
+	@$(MAKE) -C src LANG=$(LANG) VERSION=$(VERSION) OUTDIR=$(PWD)/$(DIST_DIR)/$(LANG)
+	@echo "Packaging factory-$(VERSION).$(LANG).tar.gz..."
+	@cd $(DIST_DIR)/$(LANG) && tar czf ../factory-$(VERSION).$(LANG).tar.gz .
+	@echo "Done: $(DIST_DIR)/factory-$(VERSION).$(LANG).tar.gz"
 
-all: build-all
+.PHONY: all build-all build clean release check version-info help
 
 version-info:
 	@echo "Current branch: $(GIT_BRANCH)"
