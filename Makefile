@@ -38,7 +38,31 @@ version-info:
 
 build-all: version-info $(patsubst %,$(DIST_DIR)/factory-$(VERSION).%.tar.gz,$(LOCALES))
 
-build-all: $(patsubst %,$(DIST_DIR)/factory-$(VERSION).%.tar.gz,$(LOCALES))
+# Default target: show help when 'make' is run without arguments
+.DEFAULT_GOAL := help
+
+help:
+	@echo ""
+	@echo "  Factory Framework — Build System"
+	@echo "  Version: $(VERSION) | Branch: $(GIT_BRANCH)"
+	@echo ""
+	@echo "  make help               Show this help message"
+	@echo "  make version-info       Show current branch and detected version"
+	@echo "  make build-all          Build all locale packages (en, pt)"
+	@echo "  make build LANG=en      Build specific locale package"
+	@echo "  make clean              Remove dist/ artifacts"
+	@echo "  make release            Build + show release steps"
+	@echo "  make check              Verify build dependencies"
+	@echo ""
+	@echo "  Examples:"
+	@echo "    make build-all                    # Build both EN and PT"
+	@echo "    make build LANG=pt                # Build only PT-BR"
+	@echo "    make clean && make build-all       # Clean rebuild"
+	@echo ""
+	@echo "  Maintenance:"
+	@echo "    After editing src/ docs, run: make clean && make build-all"
+	@echo "    Commit BOTH src/ and dist/ together to keep them in sync."
+	@echo ""
 
 $(DIST_DIR)/factory-$(VERSION).%.tar.gz: src/Makefile src/locales/%.env
 	@echo "Building Factory $(VERSION) for locale: $*"
