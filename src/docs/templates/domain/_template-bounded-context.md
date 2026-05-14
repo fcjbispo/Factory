@@ -1,176 +1,176 @@
 ---
 type: bounded-context
-status: rascunho
-owner: arquiteto-senior
+status: draft
+owner: senior-architect
 updated: YYYY-MM-DD
 related:
   - domain/INDEX.md
   - domain/context-map.md
-  - domain/[nome]-language.md
-  - api/[nome]-api.yaml
+  - domain/[name]-language.md
+  - api/[name]-api.yaml
 ---
 
-# Contexto: [Nome do Contexto]
+# Context: [Context Name]
 
-> **Responsabilidade central**: [descreva em uma frase o que este contexto é responsável por]
-
----
-
-## Visão geral
-
-[Descrição de 3-5 linhas explicando o propósito deste bounded context, o problema de negócio que resolve e seus limites.]
-
-**O que pertence a este contexto**:
-- [lista de responsabilidades]
-
-**O que NÃO pertence a este contexto**:
-- [lista explícita de o que fica fora — evita scope creep]
+> **Central responsibility**: [describe in one sentence what this context is responsible for]
 
 ---
 
-## Agregados
+## Overview
 
-> Um agregado é um cluster de objetos de domínio tratado como uma unidade. O agregado raiz é o único ponto de entrada para modificações.
+[3-5 line description explaining the purpose of this bounded context, the business problem it solves, and its limits.]
 
-### [NomeDoAgregado] *(agregado raiz)*
+**What belongs to this context**:
+- [list of responsibilities]
 
-**Responsabilidade**: [o que este agregado representa e protege]
+**What does NOT belong to this context**:
+- [explicit list of what stays outside — avoids scope creep]
 
-**Invariantes** (regras que nunca podem ser violadas):
-- [invariante 1 — ex: "um Pedido deve ter ao menos um item"]
-- [invariante 2]
+---
 
-**Campos**:
-| Campo | Tipo | Obrigatório | Descrição |
+## Aggregates
+
+> An aggregate is a cluster of domain objects treated as a unit. The aggregate root is the only entry point for modifications.
+
+### [AggregateName] *(aggregate root)*
+
+**Responsibility**: [what this aggregate represents and protects]
+
+**Invariants** (rules that can never be violated):
+- [invariant 1 — ex: "an Order must have at least one item"]
+- [invariant 2]
+
+**Fields**:
+| Field | Type | Required | Description |
 |---|---|---|---|
-| id | UUID | sim | Identificador único |
-| [campo] | [tipo] | sim/não | [descrição] |
+| id | UUID | yes | Unique identifier |
+| [field] | [type] | yes/no | [description] |
 
-**Estados possíveis** (se aplicável):
+**Possible states** (if applicable):
 ```
-[ESTADO_A] → [ESTADO_B] → [ESTADO_C]
+[STATE_A] → [STATE_B] → [STATE_C]
               ↓
-          [ESTADO_CANCELADO]
+          [STATE_CANCELLED]
 ```
 
-**Transições e comandos**:
-| Comando | Pré-condição | Resultado |
+**Transitions and commands**:
+| Command | Pre-condition | Result |
 |---|---|---|
-| [NomeDoComando] | [condição necessária] | [estado resultante ou evento publicado] |
+| [CommandName] | [necessary condition] | [resulting state or published event] |
 
 ---
 
-## Entidades
+## Entities
 
-> Entidades têm identidade própria (um `id`) e ciclo de vida independente dentro do agregado.
+> Entities have their own identity (an `id`) and independent lifecycle within the aggregate.
 
-### [NomeDaEntidade]
+### [EntityName]
 
-**Responsabilidade**: [descrição]
+**Responsibility**: [description]
 
-**Campos**:
-| Campo | Tipo | Obrigatório | Descrição |
+**Fields**:
+| Field | Type | Required | Description |
 |---|---|---|---|
-| id | UUID | sim | Identificador único |
-| [campo] | [tipo] | sim/não | [descrição] |
+| id | UUID | yes | Unique identifier |
+| [field] | [type] | yes/no | [description] |
 
 ---
 
 ## Value Objects
 
-> Value Objects são imutáveis e definidos pelo valor de seus atributos, não por identidade. Não têm `id`.
+> Value Objects are immutable and defined by the value of their attributes, not by identity. They have no `id`.
 
-### [NomeDoValueObject]
+### [ValueObjectName]
 
-**Responsabilidade**: [descrição]
-**Imutável**: sim — para alterar, cria-se um novo.
+**Responsibility**: [description]
+**Immutable**: yes — to change, create a new one.
 
-**Campos**:
-| Campo | Tipo | Obrigatório | Descrição |
+**Fields**:
+| Field | Type | Required | Description |
 |---|---|---|---|
-| [campo] | [tipo] | sim | [descrição] |
+| [field] | [type] | yes | [description] |
 
-**Regras de validação**:
-- [regra 1 — ex: "CEP deve ter 8 dígitos"]
-- [regra 2]
+**Validation rules**:
+- [rule 1 — ex: "ZIP code must have 8 digits"]
+- [rule 2]
 
 ---
 
 ## Domain Events
 
-> Eventos de domínio representam algo que aconteceu e é relevante para o negócio. São imutáveis e em tempo passado.
+> Domain events represent something that happened and is relevant to the business. They are immutable and in past tense.
 
-| Evento | Publicado quando | Payload obrigatório | Consumido por |
+| Event | Published when | Mandatory payload | Consumed by |
 |---|---|---|---|
-| [NomeDoEvento] | [condição de publicação] | [campos essenciais] | [contextos consumidores] |
+| [EventName] | [publication condition] | [essential fields] | [consuming contexts] |
 
-### Detalhes por evento
+### Details by event
 
-#### [NomeDoEvento]
+#### [EventName]
 
-**Quando é publicado**: [descreva a ação de domínio que o dispara]
+**When it is published**: [describe the domain action that triggers it]
 
 **Payload**:
-| Campo | Tipo | Obrigatório | Descrição |
+| Field | Type | Required | Description |
 |---|---|---|---|
-| eventId | UUID | sim | Identificador único do evento |
-| occurredAt | datetime | sim | Timestamp do ocorrido |
-| [campo-do-domínio] | [tipo] | sim | [descrição] |
+| eventId | UUID | yes | Unique event identifier |
+| occurredAt | datetime | yes | Timestamp of occurrence |
+| [domain-field] | [type] | yes | [description] |
 
-**Invariantes do payload** (regras que o evento sempre deve satisfazer):
-- [ex: "a lista de itens deve ter ao menos 1 elemento"]
-
----
-
-## Serviços de domínio
-
-> Use quando uma operação não pertence naturalmente a nenhuma entidade ou agregado.
-
-### [NomeDoServiço]
-
-**Responsabilidade**: [o que este serviço calcula ou coordena]
-**Inputs**: [o que recebe]
-**Output**: [o que retorna ou publica]
+**Payload invariants** (rules the event must always satisfy):
+- [ex: "the item list must have at least 1 element"]
 
 ---
 
-## Repositórios
+## Domain services
 
-> Interfaces de acesso a agregados. A implementação fica fora do domínio.
+> Use when an operation does not naturally belong to any entity or aggregate.
 
-| Repositório | Operações |
+### [ServiceName]
+
+**Responsibility**: [what this service calculates or coordinates]
+**Inputs**: [what it receives]
+**Output**: [what it returns or publishes]
+
+---
+
+## Repositories
+
+> Aggregate access interfaces. Implementation lives outside the domain.
+
+| Repository | Operations |
 |---|---|
-| `[Nome]Repository` | `findById`, `save`, `delete`, `findBy[Critério]` |
+| `[Name]Repository` | `findById`, `save`, `delete`, `findBy[Criterion]` |
 
 ---
 
-## Mapeamento para Spec (SDD)
+## Mapping to Spec (SDD)
 
-> Como os conceitos deste contexto se tornam contratos em `api/`.
+> How concepts from this context become contracts in `api/`.
 
-| Conceito DDD | Elemento da Spec | Arquivo |
+| DDD Concept | Spec Element | File |
 |---|---|---|
-| [NomeDoAgregado] (agregado raiz) | `type [NomeDoAgregado]` + mutations | `api/[nome]-api.yaml` |
-| [NomeDaEntidade] | `type [NomeDaEntidade] { id: ID! }` | `api/[nome]-api.yaml` |
-| [NomeDoValueObject] | `input [NomeDoValueObject]Input` | `api/[nome]-api.yaml` |
-| [invariante: lista obrigatória] | `[campo]: [[Tipo]!]!` | `api/[nome]-api.yaml` |
-| [estado do agregado] | `enum [NomeDoEstado]` | `api/[nome]-api.yaml` |
-| [NomeDoEvento] | canal AsyncAPI / subscription | `api/events/[nome]-event.yaml` |
+| [AggregateName] (aggregate root) | `type [AggregateName]` + mutations | `api/[name]-api.yaml` |
+| [EntityName] | `type [EntityName] { id: ID! }` | `api/[name]-api.yaml` |
+| [ValueObjectName] | `input [ValueObjectName]Input` | `api/[name]-api.yaml` |
+| [invariant: mandatory list] | `[field]: [[Type]!]!` | `api/[name]-api.yaml` |
+| [aggregate state] | `enum [StateName]` | `api/[name]-api.yaml` |
+| [EventName] | AsyncAPI channel / subscription | `api/events/[name]-event.yaml` |
 
 ---
 
 ## Anti-Corruption Layer
 
-> Se este contexto consome conceitos de outros contextos, documente aqui como a tradução é feita.
+> If this context consumes concepts from other contexts, document here how the translation is done.
 
-| Conceito externo (contexto origem) | Tradução neste contexto | Motivo |
+| External concept (origin context) | Translation in this context | Reason |
 |---|---|---|
-| `[Conceito]` de `[ContextoOrigem]` | `[ConceitorTraduzido]` | [por que o nome difere neste contexto] |
+| `[Concept]` from `[OriginContext]` | `[TranslatedConcept]` | [why the name differs in this context] |
 
 ---
 
-## Histórico de mudanças
+## Change history
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Documento criado via Event Storming | arquiteto-senior |
+| YYYY-MM-DD | Document created via Event Storming | senior-architect |

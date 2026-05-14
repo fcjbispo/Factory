@@ -1,58 +1,58 @@
 ---
 type: threat-model
-status: rascunho
+status: draft
 owner: security-analyst
-readers: [arquiteto-senior, devops-sre]
+readers: [senior-architect, devops-sre]
 updated: YYYY-MM-DD
 related: []
 ---
 
-# Threat Model: [Nome do Componente/Feature]
+# Threat Model: [Component/Feature Name]
 
-## Escopo
+## Scope
 
-> O que está sendo analisado? Quais são as fronteiras do sistema nesta análise?
+> What is being analyzed? What are the system boundaries in this analysis?
 
-## Diagrama de fluxo de dados
+## Data flow diagram
 
 ```mermaid
 graph LR
-    U([Usuário]) -->|HTTPS| API[API Gateway]
-    API -->|interno| SVC[Serviço]
-    SVC -->|SQL| DB[(Banco)]
+    U([User]) -->|HTTPS| API[API Gateway]
+    API -->|internal| SVC[Service]
+    SVC -->|SQL| DB[(Database)]
 ```
 
-## Ativos a proteger
+## Assets to protect
 
-| Ativo | Classificação | Impacto se comprometido |
+| Asset | Classification | Impact if compromised |
 |---|---|---|
-| [dado/serviço] | `público` / `interno` / `confidencial` / `restrito` | [descrição] |
+| [data/service] | `public` / `internal` / `confidential` / `restricted` | [description] |
 
-## Ameaças identificadas (STRIDE)
+## Identified threats (STRIDE)
 
-| ID | Categoria | Ameaça | Componente | Probabilidade | Impacto | Risco |
+| ID | Category | Threat | Component | Probability | Impact | Risk |
 |---|---|---|---|---|---|---|
-| T01 | Spoofing | [descrição] | [componente] | `baixo/médio/alto` | `baixo/médio/alto` | `baixo/médio/alto/crítico` |
+| T01 | Spoofing | [description] | [component] | `low/medium/high` | `low/medium/high` | `low/medium/high/critical` |
 | T02 | Tampering | | | | | |
 | T03 | Repudiation | | | | | |
 | T04 | Info Disclosure | | | | | |
 | T05 | Denial of Service | | | | | |
 | T06 | Elevation of Privilege | | | | | |
 
-## Controles implementados
+## Implemented controls
 
-| Ameaça | Controle | Status |
+| Threat | Control | Status |
 |---|---|---|
-| T01 | [descrição do controle] | `implementado` / `planejado` / `aceito` |
+| T01 | [control description] | `implemented` / `planned` / `accepted` |
 
-## Riscos aceitos
+## Accepted risks
 
-| Ameaça | Justificativa | Aprovado por | Data |
+| Threat | Justification | Approved by | Date |
 |---|---|---|---|
 | | | po | YYYY-MM-DD |
 
-## Histórico de mudanças
+## Change history
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Versão inicial | security-analyst |
+| YYYY-MM-DD | Initial version | security-analyst |

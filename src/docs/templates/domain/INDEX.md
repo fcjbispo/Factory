@@ -1,68 +1,68 @@
 ---
 type: domain-index
-status: ativo
-owner: arquiteto-senior
+status: active
+owner: senior-architect
 updated: YYYY-MM-DD
 ---
 
-# Domínio — [NOME DO PROJETO]
+# Domain — [PROJECT NAME]
 
-> Registro central dos bounded contexts, linguagem ubíqua e mapa de contextos.
-> **Todo agente lê este arquivo antes de criar ou modificar qualquer spec em `api/`.**
-
----
-
-## Regra fundamental
-
-Os nomes neste documento são a **fonte de verdade** para toda nomenclatura do sistema.
-Nenhum nome em `api/`, `database/` ou no código pode divergir do glossário de cada contexto.
-Divergências são bugs — corrija na spec ou no código, nunca no glossário sem aprovação do PO.
+> Central record of bounded contexts, ubiquitous language, and context map.
+> **Every agent reads this file before creating or modifying any spec in `api/`.**
 
 ---
 
-## Bounded contexts registrados
+## Fundamental rule
 
-| Contexto | Status | Responsável | Spec principal | Glossário | Última atualização |
+The names in this document are the **source of truth** for all system nomenclature.
+No name in `api/`, `database/`, or in code may diverge from the glossary of each context.
+Divergences are bugs — fix in the spec or code, never in the glossary without PO approval.
+
+---
+
+## Registered bounded contexts
+
+| Context | Status | Owner | Main spec | Glossary | Last updated |
 |---|---|---|---|---|---|
-| [nome-do-contexto] | `ativo` | arquiteto-senior | `api/[nome]-api.yaml` | `domain/[nome]-language.md` | YYYY-MM-DD |
+| [context-name] | `active` | senior-architect | `api/[name]-api.yaml` | `domain/[name]-language.md` | YYYY-MM-DD |
 
-**Status possíveis**: `descoberto` → `documentado` → `ativo` → `depreciado`
-
----
-
-## Visão rápida dos contextos
-
-> Descreva em 1-2 linhas a responsabilidade central de cada contexto.
-
-### [Nome do Contexto]
-Responsável por [responsabilidade principal]. Agrega [entidades-chave].
-Consome eventos de [outros contextos]. Publica [eventos principais].
+**Possible statuses**: `discovered` → `documented` → `active` → `deprecated`
 
 ---
 
-## Mapa de dependências (resumo)
+## Quick view of contexts
 
-> Detalhes completos em `domain/context-map.md`.
+> Describe in 1-2 lines the central responsibility of each context.
+
+### [Context Name]
+Responsible for [main responsibility]. Aggregates [key entities].
+Consumes events from [other contexts]. Publishes [main events].
+
+---
+
+## Dependency map (summary)
+
+> Full details in `domain/context-map.md`.
 
 ```
-[ContextoA]  —[tipo-relação]→  [ContextoB]
-[ContextoB]  —[tipo-relação]→  [ContextoC]
+[ContextA]  —[relation-type]→  [ContextB]
+[ContextB]  —[relation-type]→  [ContextC]
 ```
 
-**Tipos de relação**: `conformista` | `anti-corruption-layer` | `publicador-consumidor` | `parceiro` | `shared-kernel`
+**Relation types**: `conformist` | `anti-corruption-layer` | `publisher-consumer` | `partner` | `shared-kernel`
 
 ---
 
-## Domain events globais
+## Global domain events
 
-| Evento | Publicado por | Consumido por | Spec |
+| Event | Published by | Consumed by | Spec |
 |---|---|---|---|
-| [NomeDoEvento] | [contexto-origem] | [contexto-destino] | `api/events/[nome]-event.yaml` |
+| [EventName] | [origin-context] | [destination-context] | `api/events/[name]-event.yaml` |
 
 ---
 
-## Histórico de mudanças
+## Change history
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Descoberta inicial dos bounded contexts via Event Storming | arquiteto-senior |
+| YYYY-MM-DD | Initial discovery of bounded contexts via Event Storming | senior-architect |

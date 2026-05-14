@@ -1,109 +1,109 @@
 ---
 type: ubiquitous-language
-status: ativo
-owner: arquiteto-senior
+status: active
+owner: senior-architect
 updated: YYYY-MM-DD
 related:
-  - domain/[nome]-context.md
-  - api/[nome]-api.yaml
+  - domain/[name]-context.md
+  - api/[name]-api.yaml
 ---
 
-# Linguagem Ubíqua — [Nome do Contexto]
+# Ubiquitous Language — [Context Name]
 
-> Este glossário é a **fonte de verdade** para toda nomenclatura dentro deste bounded context.
-> Todos os nomes no código, nas specs, nos testes e na documentação devem corresponder exatamente aos termos aqui definidos.
-> Qualquer divergência é um bug — não adapte o glossário ao código, adapte o código ao glossário.
-
----
-
-## Como usar este documento
-
-- **Agentes de IA**: antes de criar qualquer tipo, campo, mutation ou endpoint neste contexto, consulte este glossário.
-- **Desenvolvedores**: ao nomear classes, tabelas, variáveis e rotas, use os termos deste glossário.
-- **PO e especialistas de domínio**: qualquer novo termo deve ser aprovado e adicionado aqui antes de ser usado.
+> This glossary is the **source of truth** for all nomenclature within this bounded context.
+> All names in code, specs, tests, and documentation must correspond exactly to the terms defined here.
+> Any divergence is a bug — do not adapt the glossary to the code, adapt the code to the glossary.
 
 ---
 
-## Termos do domínio
+## How to use this document
 
-### [Termo]
-
-**Definição**: [descrição precisa do que este termo significa neste contexto]
-
-**Tipo DDD**: `Agregado` | `Entidade` | `Value Object` | `Serviço de Domínio` | `Evento` | `Conceito de negócio`
-
-**Usado como**:
-- Na spec: `type [Termo]` / `input [Termo]Input` / `enum [EstadoDoTermo]`
-- No código: `[Termo]` (class), `[termo]` (variable), `[termos]` (collection)
-- No banco: `[termos]` (tabela), `[campo_do_termo]` (coluna)
-
-**NÃO confundir com**:
-- `[OutroTermo]` — [explicação de por que são diferentes]
-- `[TermoDeOutroContexto]` em `[OutroContexto]` — [diferença de significado entre contextos]
-
-**Exemplo de uso**:
-> "[frase de exemplo usando o termo em contexto de negócio]"
+- **AI agents**: before creating any type, field, mutation, or endpoint in this context, consult this glossary.
+- **Developers**: when naming classes, tables, variables, and routes, use the terms from this glossary.
+- **PO and domain specialists**: any new term must be approved and added here before being used.
 
 ---
 
-### [OutroTermo]
+## Domain terms
 
-**Definição**: [descrição]
+### [Term]
 
-**Tipo DDD**: [tipo]
+**Definition**: [precise description of what this term means in this context]
 
-**Usado como**:
-- Na spec: [elemento]
-- No código: [convenção]
+**DDD Type**: `Aggregate` | `Entity` | `Value Object` | `Domain Service` | `Event` | `Business Concept`
+
+**Used as**:
+- In spec: `type [Term]` / `input [Term]Input` / `enum [TermState]`
+- In code: `[Term]` (class), `[term]` (variable), `[terms]` (collection)
+- In database: `[terms]` (table), `[term_field]` (column)
+
+**Do NOT confuse with**:
+- `[OtherTerm]` — [explanation of why they are different]
+- `[TermFromOtherContext]` in `[OtherContext]` — [difference in meaning between contexts]
+
+**Example usage**:
+> "[example sentence using the term in business context]"
 
 ---
 
-## Termos proibidos neste contexto
+### [OtherTerm]
 
-> Termos que existem em outros contextos ou na linguagem técnica mas **não devem ser usados** aqui para evitar confusão.
+**Definition**: [description]
 
-| Termo proibido | Use em vez disso | Motivo |
+**DDD Type**: [type]
+
+**Used as**:
+- In spec: [element]
+- In code: [convention]
+
+---
+
+## Forbidden terms in this context
+
+> Terms that exist in other contexts or in technical language but **must not be used** here to avoid confusion.
+
+| Forbidden term | Use instead | Reason |
 |---|---|---|
-| `[TermoProibido]` | `[TermoCorreto]` | [por que o termo proibido causa ambiguidade] |
-| `item` | `[NomeEspecífico]` | "item" é genérico demais — use o nome do domínio |
-| `data` | `[NomeEspecífico]` | idem |
-| `record` | `[NomeEspecífico]` | idem |
+| `[ForbiddenTerm]` | `[CorrectTerm]` | [why the forbidden term causes ambiguity] |
+| `item` | `[SpecificName]` | "item" is too generic — use the domain name |
+| `data` | `[SpecificName]` | ditto |
+| `record` | `[SpecificName]` | ditto |
 
 ---
 
-## Termos compartilhados com outros contextos
+## Terms shared with other contexts
 
-> Termos que aparecem em múltiplos contextos, mas com significados diferentes. Atenção especial ao trabalhar com integrações.
+> Terms that appear in multiple contexts, but with different meanings. Special attention when working with integrations.
 
-| Termo | Significado neste contexto | Significado em [OutroContexto] |
+| Term | Meaning in this context | Meaning in [OtherContext] |
 |---|---|---|
-| `[Termo]` | [definição local] | [definição no outro contexto] |
+| `[Term]` | [local definition] | [definition in the other context] |
 
 ---
 
-## Eventos de domínio — nomes canônicos
+## Domain events — canonical names
 
-> Eventos são nomeados no **passado** e seguem o padrão `[Agregado][Ação]`.
+> Events are named in the **past tense** and follow the pattern `[Aggregate][Action]`.
 
-| Nome canônico | Quando ocorre |
+| Canonical name | When it occurs |
 |---|---|
-| `[AgregadoAção]` | [descrição do que ocorreu] |
+| `[AggregateAction]` | [description of what occurred] |
 
 ---
 
-## Comandos — nomes canônicos
+## Commands — canonical names
 
-> Comandos expressam **intenção** e seguem o padrão `[verbo][Agregado]`.
+> Commands express **intent** and follow the pattern `[verb][Aggregate]`.
 
-| Nome canônico | Intenção |
+| Canonical name | Intent |
 |---|---|
-| `[VerboCriarAgregado]` | [o que o usuário/sistema quer fazer] |
-| `[VerboCancelarAgregado]` | [idem] |
+| `[CreateAggregateVerb]` | [what the user/system wants to do] |
+| `[CancelAggregateVerb]` | [idem] |
 
 ---
 
-## Histórico de mudanças
+## Change history
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Glossário criado via Event Storming com PO | arquiteto-senior |
+| YYYY-MM-DD | Glossary created via Event Storming with PO | senior-architect |

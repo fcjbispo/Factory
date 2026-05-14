@@ -4,21 +4,21 @@ scope: database
 updated: YYYY-MM-DD
 ---
 
-# Database — Modelo de Dados
+# Database — Data Model
 
-Toda mudança de schema deve ser refletida aqui **antes** de chegar ao código.
+Every schema change must be reflected here **before** reaching code.
 
-## Documentos
+## Documents
 
-| Arquivo | Conteúdo | Status |
+| File | Content | Status |
 |---|---|---|
-| [schema.md](schema.md) | Modelo de dados atual completo | `rascunho` |
-| [changelog.md](changelog.md) | Histórico de mudanças de schema (append-only) | `rascunho` |
-| [data-policies.md](data-policies.md) | Classificação de dados, retenção, LGPD/GDPR | `rascunho` |
+| [schema.md](schema.md) | Complete current data model | `draft` |
+| [changelog.md](changelog.md) | Schema change history (append-only) | `draft` |
+| [data-policies.md](data-policies.md) | Data classification, retention, LGPD/GDPR | `draft` |
 
-## Como usar
+## How to use
 
-- `schema.md`: descreve o estado **atual** do modelo. Atualizado pelo @db-architect a cada migration.
-- `changelog.md`: registro **append-only** — nunca edite entradas anteriores, apenas adicione novas.
-- `data-policies.md`: revisado pelo @security-analyst. Classifica cada campo com dado sensível ou PII.
-- Para novas entidades: produza o ERD antes de escrever qualquer migration e submeta ao @arquiteto-senior.
+- `schema.md`: describes the **current** state of the model. Updated by @db-architect with each migration.
+- `changelog.md`: **append-only** record — never edit previous entries, only add new ones.
+- `data-policies.md`: reviewed by @security-analyst. Classifies each field with sensitive data or PII.
+- For new entities: produce the ERD before writing any migration and submit to @senior-architect.

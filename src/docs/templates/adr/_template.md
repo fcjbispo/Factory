@@ -1,49 +1,49 @@
 ---
 type: adr
-status: proposto
-owner: arquiteto-senior
+status: proposed
+owner: senior-architect
 updated: YYYY-MM-DD
 related: []
 ---
 
-# ADR-NNNN: [Título da Decisão]
+# ADR-NNNN: [Decision Title]
 
-## Contexto
+## Context
 
-> Descreva o problema ou a necessidade que motivou esta decisão. Qual é o contexto técnico e de negócio? Quais são as restrições relevantes?
+> Describe the problem or need that motivated this decision. What is the technical and business context? What are the relevant constraints?
 
-## Decisão
+## Decision
 
-> Descreva a decisão tomada de forma clara e direta. Use voz ativa: "Adotamos X" / "Utilizaremos Y".
+> Describe the decision taken clearly and directly. Use active voice: "We adopt X" / "We will use Y".
 
-## Alternativas consideradas
+## Alternatives considered
 
-### Opção A: [nome]
-**Prós**: ...
-**Contras**: ...
+### Option A: [name]
+**Pros**: ...
+**Cons**: ...
 
-### Opção B: [nome]
-**Prós**: ...
-**Contras**: ...
+### Option B: [name]
+**Pros**: ...
+**Cons**: ...
 
-## Consequências
+## Consequences
 
-**Positivas**:
+**Positive**:
 - ...
 
-**Negativas / trade-offs aceitos**:
+**Negative / accepted trade-offs**:
 - ...
 
-**Riscos**:
+**Risks**:
 - ...
 
-## Ações decorrentes
+## Resulting actions
 
-- [ ] [ação concreta] — responsável: [agente]
-- [ ] [ação concreta] — responsável: [agente]
+- [ ] [concrete action] — responsible: [agent]
+- [ ] [concrete action] — responsible: [agent]
 
-## Histórico de mudanças
+## Change history
 
-| Data | Status | Por |
+| Date | Status | By |
 |---|---|---|
-| YYYY-MM-DD | `proposto` | arquiteto-senior |
+| YYYY-MM-DD | `proposed` | senior-architect |

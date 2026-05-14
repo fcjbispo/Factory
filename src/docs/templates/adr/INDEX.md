@@ -6,17 +6,17 @@ updated: YYYY-MM-DD
 
 # ADR — Architecture Decision Records
 
-Registro de todas as decisões arquiteturais significativas do projeto.
-Um ADR aceito nunca é editado — é substituído por um novo ADR.
+Record of all significant architectural decisions of the project.
+An accepted ADR is never edited — it is replaced by a new ADR.
 
-## Registro
+## Registry
 
-| ID | Título | Status | Data | Substitui |
+| ID | Title | Status | Date | Supersedes |
 |---|---|---|---|---|
-| [0001](0001-exemplo.md) | [Título da decisão] | `proposto` | YYYY-MM-DD | — |
+| [0001](0001-example.md) | [Decision title] | `proposed` | YYYY-MM-DD | — |
 
-## Como usar
+## How to use
 
-- Para propor uma decisão: copie `_template.md`, nomeie como `NNNN-titulo.md` e defina status como `proposto`
-- Para aceitar: altere status para `aceito` após aprovação do PO e Arquiteto Sênior
-- Para substituir: crie um novo ADR referenciando o anterior, atualize o antigo para `substituído-por: NNNN-novo.md`
+- To propose a decision: copy `_template.md`, name it `NNNN-title.md` and set status to `proposed`
+- To accept: change status to `accepted` after approval from PO and Senior Architect
+- To supersede: create a new ADR referencing the previous one, update the old one to `superseded-by: NNNN-new.md`

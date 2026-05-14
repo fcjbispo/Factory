@@ -4,20 +4,20 @@ scope: decisions
 updated: YYYY-MM-DD
 ---
 
-# Decisions — Decisões de Produto e Negócio
+# Decisions — Product and Business Decisions
 
-Decisões tomadas pelo PO que impactam direção do produto.
-Para decisões técnicas, use `adr/`.
+Decisions made by the PO that impact product direction.
+For technical decisions, use `adr/`.
 
-## Registro
+## Registry
 
-| Arquivo | Decisão | Status | Data |
+| File | Decision | Status | Date |
 |---|---|---|---|
 | — | — | — | — |
 
-## Como usar
+## How to use
 
-- Copie `_template.md` e nomeie como `YYYY-MM-DD-titulo-da-decisao.md`
-- Adicione a entrada na tabela acima ao criar o documento
-- Status: `ativo` | `revisado` | `substituído-por: [arquivo]`
-- Agentes consultam este índice para entender o contexto de negócio por trás das tarefas técnicas
+- Copy `_template.md` and name it `YYYY-MM-DD-title-of-decision.md`
+- Add the entry in the table above when creating the document
+- Status: `active` | `reviewed` | `superseded-by: [file]`
+- Agents consult this index to understand the business context behind technical tasks

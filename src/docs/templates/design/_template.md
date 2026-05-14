@@ -1,67 +1,67 @@
 ---
 type: design
-status: rascunho
-owner: arquiteto-senior
+status: draft
+owner: senior-architect
 readers: [fullstack-developer, db-architect, qa-tester, security-analyst]
 updated: YYYY-MM-DD
 related: []
 ---
 
-# [Nome da Feature]
+# [Feature Name]
 
-## Contexto e problema
+## Context and problem
 
-> Por que esta feature existe? Qual problema de negócio ou técnico ela resolve?
+> Why does this feature exist? What business or technical problem does it solve?
 
-## Solução proposta
+## Proposed solution
 
-> Descreva a solução em linguagem clara. Inclua o fluxo principal e os fluxos alternativos relevantes.
+> Describe the solution in clear language. Include the main flow and relevant alternative flows.
 
-## Componentes afetados
+## Affected components
 
-| Componente | Tipo de impacto | Agente responsável |
+| Component | Impact type | Responsible agent |
 |---|---|---|
-| [nome] | novo / modificado / removido | [agente] |
+| [name] | new / modified / removed | [agent] |
 
-## Contrato de API
+## API Contract
 
-> Referencie ou descreva os endpoints/eventos envolvidos. Se o contrato ainda não existe em `api/`, ele deve ser criado antes da implementação.
+> Reference or describe the involved endpoints/events. If the contract does not yet exist in `api/`, it must be created before implementation.
 
 ```
-# Referência: api/[nome-do-contrato].yaml
+# Reference: api/[contract-name].yaml
 ```
 
-## Modelo de dados
+## Data model
 
-> Descreva as entidades novas ou modificadas. Se houver migration, o DB Architect deve criar o schema em `database/` antes da implementação.
+> Describe new or modified entities. If there is a migration, the DB Architect must create the schema in `database/` before implementation.
 
-## Critérios de aceitação
+## Acceptance criteria
 
-- [ ] Dado [contexto], quando [ação], então [resultado esperado]
-- [ ] Dado [contexto], quando [ação inválida], então [comportamento de erro esperado]
+- [ ] Given [context], when [action], then [expected result]
+- [ ] Given [context], when [invalid action], then [expected error behavior]
 
-## Abordagem de testes
+## Testing approach
 
-| Tipo | O que testar | Responsável |
+| Type | What to test | Responsible |
 |---|---|---|
-| Unitário | [lógica específica] | fullstack-developer |
-| Integração | [fluxo específico] | qa-tester |
-| E2E | [caminho crítico] | qa-tester |
+| Unit | [specific logic] | fullstack-developer |
+| Integration | [specific flow] | qa-tester |
+| E2E | [critical path] | qa-tester |
 
-## Considerações de segurança
+## Security considerations
 
-> Quais dados sensíveis estão envolvidos? Há requisitos de autenticação/autorização específicos? Referencie o threat model se existir.
+> What sensitive data is involved? Are there specific authentication/authorization requirements? Reference the threat model if it exists.
 
-## Considerações de performance
+## Performance considerations
 
-> Existem expectativas de volume ou latência? Há riscos de N+1 queries ou gargalos conhecidos?
+> Are there volume or latency expectations? Are there risks of N+1 queries or known bottlenecks?
 
-## Alternativas descartadas
+## Discarded alternatives
 
-> Documente brevemente o que foi considerado e por que foi descartado.
+> Briefly document what was considered and why it was discarded.
 
-## Histórico de mudanças
+## Change history
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Versão inicial | arquiteto-senior |
+| YYYY-MM-DD | Initial version | senior-architect |

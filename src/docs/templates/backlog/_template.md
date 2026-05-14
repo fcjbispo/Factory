@@ -1,51 +1,51 @@
 ---
 type: backlog-item
-status: aberto
+status: open
 priority: P3
 owner: po
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-tags: [bug|melhoria|tech-debt|documentacao|seguranca|performance|dependencia|dados]
+tags: [bug|improvement|tech-debt|documentation|security|performance|dependency|data]
 ---
 
-# Título curto e descritivo
+# Short and descriptive title
 
-## Descrição
+## Description
 
-Descrição clara e objetiva do problema ou necessidade.
+Clear and objective description of the problem or need.
 
-## Contexto
+## Context
 
-Por que este item é importante? Qual impacto no negócio ou sistema?
+Why is this item important? What is the impact on the business or system?
 
-## Critérios de Aceitação
+## Acceptance Criteria
 
-- [ ] Critério 1
-- [ ] Critério 2
-- [ ] Critério 3
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
 
-## Critérios de Rejeição
+## Rejection Criteria
 
-- [ ] Critério que invalida o item
+- [ ] Criterion that invalidates the item
 
-## Tarefas
+## Tasks
 
-- [ ] Tarefa 1
-- [ ] Tarefa 2
-- [ ] Tarefa 3
+- [ ] Task 1
+- [ ] Task 2
+- [ ] Task 3
 
-## Decisões
+## Decisions
 
-| Data | Decisão | Por |
+| Date | Decision | By |
 |---|---|---|
-| YYYY-MM-DD | Decisão tomada | agente |
+| YYYY-MM-DD | Decision made | agent |
 
-## Notas
+## Notes
 
-Notas técnicas, links úteis, referências.
+Technical notes, useful links, references.
 
-## Histórico
+## History
 
-| Data | Status | Por | Nota |
+| Date | Status | By | Note |
 |---|---|---|---|
-| YYYY-MM-DD | aberto | po | Item criado |
+| YYYY-MM-DD | open | po | Item created |

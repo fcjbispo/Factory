@@ -4,23 +4,23 @@ scope: operations
 updated: YYYY-MM-DD
 ---
 
-# Operations — Operações e Confiabilidade
+# Operations — Operations and Reliability
 
-## Documentos principais
+## Main Documents
 
-| Arquivo | Conteúdo | Status |
+| File | Content | Status |
 |---|---|---|
-| [runbook.md](runbook.md) | Procedimentos operacionais críticos | `rascunho` |
+| [runbook.md](runbook.md) | Critical operational procedures | `draft` |
 
 ## Postmortems
 
-| Arquivo | Incidente | Severidade | Data | Status |
+| File | Incident | Severity | Date | Status |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Como usar
+## How to use
 
-- `runbook.md`: documento vivo com comandos reais e executáveis. Atualizado pelo @devops-sre após cada incidente ou mudança de infraestrutura.
-- Postmortems: copie `postmortems/_template.md`, nomeie como `YYYY-MM-DD-nome-do-incidente.md` e adicione a entrada na tabela acima.
-- Postmortems são **blameless** — foco em sistemas e processos, nunca em pessoas.
-- Severidade: `P1` (crítico, produção fora) | `P2` (degradado, impacto parcial) | `P3` (baixo impacto)
+- `runbook.md`: living document with real, executable commands. Updated by @devops-sre after each incident or infrastructure change.
+- Postmortems: copy `postmortems/_template.md`, name it `YYYY-MM-DD-name-of-incident.md` and add the entry in the table above.
+- Postmortems are **blameless** — focus on systems and processes, never on people.
+- Severity: `P1` (critical, production down) | `P2` (degraded, partial impact) | `P3` (low impact)

@@ -4,26 +4,26 @@ scope: design
 updated: YYYY-MM-DD
 ---
 
-# Design — Especificações de Features
+# Design — Feature Specifications
 
-Documentos de design devem ser criados **antes** da implementação.
-O @arquiteto-senior cria, o PO aprova, todos os agentes envolvidos leem antes de iniciar.
+Design documents must be created **before** implementation.
+The @senior-architect creates, the PO approves, and all involved agents read before starting.
 
-## Documentos ativos
+## Active Documents
 
-| Arquivo | Feature | Status | Data | Agentes envolvidos |
+| File | Feature | Status | Date | Involved agents |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Documentos concluídos / implementados
+## Completed / Implemented Documents
 
-| Arquivo | Feature | Data de conclusão |
+| File | Feature | Completion date |
 |---|---|---|
 | — | — | — |
 
-## Como usar
+## How to use
 
-- Copie `_template.md` e nomeie como `YYYY-MM-DD-nome-da-feature.md`
-- Status inicial: `rascunho` → submeta ao PO para aprovação → altere para `ativo`
-- Ao concluir a implementação: mova a entrada para a tabela de concluídos e altere status para `implementado`
-- Features simples (CRUD direto) podem ser implementadas sem documento de design, a critério do @arquiteto-senior
+- Copy `_template.md` and name it `YYYY-MM-DD-name-of-feature.md`
+- Initial status: `draft` → submit to PO for approval → change to `active`
+- When completing implementation: move the entry to the completed table and change status to `implemented`
+- Simple features (straightforward CRUD) may be implemented without a design document, at the discretion of @senior-architect
