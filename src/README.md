@@ -1,104 +1,104 @@
 # Factory Framework
 
-> Framework de gestão e execução de projetos de software com agentes de IA.
-> Integra **Domain-Driven Design (DDD)** e **Spec-Driven Development (SDD)** como paradigma central.
+> Framework for managing and executing software projects with AI agents.
+> Integrates **Domain-Driven Design (DDD)** and **Spec-Driven Development (SDD)** as its central paradigm.
 
-A Factory define como projetos são estruturados, documentados, operados e evoluídos — tanto por humanos quanto por agentes de IA. Ela gerencia **documentação e configuração**, mantendo separação clara do código-fonte.
+Factory defines how projects are structured, documented, operated, and evolved — by both humans and AI agents. It manages **documentation and configuration**, keeping a clear separation from source code.
 
-## Paradigma DDD + SDD
+## DDD + SDD Paradigm
 
-A partir da v1.2.0, a Factory adota a integração entre DDD (estratégico/tático) e SDD (operacional):
+Starting from v1.2.0, Factory adopts the integration between DDD (strategic/tactical) and SDD (operational):
 
-- **DDD** define o quê e o porquê — bounded contexts, linguagem ubíqua, agregados, domain events
-- **SDD** formaliza como isso vira contrato executável — APIs, invariantes, breaking changes
+- **DDD** defines the what and the why — bounded contexts, ubiquitous language, aggregates, domain events
+- **SDD** formalizes how this becomes an executable contract — APIs, invariants, breaking changes
 
-Cada bounded context expõe sua própria spec em `docs/api/`. O arquivo `docs/domain/context-map.md` registra como os contextos se relacionam.
+Each bounded context exposes its own spec in `docs/api/`. The `docs/domain/context-map.md` file records how contexts relate.
 
-## Estrutura
+## Structure
 
 ```
 ~/Dev/
-├── Factory/                    ← repositório da Factory
-│   ├── factory-init.sh         ← ponto único de entrada
-│   ├── FACTORY-GUIDE.md        ← guia canônico
+├── Factory/                    ← Factory repository
+│   ├── factory-init.sh         ← single entry point
+│   ├── FACTORY-GUIDE.md        ← canonical guide
 │   └── docs/
-│       ├── agents/             ← 7 perfis de agentes de IA
-│       └── templates/          ← templates de documentação
+│       ├── agents/             ← 7 AI agent profiles
+│       └── templates/          ← documentation templates
 └── Projects/
-    └── <projeto>/              ← código-fonte
+    └── <project>/              ← source code
 ```
 
-Documentação e configuração vivem em `~/Dev/Factory/<projeto>/`. Código-fonte vive em `~/Dev/Projects/<projeto>/`. A ponte entre os dois é o `/add-dir` dentro das sessões Claude Code.
+Documentation and configuration live in `~/Dev/Factory/<project>/`. Source code lives in `~/Dev/Projects/<project>/`. The bridge between them is `/add-dir` within Claude Code sessions.
 
-## Instalação
+## Installation
 
 ```bash
 cd ~/Dev/Factory
 
-# Instalar agentes globalmente
+# Install agents globally
 ./factory-init.sh agents
 
-# Adicionar função shell ao perfil
+# Add shell function to profile
 ./factory-init.sh shell-setup >> ~/.zshrc && source ~/.zshrc
 ```
 
-## Uso rápido
+## Quick usage
 
 ```bash
-# Criar projeto novo
-./factory-init.sh new meu-projeto
+# Create new project
+./factory-init.sh new my-project
 
-# Integrar projeto existente (migração completa)
-./factory-init.sh adopt meu-projeto --mode=full
+# Integrate existing project (full migration)
+./factory-init.sh adopt my-project --mode=full
 
-# Integrar projeto existente (convivência)
-./factory-init.sh adopt meu-projeto --mode=coexist
+# Integrate existing project (coexistence)
+./factory-init.sh adopt my-project --mode=coexist
 
-# Listar projetos registrados
+# List registered projects
 ./factory-init.sh list
 
-# Atualizar framework da branch master
+# Update framework from master branch
 ./factory-init.sh update [--version=X.Y.Z] [--dry-run]
 
-# Propagar templates para projeto
-./factory-init.sh sync <nome> [--dry-run]
+# Propagate templates to project
+./factory-init.sh sync <name> [--dry-run]
 
-# Mostrar comando para iniciar sessão
-./factory-init.sh work meu-projeto
+# Show command to start session
+./factory-init.sh work my-project
 ```
 
-## Agentes de IA
+## AI Agents
 
-7 agentes especializados, instalados globalmente via `./factory-init.sh agents`:
+7 specialized agents, installed globally via `./factory-init.sh agents`:
 
-| Agente               | Papel                                                  |
-| ----------------------| --------------------------------------------------------|
-| Arquiteto Sênior     | Arquitetura, ADRs, contratos de API, design de sistema |
-| Full-Stack Developer | Implementação de features, correções, commits          |
-| DB Architect         | Modelagem de dados, migrations, otimização de queries  |
-| Code Reviewer        | Revisão obrigatória de PRs, qualidade, segurança       |
-| QA Tester            | Estratégia de testes, automação, critérios de release  |
-| DevOps/SRE           | CI/CD, infraestrutura, observabilidade, postmortems    |
-| Security Analyst     | Threat modeling, vulnerabilidades, LGPD/GDPR           |
+| Agent | Role |
+|-------|------|
+| Senior Architect | Architecture, ADRs, API contracts, system design |
+| Full-Stack Developer | Feature implementation, fixes, commits |
+| DB Architect | Data modeling, migrations, query optimization |
+| Code Reviewer | Mandatory PR review, quality, security |
+| QA Tester | Testing strategy, automation, release criteria |
+| DevOps/SRE | CI/CD, infrastructure, observability, postmortems |
+| Security Analyst | Threat modeling, vulnerabilities, LGPD/GDPR |
 
-## Documentação
+## Documentation
 
-Cada projeto Factory é documentado com templates canônicos nas seções: ADR, API, arquitetura, backlog (gestão de produção), banco de dados, design, domínio (context-map DDD), operações, segurança, testes, decisões de produto e contexto de sessão.
+Each Factory project is documented with canonical templates in sections: ADR, API, architecture, backlog (production management), database, design, domain (DDD context-map), operations, security, testing, product decisions, and session context.
 
-### Backlog (novo na v1.3.0)
+### Backlog (new in v1.3.0)
 
-Gestão de produção contínua com priorização MoSCoW + RICE. Categorias: bugs, melhorias, débito técnico, documentação, segurança, performance, dependências e dados. Estados: `aberto` → `em-análise` → `priorizado` → `em-progresso` → `resolvido`.
+Continuous production management with MoSCoW + RICE prioritization. Categories: bugs, improvements, technical debt, documentation, security, performance, dependencies, and data. States: `open` → `under-analysis` → `prioritized` → `in-progress` → `resolved`.
 
-## Regras fundamentais
+## Fundamental rules
 
-- Nenhum documento é criado sem template — use sempre o `_template.md` da seção
-- Todo documento tem frontmatter YAML obrigatório (`type`, `status`, `owner`, `updated`)
-- ADRs aceitos nunca são editados — são substituídos por um novo
-- `database/changelog.md` é append-only
-- Vulnerabilidades ativas não são armazenadas no repositório
+- No document is created without a template — always use the `_template.md` of the section
+- Every document has mandatory frontmatter YAML (`type`, `status`, `owner`, `updated`)
+- Accepted ADRs are never edited — they are replaced by a new one
+- `database/changelog.md` is append-only
+- Active vulnerabilities are not stored in the repository
 
-## Leitura adicional
+## Further reading
 
-- [FACTORY-GUIDE.md](FACTORY-GUIDE.md) — guia canônico completo
-- [docs/templates/INDEX.md](docs/templates/INDEX.md) — ponto de entrada da documentação
-- [docs/templates/GUIDE.md](docs/templates/GUIDE.md) — convenções de documentação
+- [FACTORY-GUIDE.md](FACTORY-GUIDE.md) — complete canonical guide
+- [docs/templates/INDEX.md](docs/templates/INDEX.md) — documentation entry point
+- [docs/templates/GUIDE.md](docs/templates/GUIDE.md) — documentation conventions

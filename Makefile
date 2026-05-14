@@ -8,15 +8,35 @@
 #   make build LANG=en    Build specific locale
 #   make clean            Remove dist/ artifacts
 #   make release          Build + tag + push (requires git setup)
+#
+# IMPORTANT: VERSION is auto-detected from the current git branch name.
+#            Branches named 'vX.Y.Z' or 'vX.Y.Z_suffix' produce version X.Y.Z.
+#            If not on a version branch, falls back to the hardcoded VERSION.
 # =============================================================================
 
-VERSION := 1.3.0
+# Auto-detect version from current git branch (v1.3.0_localized → 1.3.0)
+GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
+GIT_VERSION := $(shell echo "$(GIT_BRANCH)" | sed -n 's/^v\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/p')
+
+# Fallback to hardcoded version if not on a version branch
+ifeq ($(GIT_VERSION),)
+  VERSION := 1.3.0
+else
+  VERSION := $(GIT_VERSION)
+endif
+
 LOCALES := en pt
 DIST_DIR := dist
 
-.PHONY: all build-all build clean release check
+.PHONY: all build-all build clean release check version-info
 
 all: build-all
+
+version-info:
+	@echo "Current branch: $(GIT_BRANCH)"
+	@echo "Detected version: $(VERSION)"
+
+build-all: version-info $(patsubst %,$(DIST_DIR)/factory-$(VERSION).%.tar.gz,$(LOCALES))
 
 build-all: $(patsubst %,$(DIST_DIR)/factory-$(VERSION).%.tar.gz,$(LOCALES))
 
