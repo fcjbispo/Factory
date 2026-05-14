@@ -90,13 +90,13 @@ There is no giant schema. Each bounded context exposes its own API with its own 
 
 ---
 
-## Mapa completo: `Factory/docs/`
+## Complete Map: `Factory/docs/`
 
 ### `docs/agents/`
 
-**Propósito**: repositório dos perfis de agentes de IA disponíveis para todos os projetos da Factory.
+**Purpose**: repository of AI agent profiles available for all Factory projects.
 
-**Responsável**: PO define o time. Arquiteto Sênior mantém os perfis técnicos.
+**Responsible**: PO defines the team. Senior Architect maintains technical profiles.
 
 **When to use**: execute `./factory-init.sh agents` to install all agents globally in `~/.claude/agents/`. Available in any project on the machine without duplication.
 
@@ -115,449 +115,449 @@ There is no giant schema. Each bounded context exposes its own API with its own 
 
 ### `docs/templates/`
 
-**Propósito**: templates canônicos de documentação. Nenhum documento de projeto é criado do zero — sempre parte de um template desta pasta.
+**Purpose**: canonical documentation templates. No project document is created from scratch — always based on a template from this folder.
 
-**Responsável**: Arquiteto Sênior mantém os templates técnicos. PO mantém os templates de decisão de produto.
+**Responsible**: Senior Architect maintains technical templates. PO maintains product decision templates.
 
-**Quando usar**: o `factory-init.sh` copia automaticamente esta estrutura para `Factory/[projeto]/docs/` ao criar ou adotar um projeto. Nunca copie manualmente.
+**When to use**: `factory-init.sh` automatically copies this structure to `Factory/[project]/docs/` when creating or adopting a project. Never copy manually.
 
 ---
 
 #### `templates/INDEX.md`
 
-**Propósito**: ponto de entrada da documentação de qualquer projeto. Lista o que existe, onde está e quem deve ler o quê por agente.
+**Purpose**: entry point for documentation of any project. Lists what exists, where it is, and who should read what by agent.
 
-**Responsável**: Arquiteto Sênior cria ao iniciar o projeto e mantém atualizado.
+**Responsible**: Senior Architect creates when starting the project and keeps updated.
 
-**Ação obrigatória**: todo agente lê este arquivo antes de qualquer outra coisa ao entrar em um projeto.
+**Mandatory action**: every agent reads this file before anything else when entering a project.
 
 ---
 
 #### `templates/GUIDE.md`
 
-**Propósito**: guia de uso da estrutura de documentação do projeto — convenções de nomenclatura, frontmatter obrigatório, ciclo de vida dos documentos, regras de manutenção e periodicidade de revisão.
+**Purpose**: usage guide for the project's documentation structure — naming conventions, mandatory frontmatter, document lifecycle, maintenance rules, and review periodicity.
 
-**Responsável**: Arquiteto Sênior. Não deve ser alterado por outros agentes sem aprovação.
+**Responsible**: Senior Architect. Should not be changed by other agents without approval.
 
-**Ação obrigatória**: leitura na primeira sessão de trabalho em qualquer projeto.
+**Mandatory action**: read on the first work session in any project.
 
 ---
 
-#### `templates/domain/` ← **novo em v1.2.0**
+#### `templates/domain/` ← **new in v1.2.0**
 
-**Propósito**: modelagem do domínio pelo paradigma DDD. Define os bounded contexts, a linguagem ubíqua, os agregados, entidades, value objects e domain events. É a **fonte de verdade para os nomes e contratos** de todas as specs em `api/`.
+**Purpose**: domain modeling by the DDD paradigm. Defines bounded contexts, ubiquitous language, aggregates, entities, value objects, and domain events. It is the **source of truth for names and contracts** of all specs in `api/`.
 
-**Responsável**: Arquiteto Sênior lidera com especialistas de domínio (PO e stakeholders de negócio). Nenhum nome na spec pode divergir deste glossário.
+**Responsible**: Senior Architect leads with domain specialists (PO and business stakeholders). No name in the spec may diverge from this glossary.
 
-**Regra crítica**: toda spec em `api/` deve ser derivada de um bounded context documentado em `domain/`. Specs não rastreáveis a um contexto de domínio não são aceitas.
+**Critical rule**: every spec in `api/` must be derived from a bounded context documented in `domain/`. Specs not traceable to a domain context are not accepted.
 
-| Arquivo | Descrição |
+| File | Description |
 |---|---|
-| `INDEX.md` | Registro tabular de todos os bounded contexts com status e spec correspondente |
-| `context-map.md` | Mapa de como os contextos se relacionam (conformista, ACL, publicador/consumidor) |
-| `_template-bounded-context.md` | Template para documentar um bounded context: agregados, entidades, value objects, invariantes e domain events |
-| `_template-ubiquitous-language.md` | Template para o glossário da linguagem ubíqua de cada contexto |
+| `INDEX.md` | Tabular record of all bounded contexts with status and corresponding spec |
+| `context-map.md` | Map of how contexts relate (conformist, ACL, publisher/consumer) |
+| `_template-bounded-context.md` | Template to document a bounded context: aggregates, entities, value objects, invariants, and domain events |
+| `_template-ubiquitous-language.md` | Template for the ubiquitous language glossary of each context |
 
-**Nomenclatura de contextos**: `[nome-do-contexto]-context.md` — ex: `pedidos-context.md`, `estoque-context.md`
-**Nomenclatura de glossários**: `[nome-do-contexto]-language.md` — ex: `pedidos-language.md`
+**Context naming**: `[context-name]-context.md` — ex: `orders-context.md`, `inventory-context.md`
+**Glossary naming**: `[context-name]-language.md` — ex: `orders-language.md`
 
-**Quando criar**:
-- Ao iniciar um projeto novo: antes de qualquer spec em `api/`
-- Ao adotar um projeto existente: como parte da avaliação inicial
-- Ao identificar um novo bounded context emergindo no código
+**When to create**:
+- When starting a new project: before any spec in `api/`
+- When adopting an existing project: as part of the initial assessment
+- When identifying a new bounded context emerging in the code
 
 ---
 
 #### `templates/adr/`
 
-**Propósito**: registra decisões arquiteturais significativas e irreversíveis. Um ADR aceito nunca é editado — é substituído por um novo.
+**Purpose**: records significant and irreversible architectural decisions. An accepted ADR is never edited — it is replaced by a new one.
 
-**Responsável**: Arquiteto Sênior cria. PO aprova decisões de alto impacto.
+**Responsible**: Senior Architect creates. PO approves high-impact decisions.
 
-| Arquivo | Descrição |
+| File | Description |
 |---|---|
-| `INDEX.md` | Registro tabular de todos os ADRs do projeto com status |
-| `_template.md` | Template para novos ADRs (contexto, decisão, alternativas, consequências) |
+| `INDEX.md` | Tabular record of all project ADRs with status |
+| `_template.md` | Template for new ADRs (context, decision, alternatives, consequences) |
 
-**Nomenclatura**: `NNNN-titulo-em-kebab-case.md` — ex: `0001-escolha-do-banco-de-dados.md`
+**Naming**: `NNNN-short-title-in-kebab-case.md` — ex: `0001-database-choice.md`
 
-**Quando criar um ADR**: escolha de tecnologia, definição de padrão arquitetural, mudança que afeta múltiplos módulos, qualquer decisão debatida com alternativas consideradas. Inclui decisões de delimitação de bounded contexts.
+**When to create an ADR**: technology choice, architectural pattern definition, change affecting multiple modules, any debated decision with alternatives considered. Includes bounded context delimitation decisions.
 
 ---
 
 #### `templates/api/`
 
-**Propósito**: contratos formais de API. O contrato é a fonte de verdade — a implementação segue o contrato, nunca o contrário.
+**Purpose**: formal API contracts. The contract is the source of truth — implementation follows the contract, never the opposite.
 
-**Responsável**: Arquiteto Sênior define os contratos. Full-Stack Developer implementa. Code Reviewer valida conformidade.
+**Responsible**: Senior Architect defines contracts. Full-Stack Developer implements. Code Reviewer validates compliance.
 
-| Arquivo | Descrição |
+| File | Description |
 |---|---|
-| `INDEX.md` | Registro de todos os contratos ativos com tipo, versão, bounded context de origem e status |
+| `INDEX.md` | Record of all active contracts with type, version, originating bounded context, and status |
 
-**Formatos aceitos**: OpenAPI 3.x (`.yaml`) para REST, SDL (`.graphql`) para GraphQL, AsyncAPI (`.yaml`) para eventos e mensagens.
+**Accepted formats**: OpenAPI 3.x (`.yaml`) for REST, SDL (`.graphql`) for GraphQL, AsyncAPI (`.yaml`) for events and messages.
 
-**Regra crítica**: nenhum endpoint ou evento é implementado sem contrato aprovado nesta pasta.
+**Critical rule**: no endpoint or event is implemented without an approved contract in this folder.
 
-**Regra DDD**: cada spec deve referenciar o bounded context de origem no seu frontmatter (`domain_context: nome-do-contexto`). Nomes de tipos, campos e operações devem seguir o glossário do contexto correspondente em `domain/`.
+**DDD rule**: every spec must reference the originating bounded context in its frontmatter (`domain_context: context-name`). Type, field, and operation names must follow the glossary of the corresponding context in `domain/`.
 
 ---
 
 #### `templates/architecture/`
 
-**Propósito**: visão do sistema — componentes, diagramas, integrações, fluxos de dados.
+**Purpose**: system overview — components, diagrams, integrations, data flows.
 
-**Responsável**: Arquiteto Sênior cria e mantém.
+**Responsible**: Senior Architect creates and maintains.
 
-| Arquivo/Pasta | Descrição |
+| File/Folder | Description |
 |---|---|
-| `overview.md` | Visão geral do sistema. Leitura obrigatória para todos os agentes. |
-| `diagrams/` | Diagramas como código (Mermaid, PlantUML, C4). Imagens binárias em `diagrams/assets/`. |
+| `overview.md` | System overview. Mandatory reading for all agents. |
+| `diagrams/` | Diagrams as code (Mermaid, PlantUML, C4). Binary images in `diagrams/assets/`. |
 
-**Documentos adicionais recomendados** (criar conforme necessidade do projeto):
-- `components.md`: descrição detalhada de cada módulo
-- `integrations.md`: sistemas externos e como o projeto interage com eles
-- `data-flow.md`: fluxo de dados pelo sistema
+**Additional recommended documents** (create as needed by project):
+- `components.md`: detailed description of each module
+- `integrations.md`: external systems and how the project interacts with them
+- `data-flow.md`: how data flows through the system
 
 ---
 
 #### `templates/database/`
 
-**Propósito**: modelo de dados, histórico de mudanças de schema e políticas de tratamento de dados.
+**Purpose**: data model, schema changelog, and data handling policies.
 
-**Responsável**: DB Architect cria e mantém. Security Analyst revisa `data-policies.md`.
+**Responsible**: DB Architect creates and maintains. Security Analyst reviews `data-policies.md`.
 
-| Arquivo | Descrição |
+| File | Description |
 |---|---|
-| `INDEX.md` | Índice dos documentos de banco com status |
-| `schema.md` (a criar) | Estado atual completo do modelo de dados |
-| `changelog.md` (a criar) | Histórico append-only de mudanças de schema |
-| `data-policies.md` (a criar) | Classificação de dados sensíveis, retenção, LGPD/GDPR |
+| `INDEX.md` | Index of database documents with status |
+| `schema.md` (to create) | Complete current state of the data model |
+| `changelog.md` (to create) | Append-only history of schema changes |
+| `data-policies.md` (to create) | Sensitive data classification, retention, LGPD/GDPR |
 
-**Regra crítica**: `changelog.md` é append-only — nunca edite entradas anteriores.
+**Critical rule**: `changelog.md` is append-only — never edit previous entries.
 
 ---
 
-#### `templates/backlog/` — NOVO na v1.3.0
+#### `templates/backlog/` — NEW in v1.3.0
 
-**Propósito**: gestão de produção contínua — bugs, melhorias, débito técnico, documentação, segurança, performance, dependências e dados.
+**Purpose**: continuous production management — bugs, improvements, technical debt, documentation, security, performance, dependencies, and data.
 
-**Responsável**: PO faz triage e priorização. Arquiteto avalia impacto técnico. Agentes executam conforme papel.
+**Responsible**: PO triages and prioritizes. Architect assesses technical impact. Agents execute according to role.
 
-| Arquivo/Pasta | Descrição |
+| File/Folder | Description |
 |---|---|
-| `INDEX.md` | Visão geral do backlog e regras de fluxo |
-| `backlog-rules.md` | Regras de priorização (MoSCoW + RICE), estados, responsabilidades |
-| `_template.md` | Template padronizado para qualquer item de backlog |
-| `issues/` | Bugs e problemas reportados |
-| `improvements/` | Melhorias e features técnicas |
-| `tech-debt/` | Débito técnico e refactoring |
-| `documentation/` | Gestão de documentação desatualizada ou faltante |
-| `security/` | Vulnerabilidades, patches e atualizações de segurança |
-| `performance/` | Bottlenecks, tuning e escalabilidade |
-| `dependencies/` | Updates de dependências, EOL e vulnerabilidades |
-| `data/` | Migrations, backup e políticas de retenção |
+| `INDEX.md` | Backlog overview and flow rules |
+| `backlog-rules.md` | Prioritization rules (MoSCoW + RICE), states, responsibilities |
+| `_template.md` | Standardized template for any backlog item |
+| `issues/` | Bugs and reported problems |
+| `improvements/` | Improvements and technical features |
+| `tech-debt/` | Technical debt and refactoring |
+| `documentation/` | Management of outdated or missing documentation |
+| `security/` | Vulnerabilities, patches, and security updates |
+| `performance/` | Bottlenecks, tuning, and scalability |
+| `dependencies/` | Dependency updates, EOL, and vulnerabilities |
+| `data/` | Migrations, backup, and retention policies |
 
-**Nomenclatura**: `YYYY-MM-DD-titulo-curto.md`
+**Naming**: `YYYY-MM-DD-short-title.md`
 
-**Estados**: `aberto` → `em-analise` → `priorizado` → `em-progresso` → `resolvido` | `rejeitado` | `suspenso`
+**States**: `open` → `under-analysis` → `prioritized` → `in-progress` → `resolved` | `rejected` | `suspended`
 
-**Prioridade**: `P1` (crítico) | `P2` (alto) | `P3` (médio) | `P4` (baixo)
+**Priority**: `P1` (critical) | `P2` (high) | `P3` (medium) | `P4` (low)
 
-**Regras gerais**:
-1. Todo item deve ter critérios de aceitação claros
-2. Review trimestral obrigatório para tech-debt
-3. Postmortem obrigatório para issues de severidade crítica
-4. Prazos: segurança crítica=24h, alto=7 dias, médio=30 dias, baixo=90 dias
+**General rules**:
+1. Every item must have clear acceptance criteria
+2. Mandatory quarterly review for tech-debt
+3. Mandatory postmortem for critical severity issues
+4. Deadlines: critical security=24h, high=7 days, medium=30 days, low=90 days
 
 ---
 
 #### `templates/design/`
 
-**Propósito**: especificações de features escritas **antes** da implementação. Define o contrato entre PO, Arquiteto e agentes de implementação.
+**Purpose**: feature specifications written **before** implementation. Defines the contract between PO, Architect, and implementation agents.
 
-**Responsável**: Arquiteto Sênior cria. PO aprova. Todos os agentes envolvidos leem antes de iniciar.
+**Responsible**: Senior Architect creates. PO approves. All involved agents read before starting.
 
-| Arquivo | Descrição |
+| File | Description |
 |---|---|
-| `INDEX.md` | Registro de features em andamento e concluídas |
-| `_template.md` | Template com contexto, solução, componentes afetados, critérios de aceitação |
+| `INDEX.md` | Record of features in progress and completed |
+| `_template.md` | Template with context, solution, affected components, acceptance criteria |
 
-**Nomenclatura**: `YYYY-MM-DD-nome-da-feature.md`
+**Naming**: `YYYY-MM-DD-name-of-feature.md`
 
-**Quando criar**: para qualquer feature que envolva mais de um agente ou decisões de design não triviais.
+**When to create**: for any feature involving more than one agent or non-trivial design decisions.
 
 ---
 
 #### `templates/operations/`
 
-**Propósito**: procedimentos operacionais críticos e registro histórico de incidentes.
+**Purpose**: critical operational procedures and historical incident records.
 
-**Responsável**: DevOps/SRE cria e mantém.
+**Responsible**: DevOps/SRE creates and maintains.
 
-| Arquivo/Pasta | Descrição |
+| File/Folder | Description |
 |---|---|
-| `INDEX.md` | Índice dos documentos operacionais e lista de postmortems |
-| `runbook.md` (a criar) | Documento vivo com comandos reais para operações críticas |
-| `postmortems/` | Um arquivo por incidente |
-| `postmortems/_template.md` | Template blameless com linha do tempo, causa raiz e ações corretivas |
+| `INDEX.md` | Index of operational documents and postmortem list |
+| `runbook.md` (to create) | Living document with real commands for critical operations |
+| `postmortems/` | One file per incident |
+| `postmortems/_template.md` | Blameless template with timeline, root cause, and corrective actions |
 
-**Nomenclatura de postmortems**: `YYYY-MM-DD-nome-do-incidente.md`
+**Postmortem naming**: `YYYY-MM-DD-name-of-incident.md`
 
 ---
 
 #### `templates/security/`
 
-**Propósito**: políticas de segurança do projeto e threat models por componente.
+**Purpose**: project security policies and threat models by component.
 
-**Responsável**: Security Analyst cria e mantém.
+**Responsible**: Security Analyst creates and maintains.
 
-| Arquivo/Pasta | Descrição |
+| File/Folder | Description |
 |---|---|
-| `INDEX.md` | Índice com aviso sobre vulnerabilidades ativas e lista de threat models |
-| `policies.md` (a criar) | Políticas de autenticação, autorização, secrets, dados sensíveis |
-| `threat-models/` | Um arquivo por componente ou feature analisada |
-| `threat-models/_template.md` | Template STRIDE com ativos, ameaças, controles e riscos aceitos |
+| `INDEX.md` | Index with warning about active vulnerabilities and threat model list |
+| `policies.md` (to create) | Authentication, authorization, secrets, sensitive data policies |
+| `threat-models/` | One file per analyzed component or feature |
+| `threat-models/_template.md` | STRIDE template with assets, threats, controls, and accepted risks |
 
-**Aviso**: vulnerabilidades ativas **não** ficam nesta pasta — são gerenciadas em canal privado.
+**Warning**: active vulnerabilities **do not** live in this folder — they are managed in a private channel.
 
 ---
 
 #### `templates/testing/`
 
-**Propósito**: estratégia de testes do projeto — paradigma SBD, ferramentas, thresholds e critérios de release.
+**Purpose**: project testing strategy — SBD paradigm, tools, thresholds, and release criteria.
 
-**Responsável**: QA Tester cria e mantém.
+**Responsible**: QA Tester creates and maintains.
 
-| Arquivo | Descrição |
+| File | Description |
 |---|---|
-| `test-strategy.md` | Documento central de estratégia de testes. Leitura obrigatória para todos os agentes. |
+| `test-strategy.md` | Central document with complete strategy. Mandatory reading for all agents. |
 
 ---
 
 #### `templates/decisions/`
 
-**Propósito**: decisões de produto e negócio tomadas pelo PO. Distinto de ADRs, que são decisões técnicas.
+**Purpose**: product and business decisions made by the PO. Distinct from ADRs, which are technical decisions.
 
-**Responsável**: PO cria e mantém. Agentes consultam para entender contexto de negócio.
+**Responsible**: PO creates and maintains. Agents consult to understand business context.
 
-| Arquivo | Descrição |
+| File | Description |
 |---|---|
-| `INDEX.md` | Registro de todas as decisões de produto com status |
-| `_template.md` | Template com contexto, decisão, motivação, trade-offs e critérios de revisão |
+| `INDEX.md` | Record of all product decisions with status |
+| `_template.md` | Template with context, decision, motivation, trade-offs, and review criteria |
 
-**Nomenclatura**: `YYYY-MM-DD-titulo-da-decisao.md`
+**Naming**: `YYYY-MM-DD-title-of-decision.md`
 
 ---
 
 #### `templates/context/`
 
-**Propósito**: contexto de sessão persistente entre sessões de trabalho.
+**Purpose**: persistent session context between work sessions.
 
-**Responsável**: todos os agentes atualizam ao final de cada sessão significativa.
+**Responsible**: all agents update at the end of each significant session.
 
-| Arquivo | Descrição |
+| File | Description |
 |---|---|
-| `active.md` | Foco atual, decisões recentes, próximos passos, bloqueadores |
-| `progress.md` | O que está completo, em andamento e pendente |
+| `active.md` | Current focus, recent decisions, next steps, blockers |
+| `progress.md` | What is complete, in progress, and pending |
 
-**Regra**: leitura obrigatória no início de cada sessão, antes de qualquer tarefa.
+**Rule**: mandatory reading at the beginning of each session, before any task.
 
 ---
 
-## Setup inicial da Factory (uma vez por máquina)
+## Initial Factory Setup (once per machine)
 
 ```bash
 cd ~/Dev/Factory
 
-# Instalar agentes globalmente
+# Install agents globally
 ./factory-init.sh agents
 
-# Adicionar a função shell ao perfil
+# Add shell function to profile
 ./factory-init.sh shell-setup >> ~/.zshrc && source ~/.zshrc
 ```
 
 ---
 
-## Iniciando um projeto do zero
+## Starting a project from scratch
 
 ```bash
 cd ~/Dev/Factory
-./factory-init.sh new <nome-do-projeto>
+./factory-init.sh new <project-name>
 ```
 
-O script cria automaticamente:
-- `~/Dev/Projects/<nome>/` com `CLAUDE.md`
-- `Factory/<nome>/docs/` a partir dos templates (inclui `domain/`)
-- `Factory/<nome>/docs/context/` para contexto de sessão
-- `Factory/<nome>/.factory` com `src_path` registrado
-- `.claude/commands/factory-init.md` no projeto
+The script automatically creates:
+- `~/Dev/Projects/<name>/` with `CLAUDE.md`
+- `Factory/<name>/docs/` from templates (includes `domain/`)
+- `Factory/<name>/docs/context/` for session context
+- `Factory/<name>/.factory` with `src_path` registered
+- `.claude/commands/factory-init.md` in the project
 
-### Primeira sessão
+### First session
 
 ```bash
-cd ~/Dev/Projects/<nome-do-projeto>
-# abra o Claude Code / seu provedor
+cd ~/Dev/Projects/<project-name>
+# open Claude Code / your provider
 ```
 
-Dentro da sessão:
+Within the session:
 
 ```
-/add-dir ~/Dev/Factory/<nome>/docs
+/add-dir ~/Dev/Factory/<name>/docs
 /factory-init
 ```
 
-Em seguida, a sequência obrigatória DDD → SDD → implementação:
+Then, the mandatory DDD → SDD → implementation sequence:
 
 ```
-@arquiteto-senior Leia docs/INDEX.md e docs/GUIDE.md.
-Execute Event Storming com o contexto disponível:
-1. Identifique os bounded contexts do sistema
-2. Crie docs/domain/context-map.md com o mapa de contextos
-3. Para cada contexto, crie docs/domain/[nome]-context.md e docs/domain/[nome]-language.md
-4. Crie docs/architecture/overview.md descrevendo a arquitetura inicial
-5. Registre o primeiro ADR com as decisões tecnológicas
+@arquiteto-senior Read docs/INDEX.md and docs/GUIDE.md.
+Execute Event Storming with available context:
+1. Identify the bounded contexts of the system
+2. Create docs/domain/context-map.md with the context map
+3. For each context, create docs/domain/[name]-context.md and docs/domain/[name]-language.md
+4. Create docs/architecture/overview.md describing the initial architecture
+5. Register the first ADR with technology decisions
 
-@arquiteto-senior Com os bounded contexts definidos em domain/,
-crie os contratos de API correspondentes em docs/api/,
-garantindo que todos os nomes seguem a linguagem ubíqua de cada contexto.
+@arquiteto-senior With bounded contexts defined in domain/,
+create the corresponding API contracts in docs/api/,
+ensuring all names follow the ubiquitous language of each context.
 
-@qa-tester Leia docs/architecture/overview.md e docs/domain/context-map.md.
-Crie docs/testing/test-strategy.md usando SBD como paradigma,
-considerando os bounded contexts e domain events identificados.
+@qa-tester Read docs/architecture/overview.md and docs/domain/context-map.md.
+Create docs/testing/test-strategy.md using SBD as paradigm,
+considering the bounded contexts and domain events identified.
 
-@security-analyst Leia docs/architecture/overview.md e docs/domain/ .
-Crie docs/security/policies.md com as políticas de segurança iniciais,
-considerando os dados sensíveis de cada bounded context.
-```
-
----
-
-## Integrando um projeto existente
-
-Projetos existentes podem ser integrados em dois modos: **migração completa** ou **convivência**.
-
-### Avaliação inicial (obrigatória para ambos os modos)
-
-Inicie uma sessão na raiz do projeto existente e execute:
-
-```
-@arquiteto-senior Faça uma avaliação deste projeto:
-1. Mapeie a estrutura de código (módulos, camadas, padrões identificados)
-2. Identifique bounded contexts emergentes no código existente
-3. Liste toda documentação existente e avalie sua qualidade
-4. Identifique decisões técnicas que deveriam virar ADRs
-5. Aponte a linguagem ubíqua implícita no código (nomes de classes, tabelas, rotas)
-6. Aponte gaps de documentação críticos
-Produza um relatório para que o PO decida o modo de integração.
+@security-analyst Read docs/architecture/overview.md and docs/domain/ .
+Create docs/security/policies.md with initial security policies,
+considering sensitive data for each bounded context.
 ```
 
 ---
 
-### Modo 1: Migração completa
+## Integrating an existing project
 
-**Quando usar**: projeto em desenvolvimento ativo, documentação existente escassa ou desatualizada.
+Existing projects can be integrated in two modes: **full migration** or **coexistence**.
+
+### Initial assessment (mandatory for both modes)
+
+Start a session at the root of the existing project and execute:
+
+```
+@arquiteto-senior Perform an assessment of this project:
+1. Map the code structure (modules, layers, identified patterns)
+2. Identify bounded contexts emerging in the existing code
+3. List all existing documentation and assess its quality
+4. Identify technical decisions that should become ADRs
+5. Point out the ubiquitous language implicit in the code (class names, tables, routes)
+6. Point out critical documentation gaps
+Produce a report for the PO to decide the integration mode.
+```
+
+---
+
+### Mode 1: Full migration
+
+**When to use**: project in active development, existing documentation scarce or outdated.
 
 ```bash
 cd ~/Dev/Factory
-./factory-init.sh adopt <nome-do-projeto> --mode=full
+./factory-init.sh adopt <project-name> --mode=full
 ```
 
-O script executa automaticamente:
-- Copia `docs/` existente para `Factory/<nome>/docs-legado/`
-- Cria `Factory/<nome>/docs/` a partir dos templates (inclui `domain/`)
-- Cria `Factory/<nome>/docs/context/`
-- Cria `CLAUDE.md` no projeto com ponteiros para Factory e legado
-- Cria `.claude/commands/factory-init.md` no projeto
-- Registra o projeto em `Factory/<nome>/.factory`
+The script automatically:
+- Copies existing `docs/` to `Factory/<name>/docs-legacy/`
+- Creates `Factory/<name>/docs/` from templates (includes `domain/`)
+- Creates `Factory/<name>/docs/context/`
+- Creates `CLAUDE.md` in the project with pointers to Factory and legacy
+- Creates `.claude/commands/factory-init.md` in the project
+- Registers the project in `Factory/<name>/.factory`
 
-### Primeira sessão após o adopt
+### First session after adopt
 
 ```bash
-cd ~/Dev/Projects/<nome-do-projeto>
-# abra o Claude Code / seu provedor
+cd ~/Dev/Projects/<project-name>
+# open Claude Code / your provider
 ```
 
 ```
-/add-dir ~/Dev/Factory/<nome>/docs
+/add-dir ~/Dev/Factory/<name>/docs
 /factory-init
 execute prompt factory-adoption
 ```
 
-O prompt `factory-adoption` (salvo em `~/Dev/Contexts/Prompts/factory-adoption.md`)
-conduz os agentes pela varredura completa e população da estrutura Factory,
-incluindo a descoberta e documentação dos bounded contexts em `domain/`.
+The `factory-adoption` prompt (saved in `~/Dev/Contexts/Prompts/factory-adoption.md`)
+guides agents through the complete scan and population of the Factory structure,
+including the discovery and documentation of bounded contexts in `domain/`.
 
-### Arquivar o legado após validação com o PO
+### Archive legacy after validation with PO
 
 ```bash
-tar -czf ~/Dev/Factory/<nome>/docs-legado.tar.gz \
- ~/Dev/Factory/<nome>/docs-legado/
-rm -rf ~/Dev/Factory/<nome>/docs-legado/
+tar -czf ~/Dev/Factory/<name>/docs-legacy.tar.gz \
+ ~/Dev/Factory/<name>/docs-legacy/
+rm -rf ~/Dev/Factory/<name>/docs-legacy/
 ```
 
 ---
 
-### Modo 2: Convivência
+### Mode 2: Coexistence
 
-**Quando usar**: projeto em produção crítica, documentação existente ainda válida, migração imediata custosa.
+**When to use**: project in critical production, existing documentation still valid, immediate migration costly.
 
 ```bash
 cd ~/Dev/Factory
-./factory-init.sh adopt <nome-do-projeto> --mode=coexist
+./factory-init.sh adopt <project-name> --mode=coexist
 ```
 
-O script cria `Factory/<nome>/docs/` sem tocar no existente e configura
-o `CLAUDE.md` com as regras de precedência entre as duas fontes.
+The script creates `Factory/<name>/docs/` without touching the existing and configures
+`CLAUDE.md` with precedence rules between the two sources.
 
-### Comportamento no modo convivência
+### Behavior in coexistence mode
 
-| Situação | Ação |
+| Situation | Action |
 |---|---|
-| Criar documentação nova | Sempre em `Factory/<nome>/docs/` |
-| Criar specs de API | Sempre derivadas de `domain/` (linguagem ubíqua obrigatória) |
-| Consultar documentação | Leia ambas — Factory prevalece em conflito |
-| Atualizar doc existente | Migre de `docs/` para Factory primeiro |
+| Create new documentation | Always in `Factory/<name>/docs/` |
+| Create API specs | Always derived from `domain/` (ubiquitous language mandatory) |
+| Consult documentation | Read both — Factory prevails in conflict |
+| Update existing doc | Migrate from `docs/` to Factory first |
 
-### Critérios para encerrar o modo convivência
+### Criteria to end coexistence mode
 
-- Mais de 80% da documentação ativa em `Factory/docs/`
-- Nenhum arquivo em `docs/` consultado nos últimos 60 dias
-- `domain/` com todos os bounded contexts documentados
-- PO aprova a migração final
+- More than 80% of active documentation in `Factory/docs/`
+- No file in `docs/` consulted in the last 60 days
+- `domain/` with all bounded contexts documented
+- PO approves final migration
 
-Para encerrar:
+To end:
 
 ```bash
-./factory-init.sh adopt <nome-do-projeto> --mode=full
+./factory-init.sh adopt <project-name> --mode=full
 ```
 
 ---
 
-## Iniciando uma sessão de trabalho
+## Starting a work session
 
-Para qualquer projeto já registrado:
+For any already registered project:
 
 ```bash
-cd ~/Dev/Projects/<nome-do-projeto>
-# abra o Claude Code / seu provedor
+cd ~/Dev/Projects/<project-name>
+# open Claude Code / your provider
 ```
 
-Dentro da sessão, sempre em sequência:
+Within the session, always in sequence:
 
 ```
-/add-dir ~/Dev/Factory/<nome>/docs
+/add-dir ~/Dev/Factory/<name>/docs
 /factory-init
 ```
 
-O `/add-dir` carrega os docs Factory no contexto da sessão.
-O `/factory-init` orienta o Claude a ler `docs/INDEX.md`,
-`docs/context/active.md` e `docs/context/progress.md`.
+`/add-dir` loads Factory docs into the session context.
+`/factory-init` guides Claude to read `docs/INDEX.md`,
+`docs/context/active.md`, and `docs/context/progress.md`.
 
-### Hook global de lembrete (opcional)
+### Global reminder hook (optional)
 
-Adicione ao `~/.claude/settings.json` para receber o `/add-dir` correto
-automaticamente ao iniciar qualquer sessão em projeto Factory:
+Add to `~/.claude/settings.json` to receive the correct `/add-dir`
+automatically when starting any session in a Factory project:
 
 ```json
 {
@@ -578,77 +578,77 @@ automaticamente ao iniciar qualquer sessão em projeto Factory:
 
 ---
 
-## Adicionando `/factory-init` a um projeto já existente
+## Adding `/factory-init` to an already existing project
 
-Se o projeto foi adotado antes desta versão do script:
+If the project was adopted before this script version:
 
 ```bash
 cd ~/Dev/Factory
-./factory-init.sh add-command <nome-do-projeto>
+./factory-init.sh add-command <project-name>
 ```
 
 ---
 
-## Referência rápida do `factory-init.sh`
+## Quick reference for `factory-init.sh`
 
-| Comando | O que faz |
+| Command | What it does |
 |---|---|
-| `./factory-init.sh agents` | Instala agentes em `~/.claude/agents/` |
-| `./factory-init.sh new <nome>` | Cria projeto novo (código + docs + domain/ + comando) |
-| `./factory-init.sh adopt <nome> --mode=full` | Integra projeto existente — migração completa |
-| `./factory-init.sh adopt <nome> --mode=coexist` | Integra projeto existente — convivência |
-| `./factory-init.sh add-command <nome>` | Adiciona `/factory-init` a projeto existente |
-| `./factory-init.sh work <nome>` | Mostra como iniciar a sessão no projeto |
-| `./factory-init.sh list` | Lista projetos registrados com status |
-| `./factory-init.sh shell-setup` | Gera bloco de função shell para `.bashrc`/`.zshrc` |
+| `./factory-init.sh agents` | Installs agents in `~/.claude/agents/` |
+| `./factory-init.sh new <name>` | Creates new project (code + docs + domain/ + command) |
+| `./factory-init.sh adopt <name> --mode=full` | Integrates existing project — full migration |
+| `./factory-init.sh adopt <name> --mode=coexist` | Integrates existing project — coexistence |
+| `./factory-init.sh add-command <name>` | Adds `/factory-init` to existing project |
+| `./factory-init.sh work <name>` | Shows how to start session on the project |
+| `./factory-init.sh list` | Lists registered projects with status |
+| `./factory-init.sh shell-setup` | Generates shell function block for `.bashrc`/`.zshrc` |
 
 ---
 
-## Referência rápida de responsabilidades
+## Quick reference for responsibilities
 
-| Artefato | Cria | Mantém | Aprova | Lê obrigatoriamente |
+| Artifact | Creates | Maintains | Approves | Mandatory reading |
 |---|---|---|---|---|
-| `INDEX.md` (raiz) | arquiteto-senior | arquiteto-senior | — | todos os agentes |
-| `GUIDE.md` | arquiteto-senior | arquiteto-senior | PO | todos os agentes (1ª sessão) |
-| `domain/INDEX.md` | arquiteto-senior | arquiteto-senior | PO | todos os agentes |
-| `domain/context-map.md` | arquiteto-senior | arquiteto-senior | PO | todos os agentes |
-| `domain/[ctx]-context.md` | arquiteto-senior | arquiteto-senior | PO | arquiteto-senior, fullstack-developer |
-| `domain/[ctx]-language.md` | arquiteto-senior | arquiteto-senior + PO | PO | todos os agentes |
-| `context/active.md` | qualquer agente | todos os agentes | — | todos os agentes (início de sessão) |
-| `context/progress.md` | qualquer agente | todos os agentes | — | todos os agentes (início de sessão) |
-| `adr/` | arquiteto-senior | arquiteto-senior | PO (alto impacto) | arquiteto-senior, code-reviewer |
-| `api/` | arquiteto-senior | arquiteto-senior | arquiteto-senior | fullstack-developer, code-reviewer |
-| `architecture/overview.md` | arquiteto-senior | arquiteto-senior | — | todos os agentes |
-| `database/` | db-architect | db-architect | arquiteto-senior | fullstack-developer, security-analyst |
-| `design/` | arquiteto-senior | arquiteto-senior | PO | todos os agentes envolvidos na feature |
+| `INDEX.md` (root) | senior-architect | senior-architect | — | all agents |
+| `GUIDE.md` | senior-architect | senior-architect | PO | all agents (1st session) |
+| `domain/INDEX.md` | senior-architect | senior-architect | PO | all agents |
+| `domain/context-map.md` | senior-architect | senior-architect | PO | all agents |
+| `domain/[ctx]-context.md` | senior-architect | senior-architect | PO | senior-architect, fullstack-developer |
+| `domain/[ctx]-language.md` | senior-architect | senior-architect + PO | PO | all agents |
+| `context/active.md` | any agent | all agents | — | all agents (session start) |
+| `context/progress.md` | any agent | all agents | — | all agents (session start) |
+| `adr/` | senior-architect | senior-architect | PO (high impact) | senior-architect, code-reviewer |
+| `api/` | senior-architect | senior-architect | senior-architect | fullstack-developer, code-reviewer |
+| `architecture/overview.md` | senior-architect | senior-architect | — | all agents |
+| `database/` | db-architect | db-architect | senior-architect | fullstack-developer, security-analyst |
+| `design/` | senior-architect | senior-architect | PO | all agents involved in the feature |
 | `operations/runbook.md` | devops-sre | devops-sre | — | devops-sre |
-| `operations/postmortems/` | devops-sre | devops-sre | — | todos os agentes afetados |
-| `security/policies.md` | security-analyst | security-analyst | PO | todos os agentes |
-| `security/threat-models/` | security-analyst | security-analyst | arquiteto-senior | devops-sre |
+| `operations/postmortems/` | devops-sre | devops-sre | — | all affected agents |
+| `security/policies.md` | security-analyst | security-analyst | PO | all agents |
+| `security/threat-models/` | security-analyst | security-analyst | senior-architect | devops-sre |
 | `testing/test-strategy.md` | qa-tester | qa-tester | — | fullstack-developer, devops-sre |
-| `decisions/` | PO | PO | — | arquiteto-senior, fullstack-developer |
+| `decisions/` | PO | PO | — | senior-architect, fullstack-developer |
 
 ---
 
-## Regras gerais
+## General rules
 
-1. **Nenhum documento é criado sem template.** Use sempre o `_template.md` da seção correspondente.
-2. **Todo documento tem frontmatter.** Campos `type`, `status`, `owner` e `updated` são obrigatórios.
-3. **Documentos depreciados não são deletados.** Altere o status e deixe o histórico intacto.
-4. **A Factory não armazena código-fonte.** Apenas gestão, documentação e templates.
-5. **Um projeto por diretório.** Nunca compartilhe código entre projetos Factory.
-6. **`docs/` de projeto deriva de `Factory/docs/templates/`.** Nunca edite os templates diretamente em um projeto — edite em `Factory/docs/templates/` e propague com `factory-init.sh`.
-7. **Todo ciclo de vida de projeto passa pelo `factory-init.sh`.** Nunca crie estruturas manualmente.
-8. **Specs derivam de domínio.** Nenhum contrato em `api/` é criado sem bounded context correspondente em `domain/`. Nomes divergentes da linguagem ubíqua são bugs de documentação.
-9. **Linguagem ubíqua é contrato.** O glossário em `domain/[ctx]-language.md` é a fonte de verdade para nomenclatura. Qualquer divergência entre o glossário e o código ou a spec deve ser resolvida — sempre em favor do glossário.
+1. **No document is created without a template.** Always use the `_template.md` of the corresponding section.
+2. **Every document has frontmatter.** Fields `type`, `status`, `owner`, and `updated` are mandatory.
+3. **Deprecated documents are not deleted.** Change the status and leave the history intact.
+4. **Factory does not store source code.** Only management, documentation, and templates.
+5. **One project per directory.** Never share code between Factory projects.
+6. **`docs/` of project derives from `Factory/docs/templates/`.** Never edit templates directly in a project — edit in `Factory/docs/templates/` and propagate with `factory-init.sh`.
+7. **Every project lifecycle passes through `factory-init.sh`.** Never create structures manually.
+8. **Specs derive from domain.** No contract in `api/` is created without a corresponding bounded context in `domain/`. Names diverging from the ubiquitous language are documentation bugs.
+9. **Ubiquitous language is contract.** The glossary in `domain/[ctx]-language.md` is the source of truth for naming. Any divergence between the glossary and the code or spec must be resolved — always in favor of the glossary.
 
 ---
 
-## Histórico de mudanças
+## Change history
 
-| Data | Versão | Mudança | Por |
+| Date | Version | Change | By |
 |---|---|---|---|
-| 2026-04-15 | 1.0.0 | Versão inicial | arquiteto-senior |
-| 2026-04-19 | 1.1.0 | Refatoração: comandos manuais substituídos por factory-init.sh; separação código/docs; seção de sessão de trabalho; hook global; context/ adicionado | arquiteto-senior |
-| 2026-04-19 | 1.2.0 | Integração DDD+SDD: nova seção `domain/` nos templates; paradigma DDD→SDD documentado; mapeamento conceitos DDD para elementos de spec; regras 8 e 9 adicionadas; responsabilidades de domain/ na tabela; sequência de primeira sessão atualizada para incluir Event Storming e descoberta de bounded contexts | arquiteto-senior |
-| 2026-04-28 | 1.3.0 | Gestão de produção: nova seção `backlog/` nos templates; template para bugs, melhorias, débito técnico, documentação, segurança, performance, dependências e dados; regras de priorização MoSCoW + RICE; fluxo de estados e responsabilidades; Makefile com helper e alvo release; shellcheck passando sem erros | arquiteto-senior |
+| 2026-04-15 | 1.0.0 | Initial version | senior-architect |
+| 2026-04-19 | 1.1.0 | Refactor: manual commands replaced by factory-init.sh; code/docs separation; work session section; global hook; context/ added | senior-architect |
+| 2026-04-19 | 1.2.0 | DDD+SDD integration: new `domain/` section in templates; DDD→SDD paradigm documented; DDD concept to spec element mapping; rules 8 and 9 added; domain/ responsibilities in table; first session sequence updated to include Event Storming and bounded context discovery | senior-architect |
+| 2026-04-28 | 1.3.0 | Production management: new `backlog/` section in templates; template for bugs, improvements, technical debt, documentation, security, performance, dependencies, and data; MoSCoW + RICE prioritization rules; state flow and responsibilities; Makefile with helper and release target; shellcheck passing without errors | senior-architect |
