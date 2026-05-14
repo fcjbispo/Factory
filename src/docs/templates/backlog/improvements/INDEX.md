@@ -4,29 +4,29 @@ scope: backlog.improvements
 updated: 2026-04-28
 ---
 
-# Improvements — Melhorias e Features Técnicas
+# Improvements — Improvements and Technical Features
 
 ## Backlog
 
-| Arquivo | Título | Prioridade | Status | Estimativa |
+| File | Title | Priority | Status | Estimate |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Em Progresso
+## In Progress
 
-| Arquivo | Título | Prioridade | Status | Atribuído |
+| File | Title | Priority | Status | Assigned |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Implementados
+## Implemented
 
-| Arquivo | Título | Prioridade | Implementado | Por |
+| File | Title | Priority | Implemented | By |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Como usar
+## How to use
 
-- Features técnicas que não vêm de decisão de produto
-- Otimizações de performance
-- Melhorias de UX/DevEx
-- Automatizações
+- Technical features that don't come from product decisions
+- Performance optimizations
+- UX/DevEx improvements
+- Automations

@@ -4,29 +4,29 @@ scope: backlog.data
 updated: 2026-04-28
 ---
 
-# Data — Migrations, Backup e Retenção
+# Data — Migrations, Backup, and Retention
 
 ## Migrations
 
-| Arquivo | Título | Status | Ambiente | Risco |
+| File | Title | Status | Environment | Risk |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
 ## Backup
 
-| Arquivo | Título | Status | Frequência | Retenção |
+| File | Title | Status | Frequency | Retention |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Retenção
+## Retention
 
-| Arquivo | Título | Status | Política |
+| File | Title | Status | Policy |
 |---|---|---|---|
 | — | — | — | — |
 
-## Como usar
+## How to use
 
-- Migrations: testar em staging, rollback plan obrigatório
-- Backup: testar restore trimestral
-- Retenção: LGPD/compliance
-- Data loss: incidente P1
+- Migrations: test in staging, rollback plan mandatory
+- Backup: test restore quarterly
+- Retention: LGPD/compliance
+- Data loss: P1 incident

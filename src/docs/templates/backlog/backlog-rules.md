@@ -4,68 +4,68 @@ scope: backlog
 updated: 2026-04-28
 ---
 
-# Regras do Backlog
+# Backlog Rules
 
-## Priorização
+## Prioritization
 
 ### MoSCoW + RICE
 
-| Prioridade | MoSCoW | RICE Score | Quem decide |
+| Priority | MoSCoW | RICE Score | Who decides |
 |---|---|---|---|
-| P1 (crítico) | Must have | >100 | PO + Arquiteto |
-| P2 (alto) | Should have | 50-100 | PO |
-| P3 (médio) | Could have | 20-50 | PO |
-| P4 (baixo) | Won't have | <20 | PO |
+| P1 (critical) | Must have | >100 | PO + Architect |
+| P2 (high) | Should have | 50-100 | PO |
+| P3 (medium) | Could have | 20-50 | PO |
+| P4 (low) | Won't have | <20 | PO |
 
-### Fatores RICE
+### RICE Factors
 
-- **Reach**: quantos usuários/sistemas afetados?
-- **Impact**: qual impacto no negócio? (0.25=marginal, 0.5=baixo, 1=médio, 2=alto, 3=massivo)
-- **Confidence**: qual certeza dos dados? (%)
-- **Effort**: quantas pessoas-mês?
+- **Reach**: how many users/systems affected?
+- **Impact**: what is the business impact? (0.25=marginal, 0.5=low, 1=medium, 2=high, 3=massive)
+- **Confidence**: what is the certainty of the data? (%)
+- **Effort**: how many person-months?
 
-## Fluxo de Estados
+## State Flow
 
 ```
-aberto → em-analise → priorizado → em-progresso → resolvido
+open → under-analysis → prioritized → in-progress → resolved
                                     ↓
-                              suspenso → rejeitado
+                              suspended → rejected
 ```
 
-## Transições
+## Transitions
 
-| De | Para | Quem pode | Condição |
+| From | To | Who can | Condition |
 |---|---|---|---|
-| aberto | em-analise | Qualquer agente | Item reportado |
-| em-analise | priorizado | PO + Arquiteto | Impacto avaliado |
-| em-analise | rejeitado | PO | Não faz sentido |
-| priorizado | em-progresso | PO | Capacidade disponível |
-| em-progresso | resolvido | Executor | Critérios aceitos |
-| em-progresso | suspenso | PO | Bloqueio externo |
-| suspenso | em-progresso | PO | Bloqueio resolvido |
-| suspenso | rejeitado | PO | Bloqueio permanente |
+| open | under-analysis | Any agent | Item reported |
+| under-analysis | prioritized | PO + Architect | Impact assessed |
+| under-analysis | rejected | PO | Doesn't make sense |
+| prioritized | in-progress | PO | Capacity available |
+| in-progress | resolved | Executor | Acceptance criteria met |
+| in-progress | suspended | PO | External blocker |
+| suspended | in-progress | PO | Blocker resolved |
+| suspended | rejected | PO | Permanent blocker |
 
-## Responsabilidades
+## Responsibilities
 
-| Papel | Responsabilidade |
+| Role | Responsibility |
 |---|---|
-| PO | Triage, priorização, aprovação |
-| Arquiteto | Impacto técnico, estimativa, riscos |
-| Executor | Implementação, testes, documentação |
-| Code Reviewer | Validação técnica |
-| QA Tester | Validação funcional |
-| DevOps/SRE | Deploy, monitoramento |
+| PO | Triage, prioritization, approval |
+| Architect | Technical impact, estimation, risks |
+| Executor | Implementation, tests, documentation |
+| Code Reviewer | Technical validation |
+| QA Tester | Functional validation |
+| DevOps/SRE | Deploy, monitoring |
 
-## Reuniões
+## Meetings
 
-- **Daily**: 15min, foco em bloqueios
-- **Review**: semanal, demonstração
-- **Retrospective**: mensal, melhoria contínua
-- **Planning**: quinzenal, próxima sprint
+- **Daily**: 15min, focus on blockers
+- **Review**: weekly, demonstration
+- **Retrospective**: monthly, continuous improvement
+- **Planning**: biweekly, next sprint
 
-## Métricas
+## Metrics
 
-- Lead time: aberto → resolvido
-- Cycle time: em-progresso → resolvido
-- Throughput: itens resolvidos/semana
-- WIP limit: máximo de itens em progresso por agente
+- Lead time: open → resolved
+- Cycle time: in-progress → resolved
+- Throughput: items resolved/week
+- WIP limit: maximum items in progress per agent
