@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDD & SDD – Metodologias do Framework Factory</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --primary: #5eead4;
+    --primary-dim: #134e4a;
+    --accent: #f0a060;
+    --accent-dim: #7c2d12;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1e293b;
+    --success: #4ade80;
+    --warn: #fbbf24;
+    --radius: 16px;
+    --transition: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #three-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .presentation {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide {
+    position: absolute;
+    width: min(90vw, 1100px);
+    height: min(85vh, 650px);
+    background: rgba(18, 18, 26, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 48px 56px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+    transition: all var(--transition);
+    pointer-events: none;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(94,234,212,0.05) inset;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+  }
+
+  .slide-number {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .slide-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .tag-ddd { background: rgba(94,234,212,0.12); color: var(--primary); }
+  .tag-sdd { background: rgba(240,160,96,0.12); color: var(--accent); }
+  .tag-both { background: rgba(148,163,184,0.1); color: var(--text-dim); }
+
+  h1 {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  h2 {
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 700px;
+  }
+
+  .subtitle {
+    font-size: 18px;
+    color: var(--text-dim);
+    font-weight: 400;
+    margin-bottom: 32px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    flex: 1;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    flex: 1;
+  }
+
+  .card {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+
+  .card:hover {
+    border-color: var(--primary);
+    background: rgba(30, 41, 59, 0.7);
+    transform: translateY(-2px);
+  }
+
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .card p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .list-bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .list-bullet.accent { background: var(--accent); }
+
+  .highlight-box {
+    background: rgba(94,234,212,0.06);
+    border-left: 3px solid var(--primary);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .highlight-box.accent {
+    background: rgba(240,160,96,0.06);
+    border-left-color: var(--accent);
+  }
+
+  .code-block {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--primary);
+    overflow-x: auto;
+  }
+
+  .code-block .keyword { color: #c084fc; }
+  .code-block .string { color: #fbbf24; }
+  .code-block .comment { color: #64748b; }
+
+  .nav {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .nav-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(18,18,26,0.8);
+    backdrop-filter: blur(12px);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s ease;
+  }
+
+  .nav-btn:hover {
+    border-color: var(--primary);
+    background: rgba(94,234,212,0.1);
+  }
+
+  .nav-dots {
+    display: flex;
+    gap: 8px;
+  }
+
+  .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .nav-dot.active {
+    background: var(--primary);
+    box-shadow: 0 0 12px rgba(94,234,212,0.4);
+  }
+
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+  }
+
+  .pros, .cons {
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .pros { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); }
+  .cons { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); }
+
+  .pros h4 { color: var(--success); }
+  .cons h4 { color: #f87171; }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+  }
+
+  .comparison-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comparison-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(30,41,59,0.5);
+    color: var(--text-dim);
+  }
+
+  .comparison-table tr:hover td {
+    background: rgba(94,234,212,0.03);
+  }
+
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 24px 0;
+  }
+
+  .flow-step {
+    background: rgba(30,41,59,0.6);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .flow-connector {
+    color: var(--primary);
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    .slide { padding: 28px 24px; width: 95vw; height: auto; min-height: 70vh; }
+    .grid-2, .grid-3, .pros-cons { grid-template-columns: 1fr; }
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="three-bg"></div>
+
+<div class="presentation" id="presentation">
+
+  <!-- SLIDE 0: Title -->
+  <div class="slide active" data-index="0">
+    <span class="slide-number">01 / 10</span>
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;flex:1;">
+      <span class="slide-tag tag-both">METODOLOGIAS</span>
+      <h1 style="font-size:clamp(36px,5vw,64px);">DDD & SDD</h1>
+      <p class="subtitle" style="font-size:20px;max-width:600px;">
+        Domain-Driven Design & Spec-Driven Development<br>
+        As duas metodologias que estruturam o Framework Factory
+      </p>
+      <div style="display:flex;gap:16px;margin-top:24px;">
+        <span style="background:rgba(94,234,212,0.1);color:var(--primary);padding:8px 20px;border-radius:20px;font-weight:600;font-size:14px;">🧠 DDD – Foco no Domínio</span>
+        <span style="background:rgba(240,160,96,0.1);color:var(--accent);padding:8px 20px;border-radius:20px;font-weight:600;font-size:14px;">📋 SDD – Contratos Claros</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1: What is DDD -->
+  <div class="slide" data-index="1">
+    <span class="slide-number">02 / 10</span>
+    <span class="slide-tag tag-ddd">Domain-Driven Design</span>
+    <h2>O que é DDD?</h2>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:17px;margin-bottom:16px;">
+          <strong>Domain-Driven Design</strong> é uma abordagem de desenvolvimento de software criada por <strong>Eric Evans</strong> (2003) que coloca o <strong style="color:var(--primary);">domínio do negócio no centro do design</strong>.
+        </p>
+        <div class="highlight-box">
+          <p style="font-size:15px;color:var(--text);">
+            "O mais importante em um software não é seu código, nem sua arquitetura — é o <strong>problema de negócio</strong> que ele se propõe a resolver."
+          </p>
+        </div>
+        <p style="font-size:15px;">
+          O DDD <strong>não é um framework ou tecnologia</strong> — é um conjunto de princípios e padrões que guiam a modelagem de sistemas complexos, garantindo que o código reflita fielmente a realidade do negócio.
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <h4>Objetivo Principal</h4>
+          <p>Criar sistemas cujo design espelha o domínio, facilitando evolução, manutenção e comunicação entre stakeholders.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🤝</div>
+          <h4>Colaboração Intensa</h4>
+          <p>Desenvolvedores e especialistas de negócio trabalham juntos para construir um modelo compartilhado do domínio.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔄</div>
+          <h4>Modelagem Contínua</h4>
+          <p>O modelo evolui constantemente com base no feedback do negócio, mantendo-se sempre alinhado à realidade.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: DDD Pillars -->
+  <div class="slide" data-index="2">
+    <span class="slide-number">03 / 10</span>
+    <span class="slide-tag tag-ddd">DDD – Pilares Fundamentais</span>
+    <h2>Os Três Pilares do DDD</h2>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">🗣️</div>
+        <h4>Linguagem Ubíqua</h4>
+        <p>Vocabulário comum e consistente usado por <strong>toda a equipe</strong> — devs, gerentes, especialistas. Nomes no código, documentação e APIs usam os mesmos termos.</p>
+        <div class="highlight-box" style="margin-top:12px;">
+          <p style="font-size:13px;color:var(--primary);">Ex: Sempre "Pedido", nunca "Order" ou "Compra"</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <h4>Bounded Context</h4>
+        <p>Fronteira explícita onde um modelo de domínio específico se aplica. Cada contexto é <strong>dono dos seus próprios dados</strong> e tem sua própria linguagem ubíqua.</p>
+        <div class="highlight-box" style="margin-top:12px;">
+          <p style="font-size:13px;color:var(--primary);">Ex: "Cliente" no Contexto de Vendas ≠ "Cliente" no Financeiro</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🗺️</div>
+        <h4>Context Map</h4>
+        <p>Mapa que mostra como os Bounded Contexts se <strong>relacionam entre si</strong>. Define padrões de integração: Partnership, Customer/Supplier, Anti-Corruption Layer, etc.</p>
+        <div class="highlight-box" style="margin-top:12px;">
+          <p style="font-size:13px;color:var(--primary);">Ex: ACL protege seu contexto de modelos externos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: DDD Strategic & Tactical -->
+  <div class="slide" data-index="3">
+    <span class="slide-number">04 / 10</span>
+    <span class="slide-tag tag-ddd">DDD – Estratégico & Tático</span>
+    <h2>Design Estratégico vs. Design Tático</h2>
+    <div class="grid-2">
+      <div class="card" style="border-top:3px solid var(--primary);">
+        <h4 style="color:var(--primary);">🧭 Design Estratégico</h4>
+        <p style="margin-bottom:12px;"><strong>Nível MACRO</strong> — visão do negócio e estrutura geral</p>
+        <div class="list-item"><div class="list-bullet"></div><span>Entender profundamente o negócio e subdomínios</span></div>
+        <div class="list-item"><div class="list-bullet"></div><span>Delimitar Bounded Contexts</span></div>
+        <div class="list-item"><div class="list-bullet"></div><span>Definir Context Map (relacionamentos entre contextos)</span></div>
+        <div class="list-item"><div class="list-bullet"></div><span>Estabelecer a Linguagem Ubíqua</span></div>
+        <div class="list-item"><div class="list-bullet"></div><span>Organizar fronteiras e integrações</span></div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <h4 style="color:var(--accent);">🔧 Design Tático</h4>
+        <p style="margin-bottom:12px;"><strong>Nível MICRO</strong> — implementação dentro de cada Bounded Context</p>
+        <div class="list-item"><div class="list-bullet accent"></div><span><strong>Entidades:</strong> objetos com identidade única (ex: Pedido #123)</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span><strong>Value Objects:</strong> imutáveis, definidos por atributos (ex: CPF, Endereço)</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span><strong>Agregados:</strong> unidade de consistência com raiz (Aggregate Root)</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span><strong>Repositórios:</strong> abstração para persistência de agregados</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span><strong>Domain Events:</strong> eventos que disparam ações entre contextos</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: DDD Example -->
+  <div class="slide" data-index="4">
+    <span class="slide-number">05 / 10</span>
+    <span class="slide-tag tag-ddd">DDD – Exemplo Prático</span>
+    <h2>DDD na Prática: E-Commerce</h2>
+    <div class="grid-2">
+      <div>
+        <h3>Bounded Contexts</h3>
+        <div class="flow-arrow" style="flex-direction:column;align-items:stretch;gap:10px;">
+          <div class="flow-step" style="border-color:rgba(94,234,212,0.3);">📦 <strong>Contexto de Pedidos</strong><br><span style="font-size:12px;color:var(--text-dim);">Pedido, Item, Status</span></div>
+          <div style="text-align:center;color:var(--primary);">↕️ via Specs (SDD)</div>
+          <div class="flow-step" style="border-color:rgba(240,160,96,0.3);">💳 <strong>Contexto de Pagamentos</strong><br><span style="font-size:12px;color:var(--text-dim);">Fatura, Transação, Saldo</span></div>
+          <div style="text-align:center;color:var(--primary);">↕️ via Specs (SDD)</div>
+          <div class="flow-step" style="border-color:rgba(148,163,184,0.3);">📋 <strong>Contexto de Estoque</strong><br><span style="font-size:12px;color:var(--text-dim);">Produto, Quantidade, Reserva</span></div>
+        </div>
+      </div>
+      <div>
+        <h3>Agregado: Pedido</h3>
+        <div class="code-block">
+<span class="comment">// Aggregate Root</span>
+<span class="keyword">class</span> <span style="color:var(--primary);">Pedido</span> {
+  id: <span style="color:#c084fc;">UUID</span>
+  clienteId: <span style="color:#c084fc;">UUID</span>
+  status: <span style="color:#fbbf24;">"criado"</span> | <span style="color:#fbbf24;">"confirmado"</span>
+
+  <span class="comment">// Entidades internas</span>
+  itens: <span style="color:#c084fc;">ItemPedido</span>[]
+
+  <span class="comment">// Value Object</span>
+  enderecoEntrega: <span style="color:#c084fc;">Endereco</span>
+
+  <span class="comment">// Métodos de domínio</span>
+  adicionarItem()
+  confirmar()
+  cancelar()
+}
+        </div>
+        <p style="font-size:13px;margin-top:8px;color:var(--text-dim);">
+          ✅ A raiz (Pedido) é a única porta de entrada. Nenhum código externo modifica ItemPedido diretamente.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: What is SDD -->
+  <div class="slide" data-index="5">
+    <span class="slide-number">06 / 10</span>
+    <span class="slide-tag tag-sdd">Spec-Driven Development</span>
+    <h2>O que é SDD?</h2>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:17px;margin-bottom:16px;">
+          <strong>Spec-Driven Development</strong> é o processo de definir <strong style="color:var(--accent);">contratos formais (specs)</strong> para cada Bounded Context. Em vez de documentar funcionalidades soltas, você define <strong>especificações que servem como contrato de API</strong>.
+        </p>
+        <div class="highlight-box accent">
+          <p style="font-size:15px;color:var(--text);">
+            Cada Bounded Context tem sua própria spec — um <strong>contrato de API separado por contexto</strong> que formaliza a comunicação entre as partes do sistema.
+          </p>
+        </div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Contratos claros e testáveis entre contextos</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Comunicação formalizada e versionada</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Nomes da spec refletem o domínio (Linguagem Ubíqua)</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="card-icon">📝</div>
+          <h4>Spec = Contrato</h4>
+          <p>A especificação define exatamente o que cada contexto expõe e espera receber — como uma interface legal entre times.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <h4>Isolamento Garantido</h4>
+          <p>Cada contexto evolui independentemente. Mudanças internas não quebram outros contextos — desde que a spec seja respeitada.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🤖</div>
+          <h4>AI-Ready</h4>
+          <p>Specs formais permitem que agentes de IA entendam e interajam com o sistema de forma precisa e previsível.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: SDD in Practice -->
+  <div class="slide" data-index="6">
+    <span class="slide-number">07 / 10</span>
+    <span class="slide-tag tag-sdd">SDD – Na Prática</span>
+    <h2>Como SDD Funciona</h2>
+    <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin:24px 0;">
+      <div class="flow-step" style="border-color:var(--primary);min-width:140px;">
+        🧠 <strong>Domínio</strong><br><span style="font-size:12px;color:var(--text-dim);">Linguagem Ubíqua</span>
+      </div>
+      <div class="flow-connector">→</div>
+      <div class="flow-step" style="border-color:var(--accent);min-width:140px;">
+        📋 <strong>Spec</strong><br><span style="font-size:12px;color:var(--text-dim);">Contrato Formal</span>
+      </div>
+      <div class="flow-connector">→</div>
+      <div class="flow-step" style="border-color:var(--success);min-width:140px;">
+        🔧 <strong>Implementação</strong><br><span style="font-size:12px;color:var(--text-dim);">Código</span>
+      </div>
+      <div class="flow-connector">→</div>
+      <div class="flow-step" style="border-color:#c084fc;min-width:140px;">
+        ✅ <strong>Validação</strong><br><span style="font-size:12px;color:var(--text-dim);">Testes contra Spec</span>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card">
+        <h4 style="color:var(--accent);">📋 O que uma Spec contém?</h4>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Endpoints e operações disponíveis</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Modelos de dados (schemas) de entrada/saída</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Regras de negócio e validações</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Eventos publicados e consumidos</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Versionamento do contrato</span></div>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--success);">🎯 Benefícios Diretos</h4>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span>Times trabalham em paralelo sem conflitos</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span>Testes automatizados contra a spec</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span>Documentação sempre atualizada (deriva da spec)</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span>Onboarding mais rápido de novos desenvolvedores</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span>Mudanças controladas e rastreáveis</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Factory Framework Integration -->
+  <div class="slide" data-index="7">
+    <span class="slide-number">08 / 10</span>
+    <span class="slide-tag tag-both">Framework Factory</span>
+    <h2>A Integração: DDD + SDD</h2>
+    <p class="subtitle">O Framework Factory integra as duas metodologias para criar uma governança completa de projetos de software.</p>
+    <div class="grid-2">
+      <div class="card" style="border-top:3px solid var(--primary);">
+        <h4 style="color:var(--primary);">🧠 DDD</h4>
+        <p style="margin-bottom:12px;">Define <strong>COMO</strong> o sistema é organizado</p>
+        <div class="list-item"><div class="list-bullet"></div><span>Bounded Contexts como fronteiras de domínio</span></div>
+        <div class="list-item"><div class="list-bullet"></div><span>Linguagem Ubíqua como vocabulário comum</span></div>
+        <div class="list-item"><div class="list-bullet"></div><span>Agregados, Entidades e Value Objects</span></div>
+        <div class="list-item"><div class="list-bullet"></div><span>Context Map para relacionamentos</span></div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <h4 style="color:var(--accent);">📋 SDD</h4>
+        <p style="margin-bottom:12px;">Define <strong>O QUE</strong> cada parte expõe</p>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Contratos de API por Bounded Context</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Nomes da spec = Linguagem Ubíqua</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Documentação derivada de templates</span></div>
+        <div class="list-item"><div class="list-bullet accent"></div><span>Agentes de IA como cidadãos de primeira classe</span></div>
+      </div>
+    </div>
+    <div class="highlight-box" style="margin-top:20px;">
+      <p style="font-size:15px;color:var(--text);text-align:center;">
+        <strong>Princípios Fundamentais:</strong> Documentação deriva de templates → Cada Bounded Context tem sua spec → Linguagem Ubíqua é contrato → Agentes de IA são cidadãos de primeira classe
+      </p>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: When to use / When not -->
+  <div class="slide" data-index="8">
+    <span class="slide-number">09 / 10</span>
+    <span class="slide-tag tag-both">Casos de Uso</span>
+    <h2>Quando Usar DDD + SDD?</h2>
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✅ RECOMENDADO PARA</h4>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span><strong>Sistemas complexos</strong> com regras de negócio elaboradas</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span><strong>Projetos de longo prazo</strong> com evolução contínua</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span><strong>Domínios com múltiplos stakeholders</strong> e linguagens distintas</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span><strong>Migração de legado</strong> onde o domínio precisa ser redescoberto</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span><strong>Microsserviços</strong> — cada Bounded Context mapeia para um serviço</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:var(--success);"></div><span><strong>Times distribuídos</strong> que precisam de contratos claros</span></div>
+      </div>
+      <div class="cons">
+        <h4>❌ NÃO NECESSÁRIO PARA</h4>
+        <div class="list-item"><div class="list-bullet" style="background:#f87171;"></div><span><strong>CRUDs simples</strong> sem regras de negócio complexas</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:#f87171;"></div><span><strong>Protótipos e MVPs</strong> de curta duração</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:#f87171;"></div><span><strong>Sistemas com domínio trivial</strong> ou bem compreendido</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:#f87171;"></div><span><strong>Projetos solo</strong> sem múltiplos times</span></div>
+        <div class="list-item"><div class="list-bullet" style="background:#f87171;"></div><span><strong>Sistemas estáveis</strong> com pouca evolução prevista</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: Benefits for Managers -->
+  <div class="slide" data-index="9">
+    <span class="slide-number">10 / 10</span>
+    <span class="slide-tag tag-both">Resumo Executivo</span>
+    <h2>Por que DDD + SDD importam para o Negócio?</h2>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <h4>Redução de Custos</h4>
+        <p>Menos retrabalho por mal-entendidos. Mudanças são localizadas em Bounded Contexts, sem efeito cascata no sistema todo.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏱️</div>
+        <h4>Time-to-Market</h4>
+        <p>Times trabalham em paralelo com contratos claros (SDD). Cada contexto evolui independentemente, acelerando entregas.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h4>Mitigação de Risco</h4>
+        <p>Contratos formais (specs) eliminam ambiguidades. A Linguagem Ubíqua garante que todos falem a mesma língua.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <h4>Escalabilidade</h4>
+        <p>Bounded Contexts viram microsserviços naturalmente. O sistema cresce de forma organizada e sustentável.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧩</div>
+        <h4>Manutenibilidade</h4>
+        <p>Código que espelha o negócio é mais fácil de entender, modificar e testar. Onboarding de novos devs é mais rápido.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h4>AI-Native</h4>
+        <p>Specs formais + Linguagem Ubíqua permitem que agentes de IA contribuam com precisão, acelerando o desenvolvimento.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" title="Anterior">◀</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="nav-btn" id="nextBtn" title="Próximo">▶</button>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// ─── Three.js Background ────────────────────────────
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.z = 8;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+document.getElementById('three-bg').appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0x1e293b, 1.5);
+scene.add(ambientLight);
+const pointLight = new THREE.PointLight(0x5eead4, 30, 20);
+pointLight.position.set(3, 2, 5);
+scene.add(pointLight);
+const pointLight2 = new THREE.PointLight(0xf0a060, 20, 15);
+pointLight2.position.set(-3, -1, 3);
+scene.add(pointLight2);
+
+// Floating geometric shapes
+const shapes = [];
+const shapeGroup = new THREE.Group();
+scene.add(shapeGroup);
+
+// Create various geometric shapes
+const geometries = [
+  new THREE.IcosahedronGeometry(0.4, 0),
+  new THREE.OctahedronGeometry(0.35, 0),
+  new THREE.TorusGeometry(0.3, 0.08, 16, 32),
+  new THREE.TetrahedronGeometry(0.35, 0),
+  new THREE.TorusKnotGeometry(0.25, 0.06, 64, 16),
+  new THREE.DodecahedronGeometry(0.3, 0),
+  new THREE.ConeGeometry(0.25, 0.5, 6),
+  new THREE.SphereGeometry(0.25, 16, 16),
+];
+
+const materials = [
+  new THREE.MeshStandardMaterial({ color: 0x5eead4, roughness: 0.2, metalness: 0.3, transparent: true, opacity: 0.7 }),
+  new THREE.MeshStandardMaterial({ color: 0xf0a060, roughness: 0.2, metalness: 0.3, transparent: true, opacity: 0.6 }),
+  new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.3, metalness: 0.2, transparent: true, opacity: 0.5 }),
+  new THREE.MeshStandardMaterial({ color: 0x4ade80, roughness: 0.2, metalness: 0.3, transparent: true, opacity: 0.5 }),
+  new THREE.MeshStandardMaterial({ color: 0xc084fc, roughness: 0.2, metalness: 0.3, transparent: true, opacity: 0.5 }),
+];
+
+for (let i = 0; i < 30; i++) {
+  const geo = geometries[Math.floor(Math.random() * geometries.length)];
+  const mat = materials[Math.floor(Math.random() * materials.length)].clone();
+  const mesh = new THREE.Mesh(geo, mat);
+
+  mesh.position.set(
+    (Math.random() - 0.5) * 14,
+    (Math.random() - 0.5) * 10,
+    (Math.random() - 0.5) * 6 - 2
+  );
+
+  mesh.rotation.set(
+    Math.random() * Math.PI * 2,
+    Math.random() * Math.PI * 2,
+    Math.random() * Math.PI * 2
+  );
+
+  mesh.userData = {
+    rotSpeed: {
+      x: (Math.random() - 0.5) * 0.005,
+      y: (Math.random() - 0.5) * 0.005,
+      z: (Math.random() - 0.5) * 0.003,
+    },
+    floatSpeed: 0.3 + Math.random() * 0.7,
+    floatAmp: 0.3 + Math.random() * 1.2,
+    initialY: mesh.position.y,
+    initialX: mesh.position.x,
+  };
+
+  shapeGroup.add(mesh);
+  shapes.push(mesh);
+}
+
+// Particle system
+const particlesGeo = new THREE.BufferGeometry();
+const particlesCount = 200;
+const positions = new Float32Array(particlesCount * 3);
+for (let i = 0; i < particlesCount * 3; i += 3) {
+  positions[i] = (Math.random() - 0.5) * 16;
+  positions[i + 1] = (Math.random() - 0.5) * 12;
+  positions[i + 2] = (Math.random() - 0.5) * 8 - 2;
+}
+particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const particlesMat = new THREE.PointsMaterial({
+  color: 0x5eead4,
+  size: 0.02,
+  transparent: true,
+  opacity: 0.6,
+  blending: THREE.AdditiveBlending,
+});
+const particles = new THREE.Points(particlesGeo, particlesMat);
+scene.add(particles);
+
+// ─── Slide Navigation ──────────────────────────────
+const slides = document.querySelectorAll('.slide');
+const navDots = document.getElementById('navDots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+let currentSlide = 0;
+const totalSlides = slides.length;
+
+// Create dots
+for (let i = 0; i < totalSlides; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goToSlide(i));
+  navDots.appendChild(dot);
+}
+
+function goToSlide(index) {
+  slides[currentSlide].classList.remove('active');
+  navDots.children[currentSlide].classList.remove('active');
+  currentSlide = index;
+  slides[currentSlide].classList.add('active');
+  navDots.children[currentSlide].classList.add('active');
+}
+
+prevBtn.addEventListener('click', () => {
+  goToSlide((currentSlide - 1 + totalSlides) % totalSlides);
+});
+
+nextBtn.addEventListener('click', () => {
+  goToSlide((currentSlide + 1) % totalSlides);
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+    e.preventDefault();
+    goToSlide((currentSlide + 1) % totalSlides);
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    goToSlide((currentSlide - 1 + totalSlides) % totalSlides);
+  }
+});
+
+// Touch swipe
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', (e) => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    goToSlide((currentSlide + (diff > 0 ? 1 : -1) + totalSlides) % totalSlides);
+  }
+});
+
+// ─── Animation Loop ────────────────────────────────
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const time = clock.getElapsedTime();
+
+  // Animate shapes
+  shapes.forEach((shape) => {
+    shape.rotation.x += shape.userData.rotSpeed.x;
+    shape.rotation.y += shape.userData.rotSpeed.y;
+    shape.rotation.z += shape.userData.rotSpeed.z;
+
+    shape.position.y = shape.userData.initialY +
+      Math.sin(time * shape.userData.floatSpeed) * shape.userData.floatAmp;
+    shape.position.x = shape.userData.initialX +
+      Math.cos(time * shape.userData.floatSpeed * 0.7) * shape.userData.floatAmp * 0.5;
+  });
+
+  // Rotate particles slowly
+  particles.rotation.y += 0.0003;
+  particles.rotation.x += 0.0001;
+
+  // Move lights
+  pointLight.intensity = 25 + Math.sin(time * 0.5) * 8;
+  pointLight2.intensity = 18 + Math.cos(time * 0.4) * 6;
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+// Handle resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+console.log('✅ Apresentação DDD & SDD pronta! Use ← → ou clique nos botões para navegar.');
+</script>
+</body>
+</html>

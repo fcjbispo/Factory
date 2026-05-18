@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDD & SDD — A Strategic Presentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #08080f;
+    --surface: rgba(18, 18, 30, 0.75);
+    --teal: #5eead4;
+    --coral: #f0a060;
+    --text: #e2e2e8;
+    --muted: #8888a0;
+    --border: rgba(255,255,255,0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  #three-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(8,8,15,0.6) 100%);
+  }
+
+  .slide-container {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .slide {
+    pointer-events: auto;
+    max-width: 960px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: var(--surface);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 52px;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+                transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+    position: absolute;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    position: relative;
+  }
+
+  .slide::-webkit-scrollbar { width: 4px; }
+  .slide::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  h1 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--teal), #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--teal);
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--coral);
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-bottom: 28px;
+  }
+
+  p, li {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+  .tag-teal { background: rgba(94,234,212,0.12); color: var(--teal); border: 1px solid rgba(94,234,212,0.2); }
+  .tag-coral { background: rgba(240,160,96,0.12); color: var(--coral); border: 1px solid rgba(240,160,96,0.2); }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 20px;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .card:hover { border-color: rgba(94,234,212,0.25); background: rgba(94,234,212,0.03); }
+
+  .card-icon {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+  }
+
+  .card h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--teal);
+    margin-bottom: 6px;
+  }
+
+  .card p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 700px) {
+    .two-col { grid-template-columns: 1fr; }
+    .slide { padding: 28px 24px; }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.3rem; }
+  }
+
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    justify-content: center;
+  }
+
+  .flow-box {
+    background: rgba(94,234,212,0.08);
+    border: 1px solid rgba(94,234,212,0.2);
+    border-radius: 12px;
+    padding: 14px 20px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--teal);
+    min-width: 100px;
+  }
+
+  .flow-arrow {
+    font-size: 1.3rem;
+    color: var(--muted);
+  }
+
+  .code-block {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: #c9d1d9;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+  .code-block .kw { color: #ff7b72; }
+  .code-block .fn { color: #d2a8ff; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .cmt { color: #8b949e; }
+
+  .exec-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 20px 0;
+  }
+  @media (max-width: 700px) { .exec-summary { grid-template-columns: 1fr 1fr; } }
+
+  .exec-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .exec-card .metric {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--teal);
+  }
+  .exec-card .label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-bar {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(18,18,30,0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 8px 18px;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.08); color: var(--teal); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .dots { display: flex; gap: 6px; }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .dot.active { background: var(--teal); transform: scale(1.4); }
+
+  .page-num {
+    font-size: 0.75rem;
+    color: var(--muted);
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .quote {
+    border-left: 3px solid var(--teal);
+    padding-left: 18px;
+    font-style: italic;
+    color: var(--muted);
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+
+  .highlight { color: var(--teal); font-weight: 600; }
+  .highlight-coral { color: var(--coral); font-weight: 600; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  .pro-con {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 700px) { .pro-con { grid-template-columns: 1fr; } }
+
+  .pro, .con {
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .pro { background: rgba(94,234,212,0.06); border: 1px solid rgba(94,234,212,0.15); }
+  .con { background: rgba(240,160,96,0.06); border: 1px solid rgba(240,160,96,0.15); }
+  .pro h4 { color: var(--teal); margin-bottom: 8px; }
+  .con h4 { color: var(--coral); margin-bottom: 8px; }
+  .pro ul, .con ul { padding-left: 18px; }
+  .pro li, .con li { font-size: 0.82rem; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<canvas id="three-canvas"></canvas>
+<div class="overlay"></div>
+
+<div class="slide-container" id="slideContainer">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide active" data-index="0">
+    <div style="text-align:center; padding: 20px 0;">
+      <div style="margin-bottom:12px;">
+        <span class="tag tag-teal">Strategic Architecture</span>
+        <span class="tag tag-coral">Software Design</span>
+      </div>
+      <h1 style="font-size:3rem;">DDD & SDD</h1>
+      <p class="subtitle" style="font-size:1.2rem;">Domain-Driven Design & Spec-Driven Development</p>
+      <p style="color:var(--muted); max-width:600px; margin:0 auto;">
+        Two complementary methodologies that bring clarity, structure, and business alignment to complex software systems.
+      </p>
+      <div style="margin-top:32px; display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+        <div style="text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--teal);">DDD</div><div style="font-size:0.7rem;color:var(--muted);">Models the Business</div></div>
+        <div style="color:var(--muted);font-size:1.5rem;align-self:center;">+</div>
+        <div style="text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--coral);">SDD</div><div style="font-size:0.7rem;color:var(--muted);">Formalizes the Contract</div></div>
+        <div style="color:var(--muted);font-size:1.5rem;align-self:center;">=</div>
+        <div style="text-align:center;"><div style="font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--teal),var(--coral));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Factory</div><div style="font-size:0.7rem;color:var(--muted);">Governed Evolution</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: What is DDD? -->
+  <div class="slide" data-index="1">
+    <h2>What is Domain-Driven Design?</h2>
+    <div class="quote">"Tackle complexity at the heart of software by connecting implementation to an evolving model of the core business." — Eric Evans</div>
+    <p>DDD is a <span class="highlight">software design philosophy</span> that places the business domain at the center of every decision. Instead of building software around technical concerns, you build it around the <span class="highlight">language, rules, and mental models</span> of domain experts.</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h4>Primary Goal</h4>
+        <p>Create systems whose design mirrors business reality, making them easier to understand, evolve, and maintain over time.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤝</div>
+        <h4>Collaboration First</h4>
+        <p>Developers and domain experts work together continuously, refining a shared model that drives both conversation and code.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧱</div>
+        <h4>Model-Driven</h4>
+        <p>The domain model is not just documentation — it is expressed directly in the code through entities, value objects, and aggregates.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: DDD Pillars -->
+  <div class="slide" data-index="2">
+    <h2>The Three Pillars of DDD</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🗣️</div>
+        <h4>Ubiquitous Language</h4>
+        <p>A shared, rigorous vocabulary used by <em>everyone</em> — developers, product owners, business analysts. The same terms appear in conversations, documentation, code, and APIs.</p>
+        <p style="margin-top:8px;font-size:0.78rem;color:var(--teal);">Example: Always say "Order," never "Purchase" or "Sale" interchangeably.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <h4>Bounded Context</h4>
+        <p>A boundary within which a specific domain model applies. Each context owns its data and defines its own ubiquitous language, preventing model confusion.</p>
+        <p style="margin-top:8px;font-size:0.78rem;color:var(--teal);">Example: "Customer" in Billing ≠ "Customer" in Support — different attributes, different rules.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🗺️</div>
+        <h4>Context Map</h4>
+        <p>A visual overview of how bounded contexts relate to each other — upstream/downstream, shared kernel, anti-corruption layers, etc.</p>
+        <p style="margin-top:8px;font-size:0.78rem;color:var(--teal);">Example: Orders context is upstream of Shipping; Shipping translates Order events via an anti-corruption layer.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Strategic vs Tactical -->
+  <div class="slide" data-index="3">
+    <h2>Strategic vs. Tactical DDD</h2>
+    <div class="two-col">
+      <div class="card" style="border-left: 3px solid var(--teal);">
+        <h4>🔭 Strategic Design</h4>
+        <p style="margin-top:8px;"><strong>Macro level.</strong> Decomposes the business into bounded contexts and maps their relationships.</p>
+        <ul style="margin-top:10px;padding-left:18px;">
+          <li>Bounded Contexts</li>
+          <li>Context Mapping</li>
+          <li>Subdomains (Core, Supporting, Generic)</li>
+          <li>Anti-Corruption Layers</li>
+        </ul>
+        <p style="margin-top:10px;font-size:0.78rem;color:var(--muted);"><em>Answers: "How do we split the system?"</em></p>
+      </div>
+      <div class="card" style="border-left: 3px solid var(--coral);">
+        <h4>🔬 Tactical Design</h4>
+        <p style="margin-top:8px;"><strong>Micro level.</strong> Implements each bounded context with precise modeling patterns.</p>
+        <ul style="margin-top:10px;padding-left:18px;">
+          <li>Entities (identity, lifecycle)</li>
+          <li>Value Objects (immutable, by attributes)</li>
+          <li>Aggregates (transactional consistency boundary)</li>
+          <li>Domain Events, Repositories, Services</li>
+        </ul>
+        <p style="margin-top:10px;font-size:0.78rem;color:var(--muted);"><em>Answers: "How do we build each piece?"</em></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: DDD in Practice -->
+  <div class="slide" data-index="4">
+    <h2>DDD in Practice — E-Commerce Example</h2>
+    <p>A real-world decomposition using bounded contexts:</p>
+    <div class="flow-row">
+      <div class="flow-box">🛒<br>Orders</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">💳<br>Payments</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">📦<br>Shipping</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">📋<br>Inventory</div>
+    </div>
+    <p style="margin-top:16px;">Each context has its own model. Here's how the <strong>Order Aggregate</strong> might look inside the Orders context:</p>
+    <div class="code-block">
+<span class="cmt">// Orders Bounded Context — Aggregate Root</span>
+<span class="kw">class</span> <span class="fn">Order</span> {
+  <span class="kw">constructor</span>(id, customerId) {
+    <span class="kw">this</span>.id = id;              <span class="cmt">// Entity identity</span>
+    <span class="kw">this</span>.customerId = customerId;
+    <span class="kw">this</span>.items = [];            <span class="cmt">// Value Objects</span>
+    <span class="kw">this</span>.status = <span class="str">"draft"</span>;
+  }
+
+  <span class="fn">addItem</span>(productId, qty, price) {
+    <span class="kw">this</span>.items.push(<span class="kw">new</span> <span class="fn">OrderItem</span>(productId, qty, price));
+  }
+
+  <span class="fn">submit</span>() {
+    <span class="kw">if</span> (<span class="kw">this</span>.items.length === 0) <span class="kw">throw</span> <span class="kw">new</span> Error(<span class="str">"Empty order"</span>);
+    <span class="kw">this</span>.status = <span class="str">"submitted"</span>;
+    <span class="kw">this</span>.addDomainEvent(<span class="kw">new</span> <span class="fn">OrderSubmitted</span>(<span class="kw">this</span>.id));
+  }
+}
+    </div>
+    <p style="font-size:0.78rem;color:var(--muted);">The aggregate enforces invariants (no empty orders) and raises domain events that other contexts consume.</p>
+  </div>
+
+  <!-- SLIDE 6: What is SDD? -->
+  <div class="slide" data-index="5">
+    <h2>What is Spec-Driven Development?</h2>
+    <p>SDD is the practice of defining <span class="highlight">formal, machine-readable specifications</span> for every bounded context <em>before</em> writing implementation code. Each spec serves as a <span class="highlight-coral">contract</span> that governs how a context behaves and communicates.</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">📜</div>
+        <h4>Spec = Contract</h4>
+        <p>A specification defines inputs, outputs, validation rules, and side effects — like a typed API contract that is both human-readable and machine-verifiable.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h4>Isolation by Design</h4>
+        <p>Each bounded context gets its own spec. Teams can work independently because the contract guarantees compatibility at the boundaries.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h4>AI-Ready</h4>
+        <p>Formal specs enable AI-assisted code generation, automated testing, and validation — the spec becomes the source of truth for both humans and tools.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: How SDD Works -->
+  <div class="slide" data-index="6">
+    <h2>How SDD Works</h2>
+    <div class="flow-row" style="margin:24px 0;">
+      <div class="flow-box">🏭<br>Domain<br>Analysis</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">📝<br>Write<br>Spec</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">⚙️<br>Implement<br>Context</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">✅<br>Validate<br>& Deploy</div>
+    </div>
+    <p style="margin-top:16px;">A typical spec includes:</p>
+    <div class="code-block">
+<span class="cmt">// Spec for the Payments Bounded Context</span>
+<span class="kw">spec</span> <span class="fn">Payments</span> {
+  <span class="cmt">// Operations</span>
+  <span class="fn">processPayment</span>(orderId: <span class="str">UUID</span>, amount: <span class="str">Money</span>) → <span class="str">PaymentResult</span>
+
+  <span class="cmt">// Business rules</span>
+  <span class="kw">invariant</span>: amount.currency === order.currency
+  <span class="kw">invariant</span>: amount.value > 0
+
+  <span class="cmt">// Side effects</span>
+  <span class="kw">emits</span>: <span class="str">PaymentProcessed</span> | <span class="str">PaymentFailed</span>
+
+  <span class="cmt">// Dependencies</span>
+  <span class="kw">requires</span>: <span class="str">PaymentGateway</span>, <span class="str">OrderRepository</span>
+}
+    </div>
+    <p style="font-size:0.78rem;color:var(--muted);">The spec is the single source of truth — implementation, tests, and documentation all derive from it.</p>
+  </div>
+
+  <!-- SLIDE 8: Integration - Factory Framework -->
+  <div class="slide" data-index="7">
+    <h2>The Integration: DDD + SDD</h2>
+    <p style="margin-bottom:16px;">The <span class="highlight">Factory Framework</span> unifies both methodologies into a cohesive governance model:</p>
+    <div class="two-col">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;font-weight:800;color:var(--teal);">DDD</div>
+        <p style="color:var(--muted);">Defines <strong>HOW</strong> the business is modeled</p>
+        <p style="font-size:0.78rem;">Bounded contexts, ubiquitous language, aggregates, domain events</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;font-weight:800;color:var(--coral);">SDD</div>
+        <p style="color:var(--muted);">Defines <strong>WHAT</strong> each context guarantees</p>
+        <p style="font-size:0.78rem;">Formal contracts, invariants, side effects, dependencies</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <h3>Core Principles of the Factory Framework</h3>
+    <div class="card-grid">
+      <div class="card"><h4>📋 Template-Driven</h4><p>Documentation and specs derive from standardized templates, ensuring consistency across all contexts.</p></div>
+      <div class="card"><h4>🔗 Contract-First</h4><p>Every bounded context exposes a formal spec before implementation begins — no ambiguity at the boundaries.</p></div>
+      <div class="card"><h4>🔄 Continuous Governance</h4><p>As the business evolves, specs and models evolve together, keeping the system aligned with reality.</p></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: When to Use -->
+  <div class="slide" data-index="8">
+    <h2>When to Use — Decision Matrix</h2>
+    <div class="pro-con">
+      <div class="pro">
+        <h4>✅ Recommended When</h4>
+        <ul>
+          <li>The business domain is <strong>complex</strong> with many rules and exceptions</li>
+          <li>Multiple teams work on <strong>interconnected systems</strong></li>
+          <li>The software must <strong>evolve continuously</strong> over years</li>
+          <li>You need <strong>clear contracts</strong> between services or microservices</li>
+          <li>AI-assisted development is part of the roadmap</li>
+          <li>Regulatory compliance requires <strong>auditable design decisions</strong></li>
+        </ul>
+      </div>
+      <div class="con">
+        <h4>❌ Not Necessary When</h4>
+        <ul>
+          <li>The application is <strong>CRUD-dominant</strong> with little business logic</li>
+          <li>There is a <strong>single small team</strong> with low coordination overhead</li>
+          <li>The project is a <strong>short-lived prototype</strong> or proof of concept</li>
+          <li>The domain is <strong>well-understood</strong> and unlikely to change</li>
+          <li>Speed to market outweighs long-term maintainability</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--muted);margin-top:12px;">The sweet spot: <strong>medium-to-large systems</strong> with genuine business complexity and multiple teams.</p>
+  </div>
+
+  <!-- SLIDE 10: Executive Summary -->
+  <div class="slide" data-index="9">
+    <h2>Executive Summary</h2>
+    <p style="margin-bottom:20px;">Why DDD + SDD matters for <span class="highlight">business outcomes</span>:</p>
+    <div class="exec-summary">
+      <div class="exec-card">
+        <div class="metric">↓ 30-50%</div>
+        <div class="label">Maintenance Cost Reduction</div>
+        <p style="font-size:0.7rem;color:var(--muted);margin-top:6px;">Clear boundaries reduce ripple effects of changes.</p>
+      </div>
+      <div class="exec-card">
+        <div class="metric">↑ 2-3×</div>
+        <div class="label">Time-to-Market for New Features</div>
+        <p style="font-size:0.7rem;color:var(--muted);margin-top:6px;">Independent contexts enable parallel team work.</p>
+      </div>
+      <div class="exec-card">
+        <div class="metric">↓ Risk</div>
+        <div class="label">Integration Failures</div>
+        <p style="font-size:0.7rem;color:var(--muted);margin-top:6px;">Formal specs catch mismatches before deployment.</p>
+      </div>
+      <div class="exec-card">
+        <div class="metric">∞</div>
+        <div class="label">Scalability</div>
+        <p style="font-size:0.7rem;color:var(--muted);margin-top:6px;">Bounded contexts scale independently — teams, data, infra.</p>
+      </div>
+      <div class="exec-card">
+        <div class="metric">📖</div>
+        <div class="label">Living Documentation</div>
+        <p style="font-size:0.7rem;color:var(--muted);margin-top:6px;">Specs and models are always current — they drive the code.</p>
+      </div>
+      <div class="exec-card">
+        <div class="metric">🤖</div>
+        <div class="label">AI-Native Architecture</div>
+        <p style="font-size:0.7rem;color:var(--muted);margin-top:6px;">Formal specs unlock AI code generation and automated testing.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <p style="text-align:center;font-size:0.85rem;color:var(--muted);">
+      <strong>DDD</strong> models the business. <strong>SDD</strong> formalizes the contract. Together, they create systems that are <span class="highlight">maintainable</span>, <span class="highlight-coral">scalable</span>, and <span class="highlight">aligned with business reality</span>.
+    </p>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" title="Previous">◀</button>
+  <div class="dots" id="dotsContainer"></div>
+  <span class="page-num" id="pageNum">1 / 10</span>
+  <button class="nav-btn" id="nextBtn" title="Next">▶</button>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// ── Three.js Scene ──────────────────────────────
+const canvas = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 0, 14);
+
+// Lighting
+const ambient = new THREE.AmbientLight(0x222244, 1.2);
+scene.add(ambient);
+const dirLight = new THREE.DirectionalLight(0x5eead4, 0.6);
+dirLight.position.set(5, 8, 5);
+scene.add(dirLight);
+const dirLight2 = new THREE.DirectionalLight(0xf0a060, 0.4);
+dirLight2.position.set(-5, -3, -3);
+scene.add(dirLight2);
+
+// Floating geometric shapes
+const shapes = [];
+const geometries = [
+  new THREE.IcosahedronGeometry(0.5, 0),
+  new THREE.TorusGeometry(0.4, 0.12, 16, 32),
+  new THREE.OctahedronGeometry(0.45, 0),
+  new THREE.TetrahedronGeometry(0.5, 0),
+  new THREE.TorusKnotGeometry(0.3, 0.08, 64, 16),
+  new THREE.SphereGeometry(0.35, 16, 16),
+  new THREE.ConeGeometry(0.35, 0.7, 8, 1),
+  new THREE.BoxGeometry(0.5, 0.5, 0.5),
+];
+
+const materialTeal = new THREE.MeshStandardMaterial({
+  color: 0x5eead4,
+  roughness: 0.25,
+  metalness: 0.1,
+  transparent: true,
+  opacity: 0.55,
+  emissive: 0x0a2a24,
+  emissiveIntensity: 0.3,
+});
+
+const materialCoral = new THREE.MeshStandardMaterial({
+  color: 0xf0a060,
+  roughness: 0.25,
+  metalness: 0.1,
+  transparent: true,
+  opacity: 0.45,
+  emissive: 0x2a1a0a,
+  emissiveIntensity: 0.3,
+});
+
+for (let i = 0; i < 30; i++) {
+  const geo = geometries[i % geometries.length];
+  const mat = i % 3 === 0 ? materialCoral : materialTeal;
+  const mesh = new THREE.Mesh(geo, mat.clone());
+  mesh.position.set(
+    (Math.random() - 0.5) * 16,
+    (Math.random() - 0.5) * 10,
+    (Math.random() - 0.5) * 8 - 2
+  );
+  mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+  mesh.userData = {
+    rotSpeed: { x: (Math.random() - 0.5) * 0.004, y: (Math.random() - 0.5) * 0.005 },
+    floatSpeed: 0.3 + Math.random() * 0.6,
+    floatAmp: 0.3 + Math.random() * 1.2,
+    baseY: mesh.position.y,
+    phase: Math.random() * Math.PI * 2,
+  };
+  scene.add(mesh);
+  shapes.push(mesh);
+}
+
+// Particles
+const particlesGeo = new THREE.BufferGeometry();
+const particlesCount = 200;
+const positions = new Float32Array(particlesCount * 3);
+for (let i = 0; i < particlesCount; i++) {
+  positions[i * 3] = (Math.random() - 0.5) * 20;
+  positions[i * 3 + 1] = (Math.random() - 0.5) * 14;
+  positions[i * 3 + 2] = (Math.random() - 0.5) * 10 - 2;
+}
+particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const particlesMat = new THREE.PointsMaterial({
+  color: 0x5eead4,
+  size: 0.025,
+  transparent: true,
+  opacity: 0.5,
+  blending: THREE.AdditiveBlending,
+});
+const particles = new THREE.Points(particlesGeo, particlesMat);
+scene.add(particles);
+
+// ── Slide Navigation ────────────────────────────
+const slides = document.querySelectorAll('.slide');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const dotsContainer = document.getElementById('dotsContainer');
+const pageNum = document.getElementById('pageNum');
+let current = 0;
+const total = slides.length;
+
+// Create dots
+for (let i = 0; i < total; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goTo(i));
+  dotsContainer.appendChild(dot);
+}
+
+function goTo(index) {
+  if (index < 0 || index >= total) return;
+  slides[current].classList.remove('active');
+  dotsContainer.children[current].classList.remove('active');
+  current = index;
+  slides[current].classList.add('active');
+  dotsContainer.children[current].classList.add('active');
+  pageNum.textContent = (current + 1) + ' / ' + total;
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === total - 1;
+}
+
+prevBtn.addEventListener('click', () => goTo(current - 1));
+nextBtn.addEventListener('click', () => goTo(current + 1));
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+});
+
+// Touch swipe
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', (e) => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+});
+
+prevBtn.disabled = true;
+
+// ── Animation Loop ──────────────────────────────
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  shapes.forEach((mesh) => {
+    mesh.rotation.x += mesh.userData.rotSpeed.x;
+    mesh.rotation.y += mesh.userData.rotSpeed.y;
+    mesh.position.y = mesh.userData.baseY + Math.sin(t * mesh.userData.floatSpeed + mesh.userData.phase) * mesh.userData.floatAmp;
+  });
+
+  particles.rotation.y += 0.0002;
+  particles.rotation.x += 0.0001;
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+// ── Resize Handler ──────────────────────────────
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+
+</body>
+</html>
