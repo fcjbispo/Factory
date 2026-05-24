@@ -1,0 +1,314 @@
+openapi: 3.0.3
+info:
+  title: Credit Approval API
+  description: |
+    REST API for submitting and evaluating credit applications.
+    All endpoints require JWT authentication except health checks.
+  version: 1.0.0
+  contact:
+    name: Credit Approval Team
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production
+  - url: https://staging-api.example.com/v1
+    description: Staging
+
+security:
+  - bearerAuth: []
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  version:
+                    type: string
+                    example: 1.0.0
+
+  /applications:
+    post:
+      summary: Submit a new credit application
+      description: |
+        Creates a new CreditApplication and triggers asynchronous evaluation.
+        Rate limited to 10 requests/minute per applicant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditApplicationInput'
+      responses:
+        '201':
+          description: Application created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditApplication'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '429':
+          description: Rate limit exceeded
+
+  /applications/{id}:
+    get:
+      summary: Retrieve a credit application
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Application found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditApplication'
+        '404':
+          description: Application not found
+
+  /applications/{id}/decision:
+    get:
+      summary: Retrieve the credit decision for an application
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Decision found (may be pending if not yet decided)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditDecision'
+        '404':
+          description: Application not found
+
+  /applications/{id}/override:
+    post:
+      summary: Manually override a credit decision
+      description: |
+        Requires `CREDIT_ADMIN` role. Creates a new decision and publishes event.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OverrideInput'
+      responses:
+        '200':
+          description: Decision overridden successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditDecision'
+        '403':
+          description: Insufficient permissions
+        '404':
+          description: Application not found
+        '409':
+          description: Application not in DECIDED state
+
+  /applications/{id}/audit:
+    get:
+      summary: Retrieve the audit trail for an application
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Audit trail entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditTrailEntry'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CreditApplicationInput:
+      type: object
+      required:
+        - applicant_id
+        - declared_income
+        - requested_amount
+      properties:
+        applicant_id:
+          type: string
+          format: uuid
+          description: Reference to the Applicant
+        declared_income:
+          type: number
+          format: decimal
+          minimum: 0.01
+          description: Monthly income in the specified currency
+        requested_amount:
+          type: number
+          format: decimal
+          minimum: 100
+          description: Requested credit limit
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+          default: USD
+          description: ISO 4217 currency code
+
+    CreditApplication:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        applicant_id:
+          type: string
+          format: uuid
+        declared_income:
+          type: number
+          format: decimal
+        requested_amount:
+          type: number
+          format: decimal
+        currency:
+          type: string
+        credit_score:
+          type: integer
+          nullable: true
+          minimum: 300
+          maximum: 850
+        risk_band:
+          type: string
+          enum: [LOW, MEDIUM, HIGH, INELIGIBLE]
+          nullable: true
+        status:
+          type: string
+          enum: [SUBMITTED, SCORING, DECIDED, REJECTED]
+        submitted_at:
+          type: string
+          format: date-time
+        decided_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    CreditDecision:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        application_id:
+          type: string
+          format: uuid
+        decision:
+          type: string
+          enum: [APPROVED, REJECTED, PARTIALLY_APPROVED]
+        approved_amount:
+          type: number
+          format: decimal
+          nullable: true
+        reason:
+          type: string
+          maxLength: 500
+        decided_at:
+          type: string
+          format: date-time
+        decided_by:
+          type: string
+          description: SYSTEM or admin user ID
+
+    OverrideInput:
+      type: object
+      required:
+        - decision
+        - approved_amount
+        - reason
+      properties:
+        decision:
+          type: string
+          enum: [APPROVED, REJECTED, PARTIALLY_APPROVED]
+        approved_amount:
+          type: number
+          format: decimal
+          minimum: 0
+        reason:
+          type: string
+          minLength: 20
+          maxLength: 500
+
+    AuditTrailEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        application_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum: [SUBMITTED, SCORE_RECEIVED, DECIDED, OVERRIDDEN]
+        actor:
+          type: string
+        payload:
+          type: object
+          description: JSON payload specific to the action
+        occurred_at:
+          type: string
+          format: date-time
+
+    ValidationError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
