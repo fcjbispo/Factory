@@ -4,218 +4,218 @@ scope: global
 updated: YYYY-MM-DD
 ---
 
-# Guia de Documentação do Projeto
+# Project Documentation Guide
 
-Este guia define como criar, atualizar, manter e navegar a documentação deste projeto. É destinado tanto a humanos quanto a agentes de IA.
-
----
-
-## Filosofia
-
-Esta estrutura foi desenhada para o paradigma de **desenvolvimento assistido por agentes de IA**. Isso implica em princípios diferentes de uma documentação tradicional:
-
-**1. Legibilidade por máquina é tão importante quanto por humanos.**
-Documentos têm frontmatter estruturado, status explícito e responsáveis declarados. Agentes não "navegam" — eles buscam e leem. Torne o caminho óbvio.
-
-**2. Um documento = uma responsabilidade.**
-Não misture decisões arquiteturais com especificações de feature. Não misture runbook com postmortem. Documentos atômicos são mais fáceis de encontrar, atualizar e substituir.
-
-**3. O INDEX.md de cada seção é a fonte de verdade sobre o que existe.**
-Todo agente deve ler o `INDEX.md` de uma seção antes de criar um documento novo para evitar duplicação.
-
-**4. Documentos têm ciclo de vida.**
-Nenhum documento é permanente. Todo documento tem um status. Documentos `depreciados` ou `substituídos` não são deletados — são marcados e permanecem como histórico.
-
-**5. Atualizações são obrigatórias.**
-Um documento desatualizado é pior do que um documento inexistente: induz agentes e humanos a erro. Se algo mudou, atualize ou deprecie.
+This guide defines how to create, update, maintain, and navigate this project's documentation. It is intended for both humans and AI agents.
 
 ---
 
-## Estrutura de frontmatter (obrigatória em todos os documentos)
+## Philosophy
 
-Todo documento deve começar com um bloco YAML:
+This structure was designed for the **AI-assisted development** paradigm. This implies different principles from traditional documentation:
+
+**1. Machine readability is as important as human readability.**
+Documents have structured frontmatter, explicit status, and declared owners. Agents do not "browse" — they search and read. Make the path obvious.
+
+**2. One document = one responsibility.**
+Do not mix architectural decisions with feature specifications. Do not mix runbook with postmortem. Atomic documents are easier to find, update, and replace.
+
+**3. The INDEX.md of each section is the source of truth for what exists.**
+Every agent must read the `INDEX.md` of a section before creating a new document to avoid duplication.
+
+**4. Documents have a lifecycle.**
+No document is permanent. Every document has a status. `deprecated` or `replaced` documents are not deleted — they are marked and remain as history.
+
+**5. Updates are mandatory.**
+An outdated document is worse than a nonexistent one: it leads agents and humans to error. If something changed, update or deprecate it.
+
+---
+
+## Frontmatter structure (mandatory in all documents)
+
+Every document must begin with a YAML block:
 
 ```yaml
 ---
 type: adr | api-contract | architecture | design | database | runbook | postmortem | threat-model | test-strategy | decision | policy
-status: rascunho | em-revisão | ativo | depreciado | substituído-por: [caminho/do/novo-arquivo.md]
-owner: arquiteto-senior | fullstack-developer | db-architect | code-reviewer | qa-tester | devops-sre | security-analyst | po
-readers: [lista de agentes que devem ler este documento]
+status: draft | in-review | active | deprecated | replaced-by: [path/to/new-file.md]
+owner: senior-architect | fullstack-developer | db-architect | code-reviewer | qa-tester | devops-sre | security-analyst | po
+readers: [list of agents that must read this document]
 updated: YYYY-MM-DD
 related:
-  - caminho/relativo/para/doc-relacionado.md
+  - relative/path/to/related-doc.md
 ---
 ```
 
-**Campos obrigatórios**: `type`, `status`, `owner`, `updated`
-**Campos recomendados**: `readers`, `related`
+**Mandatory fields**: `type`, `status`, `owner`, `updated`
+**Recommended fields**: `readers`, `related`
 
 ---
 
-## Guia por segmento
+## Guide by section
 
 ### `adr/` — Architecture Decision Records
 
-**O que vai aqui**: decisões técnicas significativas e de alto impacto que são difíceis ou custosas de reverter.
+**What goes here**: significant, high-impact technical decisions that are difficult or costly to reverse.
 
-**O que NÃO vai aqui**: decisões de produto, escolhas de implementação reversíveis, preferências de estilo.
+**What does NOT go here**: product decisions, reversible implementation choices, style preferences.
 
-**Quando criar um ADR**:
-- Escolha de tecnologia (banco de dados, framework, linguagem)
-- Definição de padrão arquitetural (microserviços vs monolito, event-driven vs request-response)
-- Mudança que afeta múltiplos módulos ou equipes
-- Decisão que foi debatida e teve alternativas consideradas
+**When to create an ADR**:
+- Technology choice (database, framework, language)
+- Architectural pattern definition (microservices vs monolith, event-driven vs request-response)
+- Change that affects multiple modules or teams
+- Decision that was debated and had alternatives considered
 
-**Formato de nome**: `NNNN-titulo-curto-em-kebab-case.md` (ex: `0001-escolha-do-banco-de-dados.md`)
+**Naming format**: `NNNN-short-title-in-kebab-case.md` (ex: `0001-database-choice.md`)
 
-**Numeração**: sequencial, com zero-padding de 4 dígitos. Nunca reutilize um número.
+**Numbering**: sequential, with 4-digit zero-padding. Never reuse a number.
 
-**Estados de ADR**: `proposto` → `aceito` → `depreciado` | `substituído-por: [adr/NNNN-novo.md]`
+**ADR statuses**: `proposed` → `accepted` → `deprecated` | `replaced-by: [adr/NNNN-new.md]`
 
-**Responsável**: arquiteto-senior cria e mantém. PO aprova decisões de alto impacto.
-
----
-
-### `api/` — Contratos de API
-
-**O que vai aqui**: especificações formais de APIs REST (OpenAPI), GraphQL schemas, contratos de eventos/mensagens, webhooks.
-
-**O que NÃO vai aqui**: documentação de uso interno de funções ou classes (isso é documentação de código).
-
-**Quando criar**:
-- Antes de implementar qualquer endpoint ou mutation
-- Ao adicionar eventos de domínio ao sistema
-- Ao expor integrações com sistemas externos
-
-**Formato**: OpenAPI 3.x em YAML para REST. SDL para GraphQL. Markdown estruturado para eventos.
-
-**Regra crítica**: o contrato é a fonte de verdade. Implementação segue o contrato — nunca o contrário. Divergências entre implementação e contrato são bugs.
-
-**Responsável**: arquiteto-senior define. fullstack-developer implementa. code-reviewer valida conformidade.
+**Owner**: senior-architect creates and maintains. PO approves high-impact decisions.
 
 ---
 
-### `architecture/` — Arquitetura do Sistema
+### `api/` — API Contracts
 
-**O que vai aqui**: visão geral do sistema, descrição de componentes, diagramas de contexto/container/componente, fluxos de dados, integrações externas.
+**What goes here**: formal specifications of REST APIs (OpenAPI), GraphQL schemas, event/message contracts, webhooks.
 
-**Subseção `diagrams/`**: armazene diagramas como código sempre que possível (Mermaid, PlantUML, C4) em vez de imagens binárias. Imagens ficam em `diagrams/assets/`.
+**What does NOT go here**: internal usage documentation of functions or classes (this is code documentation).
 
-**Documentos esperados**:
-- `overview.md`: visão geral de alto nível — obrigatório, é o primeiro documento que todos os agentes leem
-- `components.md`: descrição detalhada de cada componente/módulo
-- `integrations.md`: sistemas externos e como o sistema interage com eles
-- `data-flow.md`: como os dados fluem pelo sistema (opcional, conforme complexidade)
+**When to create**:
+- Before implementing any endpoint or mutation
+- When adding domain events to the system
+- When exposing integrations with external systems
 
-**Responsável**: arquiteto-senior cria e mantém.
+**Format**: OpenAPI 3.x in YAML for REST. SDL for GraphQL. Structured Markdown for events.
 
----
+**Critical rule**: the contract is the source of truth. Implementation follows the contract — never the opposite. Divergences between implementation and contract are bugs.
 
-### `database/` — Banco de Dados
-
-**O que vai aqui**: modelo entidade-relacionamento, descrição das tabelas/coleções, índices, políticas de acesso, changelog de schema.
-
-**Documentos esperados**:
-- `schema.md`: descrição completa do modelo de dados atual
-- `changelog.md`: histórico de todas as mudanças de schema (append-only, nunca edite entradas anteriores)
-- `indexes.md`: justificativa dos índices existentes (opcional, conforme complexidade)
-- `data-policies.md`: classificação de dados sensíveis, retenção, LGPD/GDPR
-
-**Responsável**: db-architect cria e mantém. security-analyst revisa `data-policies.md`.
+**Owner**: senior-architect defines. fullstack-developer implements. code-reviewer validates compliance.
 
 ---
 
-### `design/` — Especificações de Features
+### `architecture/` — System Architecture
 
-**O que vai aqui**: documento de design de cada feature ou mudança significativa, escrito antes da implementação.
+**What goes here**: system overview, component description, context/container/component diagrams, data flows, external integrations.
 
-**Formato de nome**: `YYYY-MM-DD-nome-da-feature.md`
+**Subsection `diagrams/`**: store diagrams as code whenever possible (Mermaid, PlantUML, C4) instead of binary images. Images go in `diagrams/assets/`.
 
-**Quando criar**: para qualquer feature que envolva mais de um agente ou que implique decisões de design não triviais. Features simples (CRUD straightforward) podem ser implementadas diretamente com base nos critérios de aceitação.
+**Expected documents**:
+- `overview.md`: high-level overview — mandatory, it is the first document all agents read
+- `components.md`: detailed description of each component/module
+- `integrations.md`: external systems and how the system interacts with them
+- `data-flow.md`: how data flows through the system (optional, depending on complexity)
 
-**Conteúdo mínimo**: contexto e problema, solução proposta, alternativas consideradas, impacto em componentes existentes, critérios de aceitação, abordagem de testes.
-
-**Responsável**: arquiteto-senior cria. PO aprova. Todos os agentes envolvidos leem antes de iniciar.
-
----
-
-### `operations/` — Operações
-
-**O que vai aqui**: runbooks, procedimentos de deploy, procedimentos de rollback, postmortems de incidentes.
-
-**`runbook.md`**: documento vivo com todos os procedimentos operacionais críticos. Deve ser executável — comandos reais, não descrições vagas.
-
-**Subseção `postmortems/`**: um arquivo por incidente. Formato: `YYYY-MM-DD-nome-do-incidente.md`. Postmortems são blameless — o foco é em sistemas, processos e prevenção, nunca em pessoas.
-
-**Responsável**: devops-sre cria e mantém. Postmortems envolvem todos os agentes afetados.
+**Owner**: senior-architect creates and maintains.
 
 ---
 
-### `security/` — Segurança
+### `database/` — Database
 
-**O que vai aqui**: políticas de segurança, threat models, registro de vulnerabilidades tratadas.
+**What goes here**: entity-relationship model, table/collection description, indexes, access policies, schema changelog.
 
-**`policies.md`**: documento com todas as políticas de segurança do projeto (autenticação, autorização, tratamento de dados sensíveis, secrets management, etc.). Todos os agentes devem ler.
+**Expected documents**:
+- `schema.md`: complete description of the current data model
+- `changelog.md`: history of all schema changes (append-only, never edit previous entries)
+- `indexes.md`: justification for existing indexes (optional, depending on complexity)
+- `data-policies.md`: sensitive data classification, retention, LGPD/GDPR
 
-**Subseção `threat-models/`**: um arquivo por feature ou componente analisado. Formato: `YYYY-MM-DD-nome-do-componente.md`.
-
-**Regra crítica**: vulnerabilidades ativas não ficam neste repositório — são gerenciadas em canal privado e reportadas ao PO. Este repositório registra apenas vulnerabilidades já tratadas, como histórico.
-
-**Responsável**: security-analyst cria e mantém.
-
----
-
-### `testing/` — Testes e Qualidade
-
-**O que vai aqui**: estratégia de testes, pirâmide de testes do projeto, thresholds de cobertura, ambientes de teste, dados de teste.
-
-**`test-strategy.md`**: documento central com a estratégia completa. Inclui o que é testado em cada nível (unitário, integração, e2e), ferramentas utilizadas, thresholds de cobertura e critérios de qualidade para release.
-
-**Responsável**: qa-tester cria e mantém. arquiteto-senior e devops-sre contribuem.
+**Owner**: db-architect creates and maintains. security-analyst reviews `data-policies.md`.
 
 ---
 
-### `decisions/` — Decisões de Produto e Negócio
+### `design/` — Feature Specifications
 
-**O que vai aqui**: decisões tomadas pelo PO que impactam o produto — priorizações, mudanças de escopo, trade-offs de negócio, definição de personas, requisitos não-funcionais.
+**What goes here**: design document for each feature or significant change, written before implementation.
 
-**O que NÃO vai aqui**: decisões técnicas (vão em `adr/`).
+**Naming format**: `YYYY-MM-DD-name-of-feature.md`
 
-**Formato de nome**: `YYYY-MM-DD-titulo-da-decisao.md`
+**When to create**: for any feature that involves more than one agent or that implies nontrivial design decisions. Simple features (straightforward CRUD) may be implemented directly based on acceptance criteria.
 
-**Responsável**: PO cria e mantém. Agentes consultam para entender contexto de negócio.
+**Minimum content**: context and problem, proposed solution, alternatives considered, impact on existing components, acceptance criteria, testing approach.
 
----
-
-## Regras de manutenção
-
-**Ao criar um documento**:
-1. Use o `_template.md` da seção
-2. Preencha o frontmatter completamente
-3. Adicione a entrada no `INDEX.md` da seção
-4. Se o documento substitui outro, atualize o status do antigo para `substituído-por: [novo-arquivo.md]`
-
-**Ao atualizar um documento**:
-1. Atualize o campo `updated` do frontmatter
-2. Registre o que mudou na seção `## Histórico de mudanças`
-3. Se a mudança é significativa, notifique os `readers` declarados no frontmatter
-
-**Ao depreciar um documento**:
-1. Altere `status` para `depreciado` ou `substituído-por: [caminho]`
-2. Adicione uma nota no topo do documento explicando por quê foi depreciado
-3. NÃO delete o arquivo
-
-**Periodicidade de revisão**:
-- `architecture/overview.md`: revise a cada release major
-- `adr/`: nunca edite um ADR aceito — crie um novo que o substitua
-- `operations/runbook.md`: revise após cada incidente
-- `security/policies.md`: revise a cada 6 meses ou após incidente de segurança
-- `testing/test-strategy.md`: revise quando a estratégia de testes mudar
+**Owner**: senior-architect creates. PO approves. All involved agents read before starting.
 
 ---
 
-## Histórico de mudanças deste guia
+### `operations/` — Operations
 
-| Data | Mudança | Por |
+**What goes here**: runbooks, deploy procedures, rollback procedures, incident postmortems.
+
+**`runbook.md`**: living document with all critical operational procedures. Must be executable — real commands, not vague descriptions.
+
+**Subsection `postmortems/`**: one file per incident. Format: `YYYY-MM-DD-name-of-incident.md`. Postmortems are blameless — the focus is on systems, processes, and prevention, never on people.
+
+**Owner**: devops-sre creates and maintains. Postmortems involve all affected agents.
+
+---
+
+### `security/` — Security
+
+**What goes here**: security policies, threat models, record of handled vulnerabilities.
+
+**`policies.md`**: document with all project security policies (authentication, authorization, sensitive data handling, secrets management, etc.). All agents must read.
+
+**Subsection `threat-models/`**: one file per analyzed feature or component. Format: `YYYY-MM-DD-name-of-component.md`.
+
+**Critical rule**: active vulnerabilities do not live in this repository — they are managed in a private channel and reported to the PO. This repository only records already handled vulnerabilities, as history.
+
+**Owner**: security-analyst creates and maintains.
+
+---
+
+### `testing/` — Testing and Quality
+
+**What goes here**: test strategy, project test pyramid, coverage thresholds, test environments, test data.
+
+**`test-strategy.md`**: central document with the complete strategy. Includes what is tested at each level (unit, integration, e2e), tools used, coverage thresholds, and quality criteria for release.
+
+**Owner**: qa-tester creates and maintains. senior-architect and devops-sre contribute.
+
+---
+
+### `decisions/` — Product and Business Decisions
+
+**What goes here**: decisions made by the PO that impact the product — prioritizations, scope changes, business trade-offs, persona definitions, nonfunctional requirements.
+
+**What does NOT go here**: technical decisions (go in `adr/`).
+
+**Naming format**: `YYYY-MM-DD-title-of-decision.md`
+
+**Owner**: PO creates and maintains. Agents consult to understand business context.
+
+---
+
+## Maintenance rules
+
+**When creating a document**:
+1. Use the section's `_template.md`
+2. Fill out the frontmatter completely
+3. Add the entry to the section's `INDEX.md`
+4. If the document replaces another, update the old one's status to `replaced-by: [new-file.md]`
+
+**When updating a document**:
+1. Update the frontmatter `updated` field
+2. Record what changed in the `## Change history` section
+3. If the change is significant, notify the `readers` declared in the frontmatter
+
+**When deprecating a document**:
+1. Change `status` to `deprecated` or `replaced-by: [path]`
+2. Add a note at the top of the document explaining why it was deprecated
+3. DO NOT delete the file
+
+**Review periodicity**:
+- `architecture/overview.md`: review at every major release
+- `adr/`: never edit an accepted ADR — create a new one that replaces it
+- `operations/runbook.md`: review after each incident
+- `security/policies.md`: review every 6 months or after a security incident
+- `testing/test-strategy.md`: review when the test strategy changes
+
+---
+
+## Change history of this guide
+
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Versão inicial | arquiteto-senior |
+| YYYY-MM-DD | Initial version | senior-architect |

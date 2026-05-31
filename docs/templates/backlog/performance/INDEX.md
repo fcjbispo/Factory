@@ -4,28 +4,28 @@ scope: backlog.performance
 updated: 2026-04-28
 ---
 
-# Performance — Bottlenecks e Tuning
+# Performance — Bottlenecks and Tuning
 
-## Identificados
+## Identified
 
-| Arquivo | Título | Severidade | Status | Métrica |
+| File | Title | Severity | Status | Metric |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Em Otimização
+## In Optimization
 
-| Arquivo | Título | Severidade | Status | Atribuído |
+| File | Title | Severity | Status | Assigned |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Resolvidos
+## Resolved
 
-| Arquivo | Título | Severidade | Resolvido | Por |
+| File | Title | Severity | Resolved | By |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Como usar
+## How to use
 
-- Severidade: `crítico` | `alto` | `médio` | `baixo`
-- Métricas: latência, throughput, erro rate, uso de recursos
-- Benchmarks: antes/depois obrigatório
+- Severity: `critical` | `high` | `medium` | `low`
+- Metrics: latency, throughput, error rate, resource usage
+- Benchmarks: before/after mandatory

@@ -4,60 +4,60 @@ scope: backlog.v1.3.0
 updated: 2026-04-28
 ---
 
-# Pesquisa v1.3.0 — Gestão de Backlog
+# Research v1.3.0 — Backlog Management
 
-## Fontes
+## Sources
 
 - Hel (DevOps/SRE) — glm-5.1:cloud
 - Balder (DB Architect) — deepseek-v4-flash:cloud (timeout)
 - Web search — SearXNG
 
-## Aprendizados de Hel
+## Learnings from Hel
 
-### Severidade por Categoria
+### Severity by Category
 
-| Categoria | Crítico | Alto | Médio | Baixo |
+| Category | Critical | High | Medium | Low |
 |---|---|---|---|---|
-| Bugs | Produção fora | Degradado | Workaround | Cosmético |
-| Segurança | CVSS ≥ 9 | CVSS 7-8.9 | CVSS 4-6.9 | CVSS < 4 |
-| Performance | SLO quebrado | Latência alta | Degradação leve | Otimização |
-| Tech Debt | Bloqueante | Dificulta features | Refactoring | Modernização |
+| Bugs | Production down | Degraded | Workaround | Cosmetic |
+| Security | CVSS ≥ 9 | CVSS 7-8.9 | CVSS 4-6.9 | CVSS < 4 |
+| Performance | SLO broken | High latency | Light degradation | Optimization |
+| Tech Debt | Blocking | Hinders features | Refactoring | Modernization |
 
-### Template de Triage
+### Triage Template
 
-Campos obrigatórios:
-- Severidade técnica
-- Impacto de negócio
-- Esforço estimado
-- Risco de não fazer
-- Dependências
+Mandatory fields:
+- Technical severity
+- Business impact
+- Estimated effort
+- Risk of not doing
+- Dependencies
 
-## Aprendizados de Web Search
+## Learnings from Web Search
 
-### Melhores Práticas 2026
+### Best Practices 2026
 
-1. **Shift-left security** — incluir segurança desde o início
-2. **Dependency scanning** — automação de verificação
-3. **SBOM** — Software Bill of Materials obrigatório
-4. **Blameless postmortems** — foco em sistemas
-5. **Sustainable development** — alocar tempo para débito técnico
+1. **Shift-left security** — include security from the start
+2. **Dependency scanning** — verification automation
+3. **SBOM** — Software Bill of Materials mandatory
+4. **Blameless postmortems** — focus on systems
+5. **Sustainable development** — allocate time for technical debt
 
-### Gestão de Débito Técnico
+### Technical Debt Management
 
-- Visibilidade: tornar débito visível
-- Priorização estratégica
-- Alocação consistente (20% do tempo)
-- Métricas: lead time, cycle time
+- Visibility: make debt visible
+- Strategic prioritization
+- Consistent allocation (20% of time)
+- Metrics: lead time, cycle time
 
-## Gaps Identificados
+## Identified Gaps
 
-- Necessidade de integração com GitHub Issues (futuro)
-- Automação de triage (futuro)
-- Dashboard de métricas (futuro)
+- Need for integration with GitHub Issues (future)
+- Triage automation (future)
+- Metrics dashboard (future)
 
-## Decisões
+## Decisions
 
-- Priorização: MoSCoW + RICE
-- Estados: aberto → em-analise → priorizado → em-progresso → resolvido
-- Template único para todas as categorias
-- Review trimestral de tech debt
+- Prioritization: MoSCoW + RICE
+- States: open → in-analysis → prioritized → in-progress → resolved
+- Single template for all categories
+- Quarterly tech debt review

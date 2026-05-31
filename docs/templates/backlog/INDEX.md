@@ -4,45 +4,45 @@ scope: backlog
 updated: 2026-04-28
 ---
 
-# Backlog — Gestão de Produção
+# Backlog — Production Management
 
-Documentos de gestão de produção para projetos em operação contínua.
+Production management documents for projects in continuous operation.
 
-## Documentos principais
+## Main documents
 
-| Arquivo | Conteúdo | Status |
+| File | Content | Status |
 |---|---|---|
-| [backlog-rules.md](backlog-rules.md) | Regras de priorização e fluxo do backlog | `rascunho` |
-| [issues/INDEX.md](issues/INDEX.md) | Bugs e problemas reportados | `rascunho` |
-| [improvements/INDEX.md](improvements/INDEX.md) | Melhorias e features técnicas | `rascunho` |
-| [tech-debt/INDEX.md](tech-debt/INDEX.md) | Débito técnico e refactoring | `rascunho` |
-| [documentation/INDEX.md](documentation/INDEX.md) | Gestão de documentação | `rascunho` |
-| [security/INDEX.md](security/INDEX.md) | Vulnerabilidades e patches | `rascunho` |
-| [performance/INDEX.md](performance/INDEX.md) | Bottlenecks e tuning | `rascunho` |
-| [dependencies/INDEX.md](dependencies/INDEX.md) | Updates e EOL | `rascunho` |
-| [data/INDEX.md](data/INDEX.md) | Migrations e backup | `rascunho` |
+| [backlog-rules.md](backlog-rules.md) | Backlog prioritization and flow rules | `draft` |
+| [issues/INDEX.md](issues/INDEX.md) | Reported bugs and problems | `draft` |
+| [improvements/INDEX.md](improvements/INDEX.md) | Improvements and technical features | `draft` |
+| [tech-debt/INDEX.md](tech-debt/INDEX.md) | Technical debt and refactoring | `draft` |
+| [documentation/INDEX.md](documentation/INDEX.md) | Documentation management | `draft` |
+| [security/INDEX.md](security/INDEX.md) | Vulnerabilities and patches | `draft` |
+| [performance/INDEX.md](performance/INDEX.md) | Bottlenecks and tuning | `draft` |
+| [dependencies/INDEX.md](dependencies/INDEX.md) | Updates and EOL | `draft` |
+| [data/INDEX.md](data/INDEX.md) | Migrations and backup | `draft` |
 
-## Como usar
+## How to use
 
-- Todos os itens seguem o template `_template.md`
-- Nomenclatura: `YYYY-MM-DD-titulo-curto.md`
-- Status: `aberto` → `em-analise` → `priorizado` → `em-progresso` → `resolvido` | `rejeitado` | `suspenso`
-- Prioridade: `P1` (crítico) | `P2` (alto) | `P3` (médio) | `P4` (baixo)
+- All items follow the `_template.md` template
+- Naming: `YYYY-MM-DD-short-title.md`
+- Status: `open` → `in-analysis` → `prioritized` → `in-progress` → `resolved` | `rejected` | `suspended`
+- Priority: `P1` (critical) | `P2` (high) | `P3` (medium) | `P4` (low)
 
-## Responsáveis
+## Responsibles
 
-- **PO** — triage e priorização
-- **Arquiteto** — impacto técnico e estimativa
-- **Agentes** — execução conforme papel
+- **PO** — triage and prioritization
+- **Architect** — technical impact and estimation
+- **Agents** — execution according to role
 
-## Fluxo
+## Flow
 
-1. Item é reportado (qualquer agente ou PO)
-2. PO faz triage inicial
-3. Arquiteto avalia impacto técnico
-4. PO prioriza
-5. Agente executa
-6. Code reviewer valida
-7. QA tester verifica
-8. DevOps/SRE deploya
-9. Item fechado
+1. Item is reported (any agent or PO)
+2. PO does initial triage
+3. Architect assesses technical impact
+4. PO prioritizes
+5. Agent executes
+6. Code reviewer validates
+7. QA tester verifies
+8. DevOps/SRE deploys
+9. Item closed

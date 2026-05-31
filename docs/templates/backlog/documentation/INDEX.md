@@ -4,28 +4,28 @@ scope: backlog.documentation
 updated: 2026-04-28
 ---
 
-# Documentation — Gestão de Documentação
+# Documentation — Documentation Management
 
-## Desatualizada
+## Outdated
 
-| Arquivo | Documento | Status | Última atualização |
+| File | Document | Status | Last update |
 |---|---|---|---|
 | — | — | — | — |
 
-## Faltante
+## Missing
 
-| Arquivo | Documento | Onde deveria estar |
+| File | Document | Where it should be |
 |---|---|---|
 | — | — | — |
 
-## Em Revisão
+## In Review
 
-| Arquivo | Documento | Revisor | Status |
+| File | Document | Reviewer | Status |
 |---|---|---|---|
 | — | — | — | — |
 
-## Como usar
+## How to use
 
-- Review de docs: mensal ou a cada release
-- Docs depreciadas: marcar como `depreciado`, não deletar
-- Glossário: sincronizar com `domain/[ctx]-language.md`
+- Doc review: monthly or every release
+- Deprecated docs: mark as `deprecated`, do not delete
+- Glossary: sync with `domain/[ctx]-language.md`

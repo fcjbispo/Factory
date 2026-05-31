@@ -1,63 +1,63 @@
 ---
 type: postmortem
-status: rascunho
+status: draft
 owner: devops-sre
 readers: [all]
 updated: YYYY-MM-DD
 related: []
 ---
 
-# Postmortem: [Nome do Incidente]
+# Postmortem: [Incident Name]
 
-> Este documento é **blameless**. O foco é em sistemas, processos e prevenção — nunca em pessoas.
+> This document is **blameless**. The focus is on systems, processes, and prevention — never on people.
 
-## Resumo executivo
+## Executive summary
 
-> Uma ou duas frases descrevendo o que aconteceu, o impacto e a causa raiz.
+> One or two sentences describing what happened, the impact, and the root cause.
 
-## Linha do tempo
+## Timeline
 
-| Horário (UTC) | Evento |
+| Time (UTC) | Event |
 |---|---|
-| HH:MM | Primeiro sinal do problema |
-| HH:MM | Incidente detectado |
-| HH:MM | Time notificado |
-| HH:MM | Causa raiz identificada |
-| HH:MM | Mitigação aplicada |
-| HH:MM | Serviço restaurado |
-| HH:MM | Incidente encerrado |
+| HH:MM | First sign of the problem |
+| HH:MM | Incident detected |
+| HH:MM | Team notified |
+| HH:MM | Root cause identified |
+| HH:MM | Mitigation applied |
+| HH:MM | Service restored |
+| HH:MM | Incident closed |
 
-## Impacto
+## Impact
 
-- **Duração**: X horas Y minutos
-- **Usuários afetados**: [número ou percentual]
-- **Serviços afetados**: [lista]
-- **Perda de dados**: sim / não
+- **Duration**: X hours Y minutes
+- **Affected users**: [number or percentage]
+- **Affected services**: [list]
+- **Data loss**: yes / no
 
-## Causa raiz
+## Root cause
 
-> Descreva a causa raiz técnica. Use os "5 porquês" se necessário.
+> Describe the technical root cause. Use the "5 whys" if necessary.
 
-**Por quê o incidente ocorreu?** →
-**Por quê aquilo ocorreu?** →
-**Por quê aquilo ocorreu?** →
+**Why did the incident occur?** →
+**Why did that occur?** →
+**Why did that occur?** →
 
-## O que funcionou bem
+## What worked well
 
-> Documente o que ajudou na detecção e resolução. Isso deve ser preservado.
+> Document what helped in detection and resolution. This must be preserved.
 
-## O que pode melhorar
+## What can improve
 
-> Documente os gaps que contribuíram para o incidente ou dificultaram a resolução.
+> Document the gaps that contributed to the incident or hindered resolution.
 
-## Ações corretivas
+## Corrective actions
 
-| Ação | Responsável | Prazo | Status |
+| Action | Responsible | Deadline | Status |
 |---|---|---|---|
-| [ação específica e mensurável] | [agente] | YYYY-MM-DD | `pendente` |
+| [specific and measurable action] | [agent] | YYYY-MM-DD | `pending` |
 
-## Histórico de mudanças
+## Change history
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Rascunho inicial | devops-sre |
+| YYYY-MM-DD | Initial draft | devops-sre |

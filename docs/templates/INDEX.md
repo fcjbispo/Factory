@@ -5,30 +5,30 @@ updated: YYYY-MM-DD
 version: 1.3.0
 ---
 
-# Índice Mestre de Documentação
+# Master Documentation Index
 
-> **Ponto de entrada obrigatório para todos os agentes.**
-> Leia este arquivo antes de qualquer outro. Ele define o que existe, onde está e quem deve ler o quê.
+> **Mandatory entry point for all agents.**
+> Read this file before any other. It defines what exists, where it is, and who should read what.
 
-## Estado geral do projeto
+## Overall project status
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| Projeto | [NOME DO PROJETO] |
-| Status | `em-desenvolvimento` / `produção` / `manutenção` |
-| Stack principal | [ex: Node.js + PostgreSQL + React] |
-| Última atualização | YYYY-MM-DD |
-| PO responsável | [nome] |
+| Project | [PROJECT NAME] |
+| Status | `in-development` / `production` / `maintenance` |
+| Main stack | [ex: Node.js + PostgreSQL + React] |
+| Last updated | YYYY-MM-DD |
+| Responsible PO | [name] |
 
 ---
 
-## Mapa de documentação por agente
+## Documentation map by agent
 
-Use esta tabela para saber exatamente o que ler ao iniciar uma tarefa.
+Use this table to know exactly what to read when starting a task.
 
-| Você é | Leia obrigatoriamente | Consulte conforme necessidade |
+| You are | Must read | Consult as needed |
 |---|---|---|
-| **Arquiteto Sênior** | `domain/INDEX.md`, `domain/context-map.md`, `architecture/overview.md`, `adr/INDEX.md` | `api/INDEX.md`, `security/INDEX.md` |
+| **Senior Architect** | `domain/INDEX.md`, `domain/context-map.md`, `architecture/overview.md`, `adr/INDEX.md` | `api/INDEX.md`, `security/INDEX.md` |
 | **Full-Stack Developer** | `domain/INDEX.md`, `architecture/overview.md`, `api/INDEX.md`, `design/INDEX.md` | `domain/[ctx]-language.md`, `database/schema.md`, `security/policies.md` |
 | **DB Architect** | `domain/INDEX.md`, `database/INDEX.md`, `architecture/overview.md` | `adr/INDEX.md`, `security/policies.md` |
 | **Code Reviewer** | `domain/INDEX.md`, `architecture/overview.md`, `adr/INDEX.md` | `api/INDEX.md`, `security/policies.md` |
@@ -38,60 +38,60 @@ Use esta tabela para saber exatamente o que ler ao iniciar uma tarefa.
 
 ---
 
-## Estrutura de documentação
+## Documentation structure
 
 ```
 docs/
-├── INDEX.md ← você está aqui
-├── GUIDE.md ← como usar esta estrutura
+├── INDEX.md ← you are here
+├── GUIDE.md ← how to use this structure
 │
-├── domain/ ← modelagem DDD: bounded contexts, linguagem ubíqua, domain events
-├── adr/ ← decisões arquiteturais irreversíveis
-├── api/ ← contratos de API (OpenAPI, GraphQL, AsyncAPI)
-├── architecture/ ← visão do sistema, componentes, diagramas
-├── database/ ← modelo de dados, schema, changelog
-├── design/ ← especificações de features
+├── domain/ ← DDD modeling: bounded contexts, ubiquitous language, domain events
+├── adr/ ← irreversible architectural decisions
+├── api/ ← API contracts (OpenAPI, GraphQL, AsyncAPI)
+├── architecture/ ← system view, components, diagrams
+├── database/ ← data model, schema, changelog
+├── design/ ← feature specifications
 ├── operations/ ← runbooks, deploys, postmortems
-├── security/ ← políticas, threat models, vulnerabilidades
-├── testing/ ← estratégia de testes, cobertura, qualidade
-└── decisions/ ← decisões de produto e negócio
+├── security/ ← policies, threat models, vulnerabilities
+├── testing/ ← test strategy, coverage, quality
+└── decisions/ ← product and business decisions
 ```
 
 ---
 
-## Status de cada seção
+## Status of each section
 
-| Seção | Status | Responsável | Última atualização |
+| Section | Status | Owner | Last updated |
 |---|---|---|---|
-| `domain/` | `ativo` | arquiteto-senior | YYYY-MM-DD |
-| `adr/` | `ativo` | arquiteto-senior | YYYY-MM-DD |
-| `api/` | `ativo` | arquiteto-senior | YYYY-MM-DD |
-| `architecture/` | `ativo` | arquiteto-senior | YYYY-MM-DD |
-| `database/` | `ativo` | db-architect | YYYY-MM-DD |
-| `design/` | `ativo` | arquiteto-senior | YYYY-MM-DD |
-| `operations/` | `ativo` | devops-sre | YYYY-MM-DD |
-| `security/` | `ativo` | security-analyst | YYYY-MM-DD |
-| `testing/` | `ativo` | qa-tester | YYYY-MM-DD |
-| `decisions/` | `ativo` | po | YYYY-MM-DD |
+| `domain/` | `active` | senior-architect | YYYY-MM-DD |
+| `adr/` | `active` | senior-architect | YYYY-MM-DD |
+| `api/` | `active` | senior-architect | YYYY-MM-DD |
+| `architecture/` | `active` | senior-architect | YYYY-MM-DD |
+| `database/` | `active` | db-architect | YYYY-MM-DD |
+| `design/` | `active` | senior-architect | YYYY-MM-DD |
+| `operations/` | `active` | devops-sre | YYYY-MM-DD |
+| `security/` | `active` | security-analyst | YYYY-MM-DD |
+| `testing/` | `active` | qa-tester | YYYY-MM-DD |
+| `decisions/` | `active` | po | YYYY-MM-DD |
 
 ---
 
-## Bounded contexts registrados
+## Registered bounded contexts
 
-> Listagem rápida para navegação. Detalhes completos em `domain/INDEX.md`.
+> Quick listing for navigation. Full details in `domain/INDEX.md`.
 
-| Contexto | Status | Spec correspondente |
+| Context | Status | Corresponding spec |
 |---|---|---|
-| [nome-do-contexto] | `ativo` | `api/[nome]-api.yaml` |
+| [context-name] | `active` | `api/[name]-api.yaml` |
 
 ---
 
-## Convenções globais
+## Global conventions
 
-- **Status de documentos**: `rascunho` → `em-revisão` → `ativo` → `depreciado` | `substituído-por: [arquivo]`
-- **Nomenclatura**: `kebab-case` para arquivos. Prefixo de data `YYYY-MM-DD-` para documentos cronológicos (postmortems, decisões).
-- **Frontmatter**: todo documento começa com bloco YAML de metadados (veja `GUIDE.md`).
-- **Linguagem ubíqua**: todos os nomes em `api/` derivam do glossário em `domain/[ctx]-language.md`. Divergências são bugs.
-- **Atualizações**: ao atualizar qualquer documento, atualize também o campo `updated` do frontmatter e registre o que mudou na seção `## Histórico de mudanças` do próprio documento.
-- **Templates**: todo segmento tem um `_template.md`. Nunca crie documentos sem usar o template da seção.
-- **Links**: use sempre caminhos relativos a partir da raiz de `docs/`.
+- **Document status**: `draft` → `in-review` → `active` → `deprecated` | `replaced-by: [file]`
+- **Naming**: `kebab-case` for files. Date prefix `YYYY-MM-DD-` for chronological documents (postmortems, decisions).
+- **Frontmatter**: every document begins with a YAML metadata block (see `GUIDE.md`).
+- **Ubiquitous language**: all names in `api/` derive from the glossary in `domain/[ctx]-language.md`. Divergences are bugs.
+- **Updates**: when updating any document, also update the `updated` field in the frontmatter and record what changed in the `## Change history` section of the document itself.
+- **Templates**: every segment has a `_template.md`. Never create documents without using the section's template.
+- **Links**: always use paths relative to the `docs/` root.

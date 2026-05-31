@@ -1,40 +1,40 @@
 ---
 type: decision
-status: ativo
+status: active
 owner: po
-readers: [arquiteto-senior, fullstack-developer]
+readers: [senior-architect, fullstack-developer]
 updated: YYYY-MM-DD
 related: []
 ---
 
-# [Título da Decisão de Produto]
+# [Product Decision Title]
 
-## Contexto
+## Context
 
-> Qual é a situação de negócio que motivou esta decisão?
+> What is the business situation that motivated this decision?
 
-## Decisão
+## Decision
 
-> O que foi decidido? Seja direto e sem ambiguidade.
+> What was decided? Be direct and unambiguous.
 
-## Motivação
+## Motivation
 
-> Por que esta é a melhor decisão dado o contexto atual?
+> Why is this the best decision given the current context?
 
-## Impacto esperado
+## Expected Impact
 
-> O que muda no produto com esta decisão?
+> What changes in the product with this decision?
 
-## Trade-offs aceitos
+## Accepted Trade-offs
 
-> O que abrimos mão com esta decisão?
+> What do we give up with this decision?
 
-## Critérios de revisão
+## Review Criteria
 
-> Quando esta decisão deve ser revisitada? Quais indicadores sugerem que ela precisa ser reavaliada?
+> When should this decision be revisited? What indicators suggest it needs to be reevaluated?
 
-## Histórico de mudanças
+## Change History
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Versão inicial | po |
+| YYYY-MM-DD | Initial version | po |

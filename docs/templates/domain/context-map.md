@@ -1,98 +1,98 @@
 ---
 type: context-map
-status: ativo
-owner: arquiteto-senior
+status: active
+owner: senior-architect
 updated: YYYY-MM-DD
 related:
   - domain/INDEX.md
 ---
 
-# Mapa de Contextos — [NOME DO PROJETO]
+# Context Map — [PROJECT NAME]
 
-> Define como os bounded contexts se relacionam e se comunicam.
-> É a fonte de verdade para decisões de integração entre contextos.
-> Leitura obrigatória antes de criar specs de eventos ou integrações entre contextos.
+> Defines how bounded contexts relate and communicate.
+> It is the source of truth for integration decisions between contexts.
+> Mandatory reading before creating event specs or integrations between contexts.
 
 ---
 
-## Diagrama do mapa
+## Map diagram
 
 ```
-[ContextoA]  —[conformista]→  [ContextoB]
-[ContextoB]  —[publicador]→   [ContextoC]
-[ContextoA]  —[ACL]→          [ContextoExterno]
+[ContextA]  —[conformist]→  [ContextB]
+[ContextB]  —[publisher]→   [ContextC]
+[ContextA]  —[ACL]→          [ExternalContext]
 ```
 
-*Diagrama detalhado em `architecture/diagrams/context-map.mmd` (Mermaid)*
+*Detailed diagram at `architecture/diagrams/context-map.mmd` (Mermaid)*
 
 ---
 
-## Tipos de relacionamento
+## Relationship types
 
-| Tipo | Descrição | Implicação na spec |
+| Type | Description | Spec implication |
 |---|---|---|
-| `conformista` | O consumidor adota o modelo do publicador sem tradução | Tipos da spec do consumidor espelham os do publicador |
-| `anti-corruption-layer` (ACL) | O consumidor traduz o modelo do publicador para seu próprio | Spec de tradução explícita; termos podem diferir |
-| `publicador-consumidor` | Um contexto publica eventos; outros consomem | Contrato AsyncAPI define o canal |
-| `parceiro` | Dois contextos evoluem juntos com acordo mútuo | Specs coordenadas; breaking changes exigem acordo |
-| `shared-kernel` | Dois contextos compartilham um subconjunto de modelo | Cuidado extremo com mudanças no kernel compartilhado |
+| `conformist` | The consumer adopts the publisher's model without translation | Consumer spec types mirror the publisher's |
+| `anti-corruption-layer` (ACL) | The consumer translates the publisher's model into its own | Explicit translation spec; terms may differ |
+| `publisher-consumer` | One context publishes events; others consume | AsyncAPI contract defines the channel |
+| `partner` | Two contexts evolve together with mutual agreement | Coordinated specs; breaking changes require agreement |
+| `shared-kernel` | Two contexts share a subset of the model | Extreme caution with changes in the shared kernel |
 
 ---
 
-## Relacionamentos detalhados
+## Detailed relationships
 
-### [ContextoA] → [ContextoB]
+### [ContextA] → [ContextB]
 
-**Tipo**: `[tipo-de-relação]`
-**Direção**: [ContextoA] é o [upstream/downstream]
+**Type**: `[relationship-type]`
+**Direction**: [ContextA] is the [upstream/downstream]
 
-**O que é compartilhado**:
-- [conceito ou evento compartilhado]
+**What is shared**:
+- [shared concept or event]
 
-**Tradução** (se ACL):
-| Conceito em [ContextoA] | Tradução em [ContextoB] | Motivo |
+**Translation** (if ACL):
+| Concept in [ContextA] | Translation in [ContextB] | Reason |
 |---|---|---|
-| `[ConceitoOrigem]` | `[ConceitoDestino]` | [por que os nomes diferem] |
+| `[SourceConcept]` | `[TargetConcept]` | [why the names differ] |
 
-**Spec de integração**: `api/events/[nome]-event.yaml`
+**Integration spec**: `api/events/[name]-event.yaml`
 
-**Notas**:
-- [observações relevantes sobre esta integração]
+**Notes**:
+- [relevant observations about this integration]
 
 ---
 
-### [ContextoB] → [ContextoC]
+### [ContextB] → [ContextC]
 
-**Tipo**: `publicador-consumidor`
-**Eventos publicados**:
+**Type**: `publisher-consumer`
+**Published events**:
 
-| Evento | Canal | Spec |
+| Event | Channel | Spec |
 |---|---|---|
-| `[NomeDoEvento]` | `[nome-do-canal]` | `api/events/[nome]-event.yaml` |
+| `[EventName]` | `[channel-name]` | `api/events/[name]-event.yaml` |
 
 ---
 
-## Contextos externos (sistemas de terceiros)
+## External contexts (third-party systems)
 
-> Sistemas fora do domínio desta aplicação. Sempre tratados com ACL.
+> Systems outside this application's domain. Always treated with ACL.
 
-| Sistema | Tipo de integração | ACL responsável | Spec |
+| System | Integration type | ACL responsible | Spec |
 |---|---|---|---|
-| [NomeDoSistemaExterno] | REST / GraphQL / Webhook | `[ContextoQueConsome]` | `api/integrations/[nome].yaml` |
+| [ExternalSystemName] | REST / GraphQL / Webhook | `[ConsumingContext]` | `api/integrations/[name].yaml` |
 
 ---
 
-## Regras de evolução
+## Evolution rules
 
-1. **Breaking changes em contratos publicados** exigem aprovação de todos os contextos consumidores registrados neste mapa.
-2. **Novos bounded contexts** são adicionados aqui antes de qualquer implementação.
-3. **Contextos depreciados** permanecem no mapa com status `depreciado` até que todos os consumidores migrem.
-4. **ACLs** são documentadas explicitamente — nunca implícitas no código.
+1. **Breaking changes in published contracts** require approval from all consumer contexts registered in this map.
+2. **New bounded contexts** are added here before any implementation.
+3. **Deprecated contexts** remain on the map with status `deprecated` until all consumers migrate.
+4. **ACLs** are explicitly documented — never implicit in code.
 
 ---
 
-## Histórico de mudanças
+## Change history
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Mapa inicial criado via Event Storming | arquiteto-senior |
+| YYYY-MM-DD | Initial map created via Event Storming | senior-architect |

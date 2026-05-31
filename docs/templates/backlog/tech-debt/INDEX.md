@@ -4,28 +4,28 @@ scope: backlog.tech-debt
 updated: 2026-04-28
 ---
 
-# Tech Debt — Débito Técnico
+# Tech Debt — Technical Debt
 
-## Ativo
+## Active
 
-| Arquivo | Título | Severidade | Status | Criado |
+| File | Title | Severity | Status | Created |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Em Pagamento
+## In Payment
 
-| Arquivo | Título | Severidade | Status | Atribuído |
+| File | Title | Severity | Status | Assigned |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Quitado
+## Paid Off
 
-| Arquivo | Título | Severidade | Quitado | Por |
+| File | Title | Severity | Paid off | By |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Como usar
+## How to use
 
-- Severidade: `crítico` | `alto` | `médio` | `baixo`
-- Todo débito deve ter: causa, impacto, custo de pagamento, risco de não pagar
-- Review trimestral obrigatório
+- Severity: `critical` | `high` | `medium` | `low`
+- Every debt must have: cause, impact, payment cost, risk of not paying
+- Quarterly review mandatory

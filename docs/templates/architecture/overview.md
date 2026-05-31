@@ -1,7 +1,7 @@
 ---
 type: architecture
-status: ativo
-owner: arquiteto-senior
+status: active
+owner: senior-architect
 readers: [all]
 updated: YYYY-MM-DD
 related:
@@ -9,77 +9,77 @@ related:
   - adr/INDEX.md
 ---
 
-# Visão Geral da Arquitetura
+# Architecture Overview
 
-> **Leitura obrigatória para todos os agentes antes de iniciar qualquer tarefa.**
+> **Mandatory reading for all agents before starting any task.**
 
-## O que é este sistema
+## What this system is
 
-> Uma ou duas frases descrevendo o propósito do sistema.
+> One or two sentences describing the purpose of the system.
 
-## Diagrama de contexto (C4 - Nível 1)
+## Context diagram (C4 - Level 1)
 
 ```mermaid
 graph TD
-    User([Usuário]) -->|usa| System[Nome do Sistema]
-    System -->|integra| ExtA[Sistema Externo A]
-    System -->|consome| ExtB[API Externa B]
+    User([User]) -->|uses| System[System Name]
+    System -->|integrates| ExtA[External System A]
+    System -->|consumes| ExtB[External API B]
 ```
 
-## Stack tecnológica
+## Technology stack
 
-| Camada | Tecnologia | Versão | Justificativa |
+| Layer | Technology | Version | Rationale |
 |---|---|---|---|
 | Backend | | | |
 | Frontend | | | |
-| Banco de dados | | | |
+| Database | | | |
 | Cache | | | |
-| Mensageria | | | |
-| Infraestrutura | | | |
+| Messaging | | | |
+| Infrastructure | | | |
 
-## Princípios arquiteturais
+## Architectural principles
 
-> Liste os 3-5 princípios que guiam as decisões técnicas deste projeto.
+> List the 3-5 principles that guide the technical decisions of this project.
 
-1. **[Princípio]**: [explicação]
+1. **[Principle]**: [explanation]
 
-## Fronteiras de módulos
+## Module boundaries
 
-> Quais são os principais módulos/serviços? Quais são suas responsabilidades e fronteiras?
+> What are the main modules/services? What are their responsibilities and boundaries?
 
-| Módulo | Responsabilidade | Depende de |
+| Module | Responsibility | Depends on |
 |---|---|---|
 | | | |
 
-## Fluxos principais
+## Main flows
 
-> Descreva os 2-3 fluxos mais importantes do sistema.
+> Describe the 2-3 most important flows in the system.
 
-### Fluxo: [nome]
+### Flow: [name]
 
 ```mermaid
 sequenceDiagram
-    participant U as Usuário
+    participant U as User
     participant A as API
-    participant DB as Banco
-    U->>A: requisição
-    A->>DB: consulta
-    DB-->>A: resultado
-    A-->>U: resposta
+    participant DB as Database
+    U->>A: request
+    A->>DB: query
+    DB-->>A: result
+    A-->>U: response
 ```
 
-## Decisões arquiteturais relevantes
+## Relevant architectural decisions
 
-> Liste as ADRs mais importantes para contextualizar o design atual.
+> List the most important ADRs to provide context for the current design.
 
-- [ADR-0001](../adr/0001-exemplo.md): [título]
+- [ADR-0001](../adr/0001-example.md): [title]
 
-## O que este sistema NÃO faz
+## What this system does NOT do
 
-> Documente explicitamente o que está fora do escopo. Isso evita mal-entendidos entre agentes.
+> Explicitly document what is out of scope. This prevents misunderstandings between agents.
 
-## Histórico de mudanças
+## Change history
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Versão inicial | arquiteto-senior |
+| YYYY-MM-DD | Initial version | senior-architect |

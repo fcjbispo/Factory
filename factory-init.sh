@@ -718,7 +718,7 @@ _print_next_steps() {
   case $mode in
     new)
       echo "  5. Em seguida:"
-      echo "     @arquiteto-senior Leia docs/INDEX.md e docs/GUIDE.md."
+      echo "     @senior-architect Leia docs/INDEX.md e docs/GUIDE.md."
       echo "     Crie docs/architecture/overview.md e o primeiro ADR."
       ;;
     full)

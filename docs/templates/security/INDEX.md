@@ -4,26 +4,26 @@ scope: security
 updated: YYYY-MM-DD
 ---
 
-# Security — Segurança
+# Security — Security
 
-> ⚠️ Vulnerabilidades **ativas** não são documentadas aqui.
-> São gerenciadas em canal privado e reportadas diretamente ao PO.
-> Este repositório registra apenas vulnerabilidades já tratadas e as políticas vigentes.
+> ⚠️ Active vulnerabilities are **NOT** documented here.
+> They are managed in a private channel and reported directly to the PO.
+> This repository only records vulnerabilities already handled and current policies.
 
-## Documentos principais
+## Main documents
 
-| Arquivo | Conteúdo | Status |
+| File | Content | Status |
 |---|---|---|
-| [policies.md](policies.md) | Políticas de segurança do projeto | `rascunho` |
+| [policies.md](policies.md) | Project security policies | `draft` |
 
 ## Threat Models
 
-| Arquivo | Componente analisado | Data | Status |
+| File | Analyzed component | Date | Status |
 |---|---|---|---|
 | — | — | — | — |
 
-## Como usar
+## How to use
 
-- `policies.md`: leitura obrigatória para todos os agentes. Atualizado pelo @security-analyst, revisado a cada 6 meses ou após incidente.
-- Threat models: copie `threat-models/_template.md`, nomeie como `YYYY-MM-DD-nome-do-componente.md` e adicione a entrada na tabela acima.
-- Threat models devem ser criados pelo @security-analyst **antes** da implementação de features com dados sensíveis ou superfície de ataque relevante.
+- `policies.md`: mandatory reading for all agents. Updated by @security-analyst, reviewed every 6 months or after an incident.
+- Threat models: copy `threat-models/_template.md`, name it `YYYY-MM-DD-component-name.md` and add the entry in the table above.
+- Threat models must be created by @security-analyst **before** implementing features with sensitive data or relevant attack surface.

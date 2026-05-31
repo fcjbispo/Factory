@@ -4,29 +4,29 @@ scope: backlog.security
 updated: 2026-04-28
 ---
 
-# Security — Vulnerabilidades e Patches
+# Security — Vulnerabilities and Patches
 
-## Vulneráveis
+## Vulnerable
 
-| Arquivo | CVE/Título | Severidade | Status | Prazo |
+| File | CVE/Title | Severity | Status | Deadline |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Em Remediação
+## In Remediation
 
-| Arquivo | CVE/Título | Severidade | Status | Atribuído |
+| File | CVE/Title | Severity | Status | Assigned |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Resolvidos
+## Resolved
 
-| Arquivo | CVE/Título | Severidade | Resolvido | Por |
+| File | CVE/Title | Severity | Resolved | By |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## Como usar
+## How to use
 
-- Severidade: `crítico` | `alto` | `médio` | `baixo`
-- Fontes: dependabot, Snyk, Trivy, OWASP
-- Prazo: crítico=24h, alto=7 dias, médio=30 dias, baixo=90 dias
-- Postmortem obrigatório para crítico
+- Severity: `critical` | `high` | `medium` | `low`
+- Sources: dependabot, Snyk, Trivy, OWASP
+- Deadline: critical=24h, high=7 days, medium=30 days, low=90 days
+- Postmortem mandatory for critical

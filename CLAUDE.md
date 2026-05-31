@@ -66,7 +66,7 @@ Environment variables: `FACTORY_ROOT` (repo root), `FACTORY_PROJECTS_DIR` (defau
 
 | Agent | Recommended model | Role |
 |---|---|---|
-| arquiteto-senior | Opus | Architecture, ADRs, API contracts, system design |
+| senior-architect | Opus | Architecture, ADRs, API contracts, system design |
 | fullstack-developer | Sonnet | Feature implementation, bug fixes, commits |
 | db-architect | Sonnet | Data modeling, migrations, query optimization |
 | code-reviewer | Opus | Mandatory PR review, quality, security in code |

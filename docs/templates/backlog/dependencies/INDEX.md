@@ -4,29 +4,29 @@ scope: backlog.dependencies
 updated: 2026-04-28
 ---
 
-# Dependencies — Updates e EOL
+# Dependencies — Updates and EOL
 
-## Desatualizadas
+## Outdated
 
-| Arquivo | Dependência | Versão atual | Versão alvo | Status |
+| File | Dependency | Current version | Target version | Status |
 |---|---|---|---|---|
 | — | — | — | — | — |
 
-## EOL Próximo
+## EOL Soon
 
-| Arquivo | Dependência | EOL Date | Status |
+| File | Dependency | EOL Date | Status |
 |---|---|---|---|
 | — | — | — | — |
 
-## Em Update
+## In Update
 
-| Arquivo | Dependência | Status | Atribuído |
+| File | Dependency | Status | Assigned |
 |---|---|---|---|
 | — | — | — | — |
 
-## Como usar
+## How to use
 
-- Review: mensal
-- EOL: 18 meses de antecedência mínimo
-- Breaking changes: documentar em ADR
-- Vulnerabilidades: ver `security/`
+- Review: monthly
+- EOL: 18 months minimum advance notice
+- Breaking changes: document in ADR
+- Vulnerabilities: see `security/`

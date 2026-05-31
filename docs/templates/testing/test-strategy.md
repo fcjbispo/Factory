@@ -1,6 +1,6 @@
 ---
 type: test-strategy
-status: ativo
+status: active
 owner: qa-tester
 readers: [all]
 updated: YYYY-MM-DD
@@ -8,74 +8,74 @@ related:
   - architecture/overview.md
 ---
 
-# Estratégia de Testes
+# Test Strategy
 
-## Pirâmide de testes
+## Test pyramid
 
 ```
         /\
-       /E2E\          poucos — fluxos críticos end-to-end
+       /E2E\          few — critical end-to-end flows
       /------\
-     /Integração\     moderados — colaboração entre módulos
+     /Integration\     moderate — collaboration between modules
     /------------\
-   /   Unitários  \   maioria — lógica de negócio isolada
+   /   Unit Test  \   majority — isolated business logic
   /--------------/
 ```
 
-## Ferramentas
+## Tools
 
-| Tipo | Ferramenta | Configuração |
+| Type | Tool | Configuration |
 |---|---|---|
-| Unitário | [ex: Jest, Vitest, pytest] | [arquivo de config] |
-| Integração | [ex: Supertest, pytest] | [arquivo de config] |
-| E2E | [ex: Playwright, Cypress] | [arquivo de config] |
-| Cobertura | [ex: Istanbul, coverage.py] | [arquivo de config] |
+| Unit | [ex: Jest, Vitest, pytest] | [config file] |
+| Integration | [ex: Supertest, pytest] | [config file] |
+| E2E | [ex: Playwright, Cypress] | [config file] |
+| Coverage | [ex: Istanbul, coverage.py] | [config file] |
 
-## Thresholds de cobertura
+## Coverage thresholds
 
-| Métrica | Threshold mínimo | Threshold desejado |
+| Metric | Minimum threshold | Desired threshold |
 |---|---|---|
-| Linhas | 80% | 90% |
+| Lines | 80% | 90% |
 | Branches | 75% | 85% |
-| Funções | 80% | 90% |
+| Functions | 80% | 90% |
 
-> Builds abaixo do threshold mínimo são bloqueados no CI.
+> Builds below the minimum threshold are blocked in CI.
 
-## O que testar em cada nível
+## What to test at each level
 
-### Unitários
-- Toda lógica de negócio em services e use-cases
-- Funções de transformação, validação e cálculo
-- Edge cases e tratamento de erros
+### Unit
+- All business logic in services and use-cases
+- Transformation, validation, and calculation functions
+- Edge cases and error handling
 
-### Integração
-- Endpoints de API (request → response, incluindo erros)
-- Acesso ao banco de dados (queries, migrations)
-- Integração com serviços externos (via mocks/contratos)
+### Integration
+- API endpoints (request → response, including errors)
+- Database access (queries, migrations)
+- Integration with external services (via mocks/contracts)
 
 ### E2E
-- Fluxos críticos do ponto de vista do usuário
-- Máximo de [N] cenários — priorize fluxos de maior valor de negócio
+- Critical flows from the user's perspective
+- Maximum of [N] scenarios — prioritize highest business value flows
 
-## Dados de teste
+## Test data
 
-- Fixtures: [localização]
-- Seeds: [localização ou comando]
-- PII em testes: nunca use dados reais. Use geradores de dados sintéticos.
+- Fixtures: [location]
+- Seeds: [location or command]
+- PII in tests: never use real data. Use synthetic data generators.
 
 ## Flaky tests
 
-Todo teste instável deve ser registrado e corrigido em até [N dias]. Teste flaky é bug.
+Every unstable test must be registered and fixed within [N days]. A flaky test is a bug.
 
-## Critérios de qualidade para release
+## Release quality criteria
 
-- [ ] Suite completa passa sem falhas
-- [ ] Cobertura acima dos thresholds mínimos
-- [ ] Nenhum teste flaky ativo
-- [ ] Testes de regressão para todos os bugs corrigidos na release
+- [ ] Full suite passes without failures
+- [ ] Coverage above minimum thresholds
+- [ ] No active flaky tests
+- [ ] Regression tests for all bugs fixed in the release
 
-## Histórico de mudanças
+## Change history
 
-| Data | Mudança | Por |
+| Date | Change | By |
 |---|---|---|
-| YYYY-MM-DD | Versão inicial | qa-tester |
+| YYYY-MM-DD | Initial version | qa-tester |
